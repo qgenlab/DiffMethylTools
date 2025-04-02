@@ -11,18 +11,18 @@ ACCEPTABLE_COLUMNS = {"chromosome", "position_start", "position_end", "region_st
                       "positive_methylation_count", "negative_methylation_count", "avg_case", "avg_ctr", 
                       "diff", "p-val", "nbr", "q-value", "gene", "intron", "intron_diff", "exon", "exon_diff", 
                       "upstream", "upstream_diff", "CCRE", "CCRE_diff", "tag", "nearest_genes"}
-ACCEPTABLE_STYLES = {"DiffMethTools_input", "Bismark", "DiffMethTools_header"}
+ACCEPTABLE_STYLES = {"DiffMethylTools_input", "Bismark", "DiffMethylTools_header"}
 
 # Format pre-selected styles
-DIFFMETHTOOLS_INPUT_STYLE = {"chromosome":0, "position_start":1, "position_end":2, "strand":5, "coverage":9, "methylation_percentage":10}
+DIFFMETHYLTOOLS_INPUT_STYLE = {"chromosome":0, "position_start":1, "position_end":2, "strand":5, "coverage":9, "methylation_percentage":10}
 BISMARK_STYLE = {"chromosome":0, "position_start":1, "strand":2, "positive_methylation_count":3, "negative_methylation_count":4}
 
-DIFFMETHTOOLS_HEADER_STYLE = {"chromosome":0, "position_start":1, "position_end":2, "strand":3}
+DIFFMETHYLTOOLS_HEADER_STYLE = {"chromosome":0, "position_start":1, "position_end":2, "strand":3}
 
 class FormatDefinition():
     """Example Usage:
     
-    >>> format = FormatDefinition(style="DiffMethTools_input", column_mapping={"coverage":8}, sep=",")
+    >>> format = FormatDefinition(style="DiffMethylTools_input", column_mapping={"coverage":8}, sep=",")
     >>> format.mapping
     {'chromosome': 0, 'start': 1, 'end': 2, 'strand': 5, 'coverage': 8, 'methylation_percentage': 10}
     >>> format.separator
@@ -32,12 +32,12 @@ class FormatDefinition():
         assert style is None or style in ACCEPTABLE_STYLES, f"Acceptable format styles are: {str(ACCEPTABLE_STYLES)}."
 
         final_mapping = {}
-        if style == "DiffMethTools_input":
-            final_mapping = DIFFMETHTOOLS_INPUT_STYLE
+        if style == "DiffMethylTools_input":
+            final_mapping = DIFFMETHYLTOOLS_INPUT_STYLE
         elif style == "Bismark":
             final_mapping = BISMARK_STYLE
-        elif style == "DiffMethTools_header":
-            final_mapping = DIFFMETHTOOLS_HEADER_STYLE
+        elif style == "DiffMethylTools_header":
+            final_mapping = DIFFMETHYLTOOLS_HEADER_STYLE
         
         # Merge style and column_mapping. Overwrite any style values with what's in column_mapping.
         final_mapping.update(column_mapping)
@@ -219,8 +219,10 @@ class InputProcessor():
                         new_col = re.sub(f"^{pattern}$", replacement.format(ctr_case=ctr_case, name=name), col)
 
                         break
+                
                 renamed_columns[col] = new_col
 
+            print("renaming in rename_columns")
             return df.rename(renamed_columns)
 
         for i, file in enumerate(self.raw_data):
@@ -229,7 +231,9 @@ class InputProcessor():
             else:
                 format_def = self.raw_format
             
+            print("reading")
             df = read_data(file, format_def.separator if format_def is not None else ",")
+            print("done")
 
             # map names according to the ones from the FormatDefinition. 
             if format_def is not None and format_def.mapping != {}:
@@ -237,6 +241,7 @@ class InputProcessor():
                 selected_columns = []
                 old_column_names = []
 
+                print("Map percentage and coverage")
                 for col, idx in format_def.mapping.items():
                     if col in ["methylation_percentage", "coverage_KEY"] and isinstance(idx, list):
                         for sub_idx in idx:
@@ -246,6 +251,7 @@ class InputProcessor():
                         old_column_names.append(df.columns[idx])
                         selected_columns.append(pl.col(df.columns[idx]).alias(col))
 
+                print("include old columns")
                 # include columns not in the mapping
                 for col in reversed(df.columns):
                     if col not in old_column_names:
@@ -253,20 +259,28 @@ class InputProcessor():
                 df = df.select(selected_columns) 
 
 
+            print("Rename columns")
             # remap any of those names to the conventions used in the program
             renamed_df = rename_columns(df)
 
+            print("if not in self.zero_indexed_positions")
             if not self.zero_indexed_positions:
                 if "chromStart" in renamed_df.columns:
                     renamed_df = renamed_df.with_columns(pl.col("chromStart") + 1)
                 if "chromEnd" in renamed_df.columns:
                     renamed_df = renamed_df.with_columns(pl.col("chromEnd") + 1)
 
+            print("to_pandas")
             renamed_df = renamed_df.to_pandas()
 
+            print("if gene in renamed_df.columns")
             if "gene" in renamed_df.columns:
                 renamed_df.set_index("gene", inplace=True, drop=True)
 
+            print("append")
+
             data.append(renamed_df)
+
+            print("done")
 
         self.data = data if len(data) > 1 else data[0]

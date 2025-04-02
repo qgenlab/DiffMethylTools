@@ -1,0 +1,7 @@
+DiffMethylTools module
+====================
+
+.. autoclass:: DiffMethylTools.DiffMethylTools
+   :members: merge_tables, window_based, position_based, map_win_2_pos, generate_q_values, filters, generate_DMR, map_positions_to_genes, map_windows_to_genes, volcano_plot, manhattan_plot, coverage_plot, graph_gene_regions, graph_upstream_gene_methylation, graph_average_upstream_gene_methylation, graph_upstream_UCSC, graph_full_gene, pie_chart, all_analysis, all_plots
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,847 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DiffMethylTools module &mdash; DiffMethylTools 0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_edit.css?v=8cf43333" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=47de8214"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="v0.0.3" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DiffMethylTools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">v0.0.3</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DiffMethylTools module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DiffMethylTools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">v0.0.3</a></li>
+      <li class="breadcrumb-item active">DiffMethylTools module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/DiffMethylTools.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="diffmethyltools-module">
+<h1>DiffMethylTools module<a class="headerlink" href="#diffmethyltools-module" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DiffMethylTools.</span></span><span class="sig-name descname"><span class="pre">DiffMethylTools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.merge_tables">
+<span class="sig-name descname"><span class="pre">merge_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctr_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samp_ctr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samp_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.merge_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.merge_tables" title="Link to this definition"></a></dt>
+<dd><p>Merge case and control data tables.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">case_data</span></code> and <code class="docutils literal notranslate"><span class="pre">ctr_data</span></code> must be from a list of samples, where each contains one of the following column formats:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;coverage&quot;,</span> <span class="pre">&quot;methylation_percentage&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;positive_methylation_count&quot;,</span> <span class="pre">&quot;negative_methylation_count&quot;]</span></code></p></li>
+<li><p>Additionally, <code class="docutils literal notranslate"><span class="pre">&quot;position_end&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;strand&quot;</span></code> columns can be used. These will be considered during the join process.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>case_data</strong> (<em>InputProcessor</em>) – The case data to be merged.</p></li>
+<li><p><strong>ctr_data</strong> (<em>InputProcessor</em>) – The control data to be merged.</p></li>
+<li><p><strong>min_cov</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum coverage filter, defaults to 10</p></li>
+<li><p><strong>cov_percentile</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum coverage filter (percentile of sample coverage), defaults to 1.0</p></li>
+<li><p><strong>min_samp_ctr</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum samples in control, defaults to 2</p></li>
+<li><p><strong>min_samp_case</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum samples in case, defaults to 2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Merged data table</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.window_based">
+<span class="sig-name descname"><span class="pre">window_based</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~lib.input_processor.InputProcessor</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistical_test:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">mannwhitneyu&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window=1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step=500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nbr_per_win=5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processes=12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_std=0.1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.window_based"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.window_based" title="Link to this definition"></a></dt>
+<dd><p>Perform window-based analysis.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">data</span></code> must contain the following column format:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;methylation_percentage*&quot;,</span> <span class="pre">&quot;avg_case&quot;,</span> <span class="pre">&quot;avg_ctr&quot;]</span></code></p></li>
+<li><p>There must be a <code class="docutils literal notranslate"><span class="pre">methylation_percentage</span></code> column for each sample to test.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">statistical_test</span></code> must be a function from the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/stats.html">scipy.stats</a> package. Accepted functions include:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mannwhitneyu</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ttest_ind</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ranksums</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ks_2samp</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">median_test</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">brunnermunzel</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Input data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>statistical_test</strong> (<em>Callable</em><em>, </em><em>optional</em>) – <p>Statistical test to use, must be from <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/stats.html">scipy.stats</a> package, defaults to <code class="docutils literal notranslate"><span class="pre">mannwhitneyu</span></code></p>
+</p></li>
+<li><p><strong>window</strong> (<em>int</em><em>, </em><em>optional</em>) – Sample window size (in bp), defaults to 1000</p></li>
+<li><p><strong>step</strong> (<em>int</em><em>, </em><em>optional</em>) – Window step size, defaults to 500</p></li>
+<li><p><strong>min_nbr_per_win</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum number of sample positions per window, defaults to 5</p></li>
+<li><p><strong>processes</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of CPU processes, defaults to 12</p></li>
+<li><p><strong>min_std</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum standard deviation filter, defaults to 0.1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Window-based analysis results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.position_based">
+<span class="sig-name descname"><span class="pre">position_based</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'limma'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eBayes'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_na</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.position_based"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.position_based" title="Link to this definition"></a></dt>
+<dd><p>Perform position-based analysis. Has options for using the gamma function, or the limma R package.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">data</span></code> must contain the following column format:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;methylation_percentage*&quot;]</span></code></p></li>
+<li><p>There must be a <code class="docutils literal notranslate"><span class="pre">methylation_percentage</span></code> column for each sample to test.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Input data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Position-based method to use, options are <code class="docutils literal notranslate"><span class="pre">[&quot;gamma&quot;,</span> <span class="pre">&quot;limma&quot;]</span></code>, defaults to “limma”</p></li>
+<li><p><strong>features</strong> (<em>str</em><em>, </em><em>optional</em>) – Features .csv file used with the “limma” method, has indicies with the names of samples in <code class="docutils literal notranslate"><span class="pre">data</span></code> and columns for the features, defaults to None</p></li>
+<li><p><strong>test_factor</strong> (<em>str</em><em>, </em><em>optional</em>) – Test factor used with the “limma” method, defaults to “Group”</p></li>
+<li><p><strong>processes</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of CPU processes, defaults to 12</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>optional</em>) – Limma model to use, options are <code class="docutils literal notranslate"><span class="pre">[&quot;eBayes&quot;,</span> <span class="pre">&quot;treat&quot;]</span></code> defaults to “eBayes”</p></li>
+<li><p><strong>min_std</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum standard deviation filter, defaults to 0.1</p></li>
+<li><p><strong>fill_na</strong> – Fill NA values with row group average, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Position-based analysis results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.map_win_2_pos">
+<span class="sig-name descname"><span class="pre">map_win_2_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_window_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_window_min_diff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_window_result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.map_win_2_pos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.map_win_2_pos" title="Link to this definition"></a></dt>
+<dd><p>Map windows to positions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">window_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;region_start&quot;,</span> <span class="pre">&quot;region_end&quot;]</span></code></p></li>
+</ul>
+</dd>
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">position_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;avg_case&quot;,</span> <span class="pre">&quot;avg_ctr&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Window data to map with. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>position_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Position data to map the windows to. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>processes</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of CPU processes, defaults to 12</p></li>
+<li><p><strong>sub_window_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Sub-window size for a deeper difference filtering, defaults to 100</p></li>
+<li><p><strong>sub_window_step</strong> (<em>int</em><em>, </em><em>optional</em>) – Sub-window step size, defaults to 100</p></li>
+<li><p><strong>sub_window_min_diff</strong> (<em>int</em><em>, </em><em>optional</em>) – Sub-window minimum difference, defaults to 0</p></li>
+<li><p><strong>pipeline_window_result</strong> (<em>str</em><em>, </em><em>optional</em>) – The function results to use as input if DiffMethylTools is pipelined and no data is provided. Options are <code class="docutils literal notranslate"><span class="pre">[&quot;auto&quot;,</span> <span class="pre">&quot;filters&quot;,</span> <span class="pre">&quot;generate_q_values&quot;,</span> <span class="pre">&quot;window_based&quot;]</span></code>, defaults to “auto”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapped windows to positions</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.generate_q_values">
+<span class="sig-name descname"><span class="pre">generate_q_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.generate_q_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.generate_q_values" title="Link to this definition"></a></dt>
+<dd><p>Generate q-values (also referred to as adjusted p-values or FDR).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;p-val&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Input p-value data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – P-value adjustment method to use from <a class="reference external" href="https://www.statsmodels.org/dev/generated/statsmodels.stats.multitest.multipletests.html#statsmodels.stats.multitest.multipletests-parameters">statsmodels.stats.multitest.multipletests</a>, defaults to “fdr_bh”.</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are <code class="docutils literal notranslate"><span class="pre">[&quot;auto&quot;,</span> <span class="pre">&quot;position&quot;,</span> <span class="pre">&quot;window&quot;]</span></code>, defaults to “auto”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Data with q-values (adjusted p-values or FDR)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.filters">
+<span class="sig-name descname"><span class="pre">filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_q_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_min_diff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.filters" title="Link to this definition"></a></dt>
+<dd><p>Filter data by q-value and minimum difference.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;q-value&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Input data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>max_q_value</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum q-value filter, defaults to 0.05</p></li>
+<li><p><strong>abs_min_diff</strong> (<em>int</em><em>, </em><em>optional</em>) – Absolute minimum difference filter, defaults to 25</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are <code class="docutils literal notranslate"><span class="pre">[&quot;auto&quot;,</span> <span class="pre">&quot;position&quot;,</span> <span class="pre">&quot;window&quot;]</span></code>, defaults to “auto”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filtered input data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.generate_DMR">
+<span class="sig-name descname"><span class="pre">generate_DMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">significant_position_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neutral_change_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neutral_perc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opposite_perc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">significant_position_pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.generate_DMR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.generate_DMR" title="Link to this definition"></a></dt>
+<dd><p>Generate Differentially Methylated Regions (DMRs).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">significant_position_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">position_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>significant_position_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Significant position data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>position_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – All position data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>min_pos</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum positions, defaults to 3</p></li>
+<li><p><strong>neutral_change_limit</strong> (<em>float</em><em>, </em><em>optional</em>) – Neutral change limit, defaults to 7.5</p></li>
+<li><p><strong>neutral_perc</strong> (<em>int</em><em>, </em><em>optional</em>) – Neutral percentage, defaults to 30</p></li>
+<li><p><strong>opposite_perc</strong> (<em>int</em><em>, </em><em>optional</em>) – Opposite percentage, defaults to 10</p></li>
+<li><p><strong>significant_position_pipeline</strong> (<em>str</em><em>, </em><em>optional</em>) – The significant position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are <code class="docutils literal notranslate"><span class="pre">[&quot;auto&quot;,</span> <span class="pre">&quot;position&quot;,</span> <span class="pre">&quot;window&quot;]</span></code>, defaults to “auto”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DMR results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.map_positions_to_genes">
+<span class="sig-name descname"><span class="pre">map_positions_to_genes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_regions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['intron',</span> <span class="pre">'exon',</span> <span class="pre">'upstream',</span> <span class="pre">'CCRE']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_pos_diff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'outfile_w_hm450.bed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtf_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gencode.v41.chr_patch_hapl_scaff.annotation.gtf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_input_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.map_positions_to_genes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.map_positions_to_genes" title="Link to this definition"></a></dt>
+<dd><p>Map positions to genes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">positions</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Position data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>gene_regions</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em><em>, </em><em>optional</em>) – Gene regions to map to. Options are any combination of <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;exon&quot;,</span> <span class="pre">&quot;upstream&quot;,</span> <span class="pre">&quot;CCRE&quot;]</span></code>, defaults to <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;exon&quot;,</span> <span class="pre">&quot;upstream&quot;,</span> <span class="pre">&quot;CCRE&quot;]</span></code></p></li>
+<li><p><strong>min_pos_diff</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum position difference for mapping, defaults to 0</p></li>
+<li><p><strong>bed_file</strong> (<em>str</em><em>, </em><em>optional</em>) – BED annotation file with unflexible input, defaults to “outfile_w_hm450.bed”</p></li>
+<li><p><strong>gtf_file</strong> (<em>str</em><em>, </em><em>optional</em>) – GTF annotation file with unflexible input, defaults to “gencode.v41.chr_patch_hapl_scaff.annotation.gtf”</p></li>
+<li><p><strong>pipeline_input_source</strong> (<em>str</em><em>, </em><em>optional</em>) – Pipeline input source for pipelining, options are [“auto”, “map_win_2_pos”, “generate_q_values”, “filters”], defaults to “auto”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapped positions to genes in a list: <code class="docutils literal notranslate"><span class="pre">[gene</span> <span class="pre">mapping</span> <span class="pre">dataframe,</span> <span class="pre">CCRE</span> <span class="pre">mapping</span> <span class="pre">dataframe]</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pd.DataFrame]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.map_windows_to_genes">
+<span class="sig-name descname"><span class="pre">map_windows_to_genes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_regions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['intron',</span> <span class="pre">'exon',</span> <span class="pre">'upstream',</span> <span class="pre">'CCRE']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_pos_diff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'outfile_w_hm450.bed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtf_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gencode.v41.chr_patch_hapl_scaff.annotation.gtf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enhd_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enhp_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prom_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_input_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.map_windows_to_genes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.map_windows_to_genes" title="Link to this definition"></a></dt>
+<dd><p>Map windows to genes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">windows</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;region_start&quot;,</span> <span class="pre">&quot;region_end&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>windows</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Window data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>gene_regions</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em><em>, </em><em>optional</em>) – Gene regions to map to. Options are any combination of <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;exon&quot;,</span> <span class="pre">&quot;upstream&quot;,</span> <span class="pre">&quot;CCRE&quot;]</span></code>, defaults to <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;exon&quot;,</span> <span class="pre">&quot;upstream&quot;,</span> <span class="pre">&quot;CCRE&quot;]</span></code></p></li>
+<li><p><strong>min_pos_diff</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum position difference for mapping, defaults to 0</p></li>
+<li><p><strong>bed_file</strong> (<em>str</em><em>, </em><em>optional</em>) – BED annotation file with unflexible input, defaults to “outfile_w_hm450.bed”</p></li>
+<li><p><strong>gtf_file</strong> (<em>str</em><em>, </em><em>optional</em>) – GTF annotation file with unflexible input, defaults to “gencode.v41.chr_patch_hapl_scaff.annotation.gtf”</p></li>
+<li><p><strong>enhd_thr</strong> (<em>int</em><em>, </em><em>optional</em>) – Distal enhancer distance threshold for finding nearest gene to CCRE, defaults to 500000</p></li>
+<li><p><strong>enhp_thr</strong> (<em>int</em><em>, </em><em>optional</em>) – Proximal enhancer distance threshold for finding nearest gene to CCRE, defaults to 50000</p></li>
+<li><p><strong>prom_thr</strong> (<em>int</em><em>, </em><em>optional</em>) – Promoter enhancer distance threshold for finding nearest gene to CCRE, defaults to 2000</p></li>
+<li><p><strong>processes</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of CPU processes, defaults to 12</p></li>
+<li><p><strong>pipeline_input_source</strong> (<em>str</em><em>, </em><em>optional</em>) – Pipeline input source for pipelining, options are [“auto”, “generate_DMR”, “generate_q_values”, “filters”], defaults to “auto”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapped windows to genes in a list: <code class="docutils literal notranslate"><span class="pre">[gene</span> <span class="pre">mapping</span> <span class="pre">dataframe,</span> <span class="pre">CCRE</span> <span class="pre">mapping</span> <span class="pre">dataframe]</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[pd.DataFrame]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.volcano_plot">
+<span class="sig-name descname"><span class="pre">volcano_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'volcano_plot.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(-100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.volcano_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.volcano_plot" title="Link to this definition"></a></dt>
+<dd><p>Generate a volcano plot.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;q-value&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Input data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output file name, defaults to “volcano_plot.png”</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Q-value threshold for horizontal line. Set to None to have no line, defaults to 0.05</p></li>
+<li><p><strong>line</strong> (<em>float</em><em>, </em><em>optional</em>) – Vertical line threshold for the <cite>abs(line)</cite> vertical line. Set to NOne to have no lines, defaults to 15</p></li>
+<li><p><strong>x_range</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>, </em><em>optional</em>) – X-axis range, defaults to (-100, 100)</p></li>
+<li><p><strong>y_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Y-axis maximum, defaults to None</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>x_label</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are <code class="docutils literal notranslate"><span class="pre">[&quot;auto&quot;,</span> <span class="pre">&quot;position&quot;,</span> <span class="pre">&quot;window&quot;]</span></code>, defaults to “auto”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.manhattan_plot">
+<span class="sig-name descname"><span class="pre">manhattan_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'manhattan_plot.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.manhattan_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.manhattan_plot" title="Link to this definition"></a></dt>
+<dd><p>Generate a manhattan plot.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">data</span></code> are in one of the following column formats:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;q-value&quot;,</span> <span class="pre">&quot;position_start&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;q-value&quot;,</span> <span class="pre">&quot;region_start&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Input data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Output file name, defaults to “manhattan_plot.png”</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Q-value threshold for horizontal line. Set to None to have no line, defaults to 0.05</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>x_label</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are <code class="docutils literal notranslate"><span class="pre">[&quot;auto&quot;,</span> <span class="pre">&quot;position&quot;,</span> <span class="pre">&quot;window&quot;]</span></code>, defaults to “auto”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.coverage_plot">
+<span class="sig-name descname"><span class="pre">coverage_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctr_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'coverage_plot.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_max_percentile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.coverage_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.coverage_plot" title="Link to this definition"></a></dt>
+<dd><p>Generate a coverage plot.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">case_data</span></code> and <code class="docutils literal notranslate"><span class="pre">ctr_data</span></code> must be from a list of samples, where each contains one of the following column formats:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;coverage&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;positive_methylation_count&quot;,</span> <span class="pre">&quot;negative_methylation_count&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>case_data</strong> (<em>InputProcessor</em>) – The case data to plot.</p></li>
+<li><p><strong>ctr_data</strong> (<em>InputProcessor</em>) – The control data to plot.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output file name, defaults to “coverage_plot.png”</p></li>
+<li><p><strong>cov_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum coverage display, defaults to -1</p></li>
+<li><p><strong>cov_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum coverage display, defaults to -1</p></li>
+<li><p><strong>cov_max_percentile</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum coverage percentile display, defaults to -1. Overrides <code class="docutils literal notranslate"><span class="pre">cov_max</span></code> if set.</p></li>
+<li><p><strong>bins</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bins, defaults to 20</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>x_label</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label, defaults to None for a generic label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.graph_gene_regions">
+<span class="sig-name descname"><span class="pre">graph_gene_regions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccre_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gene_regions.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_regions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['intron',</span> <span class="pre">'exon',</span> <span class="pre">'upstream',</span> <span class="pre">'CCRE']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intron_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exon_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upstream_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CCRE_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intron_y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exon_y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upstream_y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CCRE_y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.graph_gene_regions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.graph_gene_regions" title="Link to this definition"></a></dt>
+<dd><p>Generate a graph of gene regions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">gene_data</span></code>:</dt><dd><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;intron&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;intron_diff&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;exon&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;exon&quot;,</span> <span class="pre">&quot;exon_diff&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;upstream&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;upstream&quot;,</span> <span class="pre">&quot;upstream_diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">ccre_data</span></code>:</dt><dd><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;CCRE&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;CCRE&quot;,</span> <span class="pre">&quot;CCRE_diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gene_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Gene data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>ccre_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – CCRE data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output file name, defaults to “gene_regions.png”</p></li>
+<li><p><strong>gene_regions</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em><em>, </em><em>optional</em>) – Gene regions to map to. Options are any combination of <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;exon&quot;,</span> <span class="pre">&quot;upstream&quot;,</span> <span class="pre">&quot;CCRE&quot;]</span></code>, defaults to <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;exon&quot;,</span> <span class="pre">&quot;upstream&quot;,</span> <span class="pre">&quot;CCRE&quot;]</span></code></p></li>
+<li><p><strong>intron_cutoff</strong> (<em>int</em><em>, </em><em>optional</em>) – Intron count vertical display cutoff, defaults to -1 (for no cutoff)</p></li>
+<li><p><strong>exon_cutoff</strong> (<em>int</em><em>, </em><em>optional</em>) – Exon count vertical display cutoff, defaults to -1 (for no cutoff)</p></li>
+<li><p><strong>upstream_cutoff</strong> (<em>int</em><em>, </em><em>optional</em>) – Upstream count vertical display cutoff, defaults to -1 (for no cutoff)</p></li>
+<li><p><strong>CCRE_cutoff</strong> (<em>int</em><em>, </em><em>optional</em>) – CCRE count vertical display cutoff, defaults to -1 (for no cutoff)</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>x_label</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>intron_y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Intron Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>exon_y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Exon Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>upstream_y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Upstream Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>CCRE_y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – CCRE Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are <code class="docutils literal notranslate"><span class="pre">[&quot;auto&quot;,</span> <span class="pre">&quot;position&quot;,</span> <span class="pre">&quot;window&quot;]</span></code>, defaults to “auto”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.graph_upstream_gene_methylation">
+<span class="sig-name descname"><span class="pre">graph_upstream_gene_methylation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'upstream'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'upstream_methylation.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'upstream_methylation.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypermethylated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_hypermethylated_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_hypermethylated_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_hypermethylated_windows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypomethylated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_hypomethylated_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_hypomethylated_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_hypomethylated_windows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clamp_positive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clamp_negative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtf_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gencode.v41.chr_patch_hapl_scaff.annotation.gtf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.graph_upstream_gene_methylation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.graph_upstream_gene_methylation" title="Link to this definition"></a></dt>
+<dd><p>Generate a graph of upstream gene methylation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">position_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">gene_data</span></code>:</dt><dd><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;intron&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;intron_diff&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;exon&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;exon&quot;,</span> <span class="pre">&quot;exon_diff&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;upstream&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;upstream&quot;,</span> <span class="pre">&quot;upstream_diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Position data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>gene_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Gene data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>gene_region</strong> (<em>str</em><em>, </em><em>optional</em>) – Gene region, defaults to “upstream”</p></li>
+<li><p><strong>png_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output PNG file name, defaults to “upstream_methylation.png”</p></li>
+<li><p><strong>csv_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output CSV file name, defaults to “upstream_methylation.csv”</p></li>
+<li><p><strong>csv</strong> (<em>str</em><em>, </em><em>optional</em>) – Input CSV file, defaults to None</p></li>
+<li><p><strong>left_distance</strong> (<em>int</em><em>, </em><em>optional</em>) – Left distance, defaults to 5000</p></li>
+<li><p><strong>right_distance</strong> (<em>int</em><em>, </em><em>optional</em>) – Right distance, defaults to 5000</p></li>
+<li><p><strong>window_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Window size, defaults to 100</p></li>
+<li><p><strong>hypermethylated</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include hypermethylated regions, defaults to True</p></li>
+<li><p><strong>gene_hypermethylated_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypermethylation for genes, defaults to 20</p></li>
+<li><p><strong>window_hypermethylated_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypermethylation for windows, defaults to 5</p></li>
+<li><p><strong>min_hypermethylated_windows</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypermethylated windows, defaults to 5</p></li>
+<li><p><strong>hypomethylated</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include hypomethylated regions, defaults to True</p></li>
+<li><p><strong>gene_hypomethylated_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum hypomethylation for genes, defaults to -20</p></li>
+<li><p><strong>window_hypomethylated_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum hypomethylation for windows, defaults to -5</p></li>
+<li><p><strong>min_hypomethylated_windows</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypomethylated windows, defaults to 5</p></li>
+<li><p><strong>position_count</strong> (<em>int</em><em>, </em><em>optional</em>) – Position count, defaults to 5</p></li>
+<li><p><strong>clamp_positive</strong> (<em>int</em><em>, </em><em>optional</em>) – Positive clamp value, defaults to 50</p></li>
+<li><p><strong>clamp_negative</strong> (<em>int</em><em>, </em><em>optional</em>) – Negative clamp value, defaults to -50</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>gtf_file</strong> (<em>str</em><em>, </em><em>optional</em>) – GTF file, defaults to “gencode.v41.chr_patch_hapl_scaff.annotation.gtf”</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – Position or window, options are [“auto”, “position”, “window”], defaults to “auto”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.graph_average_upstream_gene_methylation">
+<span class="sig-name descname"><span class="pre">graph_average_upstream_gene_methylation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'upstream'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'average_upstream_methylation.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'average_upstream_methylation.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypermethylated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_hypermethylated_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_hypermethylated_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_hypermethylated_windows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypomethylated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_hypomethylated_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_hypomethylated_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_hypomethylated_windows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clamp_positive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clamp_negative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtf_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gencode.v41.chr_patch_hapl_scaff.annotation.gtf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.graph_average_upstream_gene_methylation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.graph_average_upstream_gene_methylation" title="Link to this definition"></a></dt>
+<dd><p>Generate a graph of average upstream gene methylation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">position_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">gene_data</span></code>:</dt><dd><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;intron&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;,</span> <span class="pre">&quot;intron_diff&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;exon&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;exon&quot;,</span> <span class="pre">&quot;exon_diff&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;upstream&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;upstream&quot;,</span> <span class="pre">&quot;upstream_diff&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Position data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>gene_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Gene data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>gene_region</strong> (<em>str</em><em>, </em><em>optional</em>) – Gene region, defaults to “upstream”</p></li>
+<li><p><strong>png_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output PNG file name, defaults to “upstream_methylation.png”</p></li>
+<li><p><strong>csv_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output CSV file name, defaults to “upstream_methylation.csv”</p></li>
+<li><p><strong>csv</strong> (<em>str</em><em>, </em><em>optional</em>) – Input CSV file, defaults to None</p></li>
+<li><p><strong>left_distance</strong> (<em>int</em><em>, </em><em>optional</em>) – Left distance, defaults to 5000</p></li>
+<li><p><strong>right_distance</strong> (<em>int</em><em>, </em><em>optional</em>) – Right distance, defaults to 5000</p></li>
+<li><p><strong>window_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Window size, defaults to 100</p></li>
+<li><p><strong>hypermethylated</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include hypermethylated regions, defaults to True</p></li>
+<li><p><strong>gene_hypermethylated_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypermethylation for genes, defaults to 20</p></li>
+<li><p><strong>window_hypermethylated_min</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypermethylation for windows, defaults to 5</p></li>
+<li><p><strong>min_hypermethylated_windows</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypermethylated windows, defaults to 5</p></li>
+<li><p><strong>hypomethylated</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include hypomethylated regions, defaults to True</p></li>
+<li><p><strong>gene_hypomethylated_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum hypomethylation for genes, defaults to -20</p></li>
+<li><p><strong>window_hypomethylated_max</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum hypomethylation for windows, defaults to -5</p></li>
+<li><p><strong>min_hypomethylated_windows</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum hypomethylated windows, defaults to 5</p></li>
+<li><p><strong>position_count</strong> (<em>int</em><em>, </em><em>optional</em>) – Position count, defaults to 5</p></li>
+<li><p><strong>clamp_positive</strong> (<em>int</em><em>, </em><em>optional</em>) – Positive clamp value, defaults to 50</p></li>
+<li><p><strong>clamp_negative</strong> (<em>int</em><em>, </em><em>optional</em>) – Negative clamp value, defaults to -50</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>gtf_file</strong> (<em>str</em><em>, </em><em>optional</em>) – GTF file, defaults to “gencode.v41.chr_patch_hapl_scaff.annotation.gtf”</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – Position or window, defaults to “auto”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.graph_upstream_UCSC">
+<span class="sig-name descname"><span class="pre">graph_upstream_UCSC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UCSC_graph.bedGraph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before_tss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtf_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gencode.v41.chr_patch_hapl_scaff.annotation.gtf'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.graph_upstream_UCSC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.graph_upstream_UCSC" title="Link to this definition"></a></dt>
+<dd><p>Generate a UCSC graph of upstream gene methylation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">position_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;methylation_percentage*&quot;]</span></code></p></li>
+<li><p>There must be a <code class="docutils literal notranslate"><span class="pre">methylation_percentage</span></code> column for each sample to plot.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gene_name</strong> (<em>str</em>) – Gene name</p></li>
+<li><p><strong>position_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Position data</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output BEDGraph file name, defaults to “UCSC_graph.bedGraph”</p></li>
+<li><p><strong>before_tss</strong> (<em>int</em><em>, </em><em>optional</em>) – Distance before transcrption start site (TSS), defaults to 5000</p></li>
+<li><p><strong>gtf_file</strong> (<em>str</em><em>, </em><em>optional</em>) – GTF file, defaults to “gencode.v41.chr_patch_hapl_scaff.annotation.gtf”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.graph_full_gene">
+<span class="sig-name descname"><span class="pre">graph_full_gene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gene_methylation_graph.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before_tss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after_tss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_marker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_marker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deviation_display</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Case'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctr_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Control'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtf_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gencode.v41.chr_patch_hapl_scaff.annotation.gtf'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.graph_full_gene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.graph_full_gene" title="Link to this definition"></a></dt>
+<dd><p>Generate a graph of full gene methylation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">position_data</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;methylation_percentage*&quot;]</span></code></p></li>
+<li><p>There must be a <code class="docutils literal notranslate"><span class="pre">methylation_percentage</span></code> column for each sample to plot.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gene_name</strong> (<em>str</em>) – The name of the gene to graph.</p></li>
+<li><p><strong>position_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Position data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output PNG file name, defaults to “gene_methylation_graph.png”</p></li>
+<li><p><strong>before_tss</strong> (<em>int</em><em>, </em><em>optional</em>) – Distance before transcription start site, defaults to 0</p></li>
+<li><p><strong>after_tss</strong> (<em>int</em><em>, </em><em>optional</em>) – Distance after transcription start site, defaults to None</p></li>
+<li><p><strong>bin_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Bin size, defaults to 500</p></li>
+<li><p><strong>start_marker</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include start marker, defaults to True</p></li>
+<li><p><strong>end_marker</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include end marker, defaults to True</p></li>
+<li><p><strong>deviation_display</strong> (<em>bool</em><em>, </em><em>optional</em>) – Display standard deviation regions, defaults to True</p></li>
+<li><p><strong>legend_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Legend size, defaults to 12</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>x_label</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>y_label</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label, defaults to None for a generic label</p></li>
+<li><p><strong>case_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Case name in the legend, defaults to “Case”</p></li>
+<li><p><strong>ctr_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Control name in the legend, defaults to “Control”</p></li>
+<li><p><strong>gtf_file</strong> (<em>str</em><em>, </em><em>optional</em>) – GTF file, defaults to “gencode.v41.chr_patch_hapl_scaff.annotation.gtf”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.pie_chart">
+<span class="sig-name descname"><span class="pre">pie_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CCRE_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['intron',</span> <span class="pre">'exon',</span> <span class="pre">'CCRE',</span> <span class="pre">'upstream']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pie_chart.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypermethylated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypomethylated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypermehylated_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypomethylated_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypermethylated_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hypomethylated_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_or_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.pie_chart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.pie_chart" title="Link to this definition"></a></dt>
+<dd><p>Generate a pie chart of gene regions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">gene_data</span></code>:</dt><dd><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;intron&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;intron&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;exon&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;exon&quot;]</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;upstream&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;upstream&quot;]</span></code></p></li>
+</ul>
+</dd>
+<dt>Required columns for <code class="docutils literal notranslate"><span class="pre">CCRE_data</span></code>:</dt><dd><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;CCRE&quot;</span></code> is in <code class="docutils literal notranslate"><span class="pre">gene_regions</span></code>: <code class="docutils literal notranslate"><span class="pre">[&quot;CCRE&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gene_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – Gene data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>CCRE_data</strong> (<em>InputProcessor</em><em>, </em><em>optional</em>) – CCRE data. Not necessary if the pipeline is in use, defaults to None</p></li>
+<li><p><strong>regions</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em><em>, </em><em>optional</em>) – Gene regions, defaults to [“intron”, “exon”, “CCRE”, “upstream”]</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Output PNG file name, defaults to “pie_chart.png”</p></li>
+<li><p><strong>hypermethylated</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include hypermethylated regions, defaults to True</p></li>
+<li><p><strong>hypomethylated</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include hypomethylated regions, defaults to True</p></li>
+<li><p><strong>hypermehylated_min</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum hypermethylation, defaults to 20</p></li>
+<li><p><strong>hypomethylated_max</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum hypomethylation, defaults to -20</p></li>
+<li><p><strong>hypermethylated_title</strong> (<em>str</em><em>, </em><em>optional</em>) – Hypermethylated title, defaults to None for a generic title</p></li>
+<li><p><strong>hypomethylated_title</strong> (<em>str</em><em>, </em><em>optional</em>) – Hypomethylated title, defaults to None for a generic title</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Plot title, defaults to None for a generic title</p></li>
+<li><p><strong>position_or_window</strong> (<em>str</em><em>, </em><em>optional</em>) – Position or window, options are [“auto”, “position”, “window”], defaults to “auto”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.all_analysis">
+<span class="sig-name descname"><span class="pre">all_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctr_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_based</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samp_ctr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samp_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.all_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.all_analysis" title="Link to this definition"></a></dt>
+<dd><p>Run all analysis methods.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">case_data</span></code> and <code class="docutils literal notranslate"><span class="pre">ctr_data</span></code> must be from a list of samples, where each contains one of the following column formats:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;coverage&quot;,</span> <span class="pre">&quot;methylation_percentage&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[&quot;chromosome&quot;,</span> <span class="pre">&quot;position_start&quot;,</span> <span class="pre">&quot;positive_methylation_count&quot;,</span> <span class="pre">&quot;negative_methylation_count&quot;]</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>if <code class="docutils literal notranslate"><span class="pre">window_based</span></code> is True, the following methods will be run:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">merge_tables</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">window_based</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_q_values</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filters</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">map_win_2_pos</span></code></p></li>
+</ul>
+</dd>
+<dt>if <code class="docutils literal notranslate"><span class="pre">window_based</span></code> is False, the following methods will be run:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">merge_tables</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">position_based</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_q_values</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filters</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>case_data</strong> (<em>InputProcessor</em>) – Case data (list of files)</p></li>
+<li><p><strong>ctr_data</strong> (<em>InputProcessor</em>) – Control data (list of files)</p></li>
+<li><p><strong>window_based</strong> (<em>bool</em><em>, </em><em>optional</em>) – Window-based analysis, defaults to True</p></li>
+<li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Output file directory, defaults to “.”</p></li>
+<li><p><strong>min_cov</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum coverage, defaults to 10</p></li>
+<li><p><strong>cov_percentile</strong> (<em>float</em><em>, </em><em>optional</em>) – Coverage percentile, defaults to 1.0</p></li>
+<li><p><strong>min_samp_ctr</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum control samples, defaults to 2</p></li>
+<li><p><strong>min_samp_case</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum case samples, defaults to 2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Final significant positions</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DiffMethylTools.DiffMethylTools.all_plots">
+<span class="sig-name descname"><span class="pre">all_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccre_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputProcessor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DiffMethylTools.html#DiffMethylTools.all_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DiffMethylTools.DiffMethylTools.all_plots" title="Link to this definition"></a></dt>
+<dd><p>Run all plot methods.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="v0.0.3" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Evan Kinnear, Housemeddine Derbel, Qian Liu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

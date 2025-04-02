@@ -6,7 +6,7 @@ import inspect
 import argparse
 import pandas as pd
 
-class DiffMethTools():
+class DiffMethylTools():
     def __init__(self, pipeline=True):
         self.pipeline = pipeline
         self.obj = Analysis()
@@ -54,13 +54,18 @@ class DiffMethTools():
         case_data = case_data.copy()
         ctr_data = ctr_data.copy()
 
+        print("process")
         case_data.process()
+        print("process2")
         ctr_data.process()
 
+        print("parameters")
         parameters = self.__prepare_parameters(parameters, case_data=case_data.data_container, ctr_data=ctr_data.data_container)
 
+        print("function")
         res = self.obj.merge_tables(**parameters)
 
+        print("return")
         if self.pipeline:
             self.saved_results[self.merge_tables] = res
 
@@ -200,7 +205,7 @@ class DiffMethTools():
         :type sub_window_step: int, optional
         :param sub_window_min_diff: Sub-window minimum difference, defaults to 0
         :type sub_window_min_diff: int, optional
-        :param pipeline_window_result: The function results to use as input if DiffMethTools is pipelined and no data is provided. Options are ``["auto", "filters", "generate_q_values", "window_based"]``, defaults to "auto"
+        :param pipeline_window_result: The function results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "filters", "generate_q_values", "window_based"]``, defaults to "auto"
         :type pipeline_window_result: str, optional
         :return: Mapped windows to positions
         :rtype: pd.DataFrame
@@ -262,7 +267,7 @@ class DiffMethTools():
         :type data: InputProcessor, optional
         :param method: P-value adjustment method to use from `statsmodels.stats.multitest.multipletests <https://www.statsmodels.org/dev/generated/statsmodels.stats.multitest.multipletests.html#statsmodels.stats.multitest.multipletests-parameters>`_, defaults to "fdr_bh".
         :type method: str, optional
-        :param position_or_window: The position-based or window-based results to use as input if DiffMethTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
+        :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         :return: Data with q-values (adjusted p-values or FDR)
         :rtype: pd.DataFrame
@@ -317,7 +322,7 @@ class DiffMethTools():
         :type max_q_value: float, optional
         :param abs_min_diff: Absolute minimum difference filter, defaults to 25
         :type abs_min_diff: int, optional
-        :param position_or_window: The position-based or window-based results to use as input if DiffMethTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
+        :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         :return: Filtered input data
         :rtype: pd.DataFrame
@@ -381,7 +386,7 @@ class DiffMethTools():
         :type neutral_perc: int, optional
         :param opposite_perc: Opposite percentage, defaults to 10
         :type opposite_perc: int, optional
-        :param significant_position_pipeline: The significant position-based or window-based results to use as input if DiffMethTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
+        :param significant_position_pipeline: The significant position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type significant_position_pipeline: str, optional
         :return: DMR results
         :rtype: tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
@@ -592,7 +597,7 @@ class DiffMethTools():
         :type x_label: str, optional
         :param y_label: Y-axis label, defaults to None for a generic label
         :type y_label: str, optional
-        :param position_or_window: The position-based or window-based results to use as input if DiffMethTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
+        :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         """
         assert (not self.pipeline and data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
@@ -647,7 +652,7 @@ class DiffMethTools():
         :type x_label: str, optional
         :param y_label: Y-axis label, defaults to None for a generic label
         :type y_label: str, optional
-        :param position_or_window: The position-based or window-based results to use as input if DiffMethTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
+        :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         """        
         assert (not self.pipeline and data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
@@ -768,7 +773,7 @@ class DiffMethTools():
         :type upstream_y_label: str, optional
         :param CCRE_y_label: CCRE Y-axis label, defaults to None for a generic label
         :type CCRE_y_label: str, optional
-        :param position_or_window: The position-based or window-based results to use as input if DiffMethTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
+        :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         """
         assert (not self.pipeline and (gene_data is not None or ccre_data is not None)) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
@@ -1286,11 +1291,11 @@ class DiffMethTools():
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="CLI for DiffMethTools")
+    parser = argparse.ArgumentParser(description="CLI for DiffMethylTools")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    obj = DiffMethTools(pipeline=False)
-    # Dynamically add subcommands for each method in DiffMethTools
+    obj = DiffMethylTools(pipeline=False)
+    # Dynamically add subcommands for each method in DiffMethylTools
     for name, method in inspect.getmembers(obj, predicate=inspect.ismethod):
         if name.startswith("_"):  # Skip private methods
             continue
@@ -1364,8 +1369,8 @@ def main():
         parser.print_help()
         return
 
-    # Initialize DiffMethTools instance
-    tool = DiffMethTools(pipeline=False)
+    # Initialize DiffMethylTools instance
+    tool = DiffMethylTools(pipeline=False)
 
     # Get the selected method
     method = getattr(tool, args.command)
