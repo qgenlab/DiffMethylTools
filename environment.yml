@@ -15,6 +15,12 @@ dependencies:
   - seaborn=0.13.2=py312h06a4308_0
   - rpy2=3.5.11=py312r43hc7c0aa3_3
   - bioconductor-limma=3.58.1=r43ha9d7317_1
+  - pyarrow=11
+  - ncurses=6.5
+  - statsmodels=0.14.2
+  - seaborn=0.13.2
+  - minimap2=2.1.1
+  - htslib=1.20
   - pip
   - pip:
     - joblib
