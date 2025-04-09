@@ -307,7 +307,7 @@ class Plots():
         plt.tight_layout()
         plt.savefig(name, dpi=300)
 
-    def __prepare_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
+    def __prepare_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, gtf_file: str= ""):
         """ 
         
         Required Columns: 
@@ -407,7 +407,7 @@ class Plots():
         
         return results, names
     
-    def graph_upstream_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", png_name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
+    def graph_upstream_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", png_name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= ""):
         """ 
 
         Required Columns: 
@@ -478,7 +478,7 @@ class Plots():
         plt.savefig(png_name, dpi=300, bbox_inches='tight')
         df.to_csv(csv_name)
 
-    def graph_average_upstream_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", png_name="average_upstream_methylation.png", csv_name: str = "average_upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, y_label:str = None, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):        
+    def graph_average_upstream_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", png_name="average_upstream_methylation.png", csv_name: str = "average_upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, y_label:str = None, gtf_file: str= ""):        
         if csv is not None:
             df = pl.read_csv(csv)
         else:
@@ -512,7 +512,7 @@ class Plots():
 
         plt.savefig(png_name, dpi=300, bbox_inches='tight')
 
-    def graph_upstream_UCSC(self, gene_name: str, position_data: InputProcessor.data_container, name: str="UCSC_graph.bedGraph", before_tss: int = 5000, gtf_file: str = "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
+    def graph_upstream_UCSC(self, gene_name: str, position_data: InputProcessor.data_container, name: str="UCSC_graph.bedGraph", before_tss: int = 5000, gtf_file: str = ""):
         """
         
         Required Columns: ["chrom", "chromStart", "blockSizes_*"]
@@ -578,7 +578,7 @@ class Plots():
                     _, inner_start, percent = row
                     file.write(f"{chr}\t{inner_start}\t{inner_start+1}\t{percent}\n")
 
-    def graph_full_gene(self, gene_name:str, position_data: InputProcessor.data_container, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control", gtf_file: str = "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):        
+    def graph_full_gene(self, gene_name:str, position_data: InputProcessor.data_container, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control", gtf_file: str = ""):        
         """
         
         Required Columns: ["chrom", "chromStart", "blockSizes_*"]

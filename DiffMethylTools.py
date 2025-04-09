@@ -25,7 +25,7 @@ class DiffMethylTools():
         "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count"],
         "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count"]
     }
-    def merge_tables(self, case_data: InputProcessor, ctr_data: InputProcessor, min_cov = 10, cov_percentile = 1.0, min_samp_ctr = 2, min_samp_case = 2) -> pd.DataFrame:
+    def merge_tables(self, case_data: InputProcessor, ctr_data: InputProcessor, min_cov = 10, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2) -> pd.DataFrame:
         """Merge case and control data tables.
 
         .. note::
@@ -40,7 +40,7 @@ class DiffMethylTools():
         :type ctr_data: InputProcessor
         :param min_cov: Minimum coverage filter, defaults to 10
         :type min_cov: int, optional
-        :param cov_percentile: Maximum coverage filter (percentile of sample coverage), defaults to 1.0
+        :param cov_percentile: Maximum coverage filter (percentile of sample coverage). Ranges from 0.0-100.0, defaults to 100.0
         :type cov_percentile: float, optional
         :param min_samp_ctr: Minimum samples in control, defaults to 2
         :type min_samp_ctr: int, optional
@@ -439,7 +439,7 @@ class DiffMethylTools():
     MAP_POSITIONS_TO_GENES_REQUIRED_COLUMNS = {
         "positions": ["chromosome", "position_start", "diff"]
     }
-    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="outfile_w_hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
+    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="gencode.v42.chr_patch_hapl_scaff.annotation.gtf", pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
         """Map positions to genes.
 
         .. note::
@@ -452,9 +452,9 @@ class DiffMethylTools():
         :type gene_regions: list[str] | str, optional
         :param min_pos_diff: Minimum position difference for mapping, defaults to 0
         :type min_pos_diff: int, optional
-        :param bed_file: BED annotation file with unflexible input, defaults to "outfile_w_hm450.bed"
+        :param bed_file: BED annotation file with unflexible input format, defaults to "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed"
         :type bed_file: str, optional
-        :param gtf_file: GTF annotation file with unflexible input, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
+        :param gtf_file: GTF annotation file with unflexible input format, defaults to "gencode.v42.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         :param pipeline_input_source: Pipeline input source for pipelining, options are ["auto", "map_win_2_pos", "generate_q_values", "filters"], defaults to "auto"
         :type pipeline_input_source: str, optional
@@ -501,7 +501,7 @@ class DiffMethylTools():
     MAP_WINDOWS_TO_GENES_REQUIRED_COLUMNS = {    
         "windows": ["chromosome", "region_start", "region_end", "diff"]
     }
-    def map_windows_to_genes(self, windows: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="outfile_w_hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", enhd_thr = 500000, enhp_thr = 50000, prom_thr = 2000, processes=12, pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
+    def map_windows_to_genes(self, windows: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="gencode.v42.chr_patch_hapl_scaff.annotation.gtf", enhd_thr = 500000, enhp_thr = 50000, prom_thr = 2000, processes=12, pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
         """Map windows to genes.
 
         .. note::
@@ -514,9 +514,9 @@ class DiffMethylTools():
         :type gene_regions: list[str] | str, optional
         :param min_pos_diff: Minimum position difference for mapping, defaults to 0
         :type min_pos_diff: int, optional
-        :param bed_file: BED annotation file with unflexible input, defaults to "outfile_w_hm450.bed"
+        :param bed_file: BED annotation file with unflexible input, defaults to "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed"
         :type bed_file: str, optional
-        :param gtf_file: GTF annotation file with unflexible input, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
+        :param gtf_file: GTF annotation file with unflexible input, defaults to "gencode.v42.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         :param enhd_thr: Distal enhancer distance threshold for finding nearest gene to CCRE, defaults to 500000
         :type enhd_thr: int, optional
@@ -689,7 +689,7 @@ class DiffMethylTools():
         "case_data": ["coverage", "positive_methylation_count", "negative_methylation_count"],
         "ctr_data": ["coverage", "positive_methylation_count", "negative_methylation_count"]
     }
-    def coverage_plot(self, case_data: InputProcessor, ctr_data: InputProcessor, name : str = "coverage_plot.png", cov_min : int = -1, cov_max : int = -1, cov_max_percentile : float = -1, bins:int = 20, title: str = None, x_label: str = None, y_label: str = None) -> None:
+    def coverage_plot(self, case_data: InputProcessor, ctr_data: InputProcessor, name : str = "coverage_plot.png", cov_min : int = 1, cov_max : int = -1, cov_max_percentile : float = 99.5, bins:int = 20, title: str = None, x_label: str = None, y_label: str = None) -> None:
         """Generate a coverage plot.
 
         .. note::
@@ -703,11 +703,11 @@ class DiffMethylTools():
         :type ctr_data: InputProcessor
         :param name: Output file name, defaults to "coverage_plot.png"
         :type name: str, optional
-        :param cov_min: Minimum coverage display, defaults to -1
+        :param cov_min: Minimum coverage display, defaults to 1
         :type cov_min: int, optional
         :param cov_max: Maximum coverage display, defaults to -1
         :type cov_max: int, optional
-        :param cov_max_percentile: Maximum coverage percentile display, defaults to -1. Overrides ``cov_max`` if set.
+        :param cov_max_percentile: Maximum coverage percentile display. Ranges from 0.0-100.0, defaults to 99.5. Overrides ``cov_max`` if set.
         :type cov_max_percentile: float, optional
         :param bins: Number of bins, defaults to 20
         :type bins: int, optional

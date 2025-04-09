@@ -6,16 +6,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DiffMethylTools &mdash; DiffMethylTools 0.0.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/theme_edit.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_edit.css?v=8cf43333" />
 
   
-      <script src="../_static/jquery.js"></script>
-      <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-      <script src="../_static/documentation_options.js"></script>
-      <script src="../_static/doctools.js"></script>
-      <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=47de8214"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -101,7 +101,7 @@
     <span class="p">}</span>
 <div class="viewcode-block" id="DiffMethylTools.merge_tables">
 <a class="viewcode-back" href="../DiffMethylTools.html#DiffMethylTools.DiffMethylTools.merge_tables">[docs]</a>
-    <span class="k">def</span> <span class="nf">merge_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">ctr_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">min_cov</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">cov_percentile</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">min_samp_ctr</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">min_samp_case</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">merge_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">ctr_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">min_cov</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">cov_percentile</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span> <span class="n">min_samp_ctr</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">min_samp_case</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge case and control data tables.</span>
 
 <span class="sd">        .. note::</span>
@@ -116,7 +116,7 @@
 <span class="sd">        :type ctr_data: InputProcessor</span>
 <span class="sd">        :param min_cov: Minimum coverage filter, defaults to 10</span>
 <span class="sd">        :type min_cov: int, optional</span>
-<span class="sd">        :param cov_percentile: Maximum coverage filter (percentile of sample coverage), defaults to 1.0</span>
+<span class="sd">        :param cov_percentile: Maximum coverage filter (percentile of sample coverage). Ranges from 0.0-100.0, defaults to 100.0</span>
 <span class="sd">        :type cov_percentile: float, optional</span>
 <span class="sd">        :param min_samp_ctr: Minimum samples in control, defaults to 2</span>
 <span class="sd">        :type min_samp_ctr: int, optional</span>
@@ -536,7 +536,7 @@
     <span class="p">}</span>
 <div class="viewcode-block" id="DiffMethylTools.map_positions_to_genes">
 <a class="viewcode-back" href="../DiffMethylTools.html#DiffMethylTools.DiffMethylTools.map_positions_to_genes">[docs]</a>
-    <span class="k">def</span> <span class="nf">map_positions_to_genes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InputProcessor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">|</span><span class="nb">str</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;intron&quot;</span><span class="p">,</span> <span class="s2">&quot;exon&quot;</span><span class="p">,</span> <span class="s2">&quot;upstream&quot;</span><span class="p">,</span> <span class="s2">&quot;CCRE&quot;</span><span class="p">],</span> <span class="n">min_pos_diff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bed_file</span><span class="o">=</span><span class="s2">&quot;outfile_w_hm450.bed&quot;</span><span class="p">,</span> <span class="n">gtf_file</span><span class="o">=</span><span class="s2">&quot;gencode.v41.chr_patch_hapl_scaff.annotation.gtf&quot;</span><span class="p">,</span> <span class="n">pipeline_input_source</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">map_positions_to_genes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InputProcessor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">|</span><span class="nb">str</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;intron&quot;</span><span class="p">,</span> <span class="s2">&quot;exon&quot;</span><span class="p">,</span> <span class="s2">&quot;upstream&quot;</span><span class="p">,</span> <span class="s2">&quot;CCRE&quot;</span><span class="p">],</span> <span class="n">min_pos_diff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bed_file</span><span class="o">=</span><span class="s2">&quot;CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed&quot;</span><span class="p">,</span> <span class="n">gtf_file</span><span class="o">=</span><span class="s2">&quot;gencode.v42.chr_patch_hapl_scaff.annotation.gtf&quot;</span><span class="p">,</span> <span class="n">pipeline_input_source</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Map positions to genes.</span>
 
 <span class="sd">        .. note::</span>
@@ -549,9 +549,9 @@
 <span class="sd">        :type gene_regions: list[str] | str, optional</span>
 <span class="sd">        :param min_pos_diff: Minimum position difference for mapping, defaults to 0</span>
 <span class="sd">        :type min_pos_diff: int, optional</span>
-<span class="sd">        :param bed_file: BED annotation file with unflexible input, defaults to &quot;outfile_w_hm450.bed&quot;</span>
+<span class="sd">        :param bed_file: BED annotation file with unflexible input format, defaults to &quot;CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed&quot;</span>
 <span class="sd">        :type bed_file: str, optional</span>
-<span class="sd">        :param gtf_file: GTF annotation file with unflexible input, defaults to &quot;gencode.v41.chr_patch_hapl_scaff.annotation.gtf&quot;</span>
+<span class="sd">        :param gtf_file: GTF annotation file with unflexible input format, defaults to &quot;gencode.v42.chr_patch_hapl_scaff.annotation.gtf&quot;</span>
 <span class="sd">        :type gtf_file: str, optional</span>
 <span class="sd">        :param pipeline_input_source: Pipeline input source for pipelining, options are [&quot;auto&quot;, &quot;map_win_2_pos&quot;, &quot;generate_q_values&quot;, &quot;filters&quot;], defaults to &quot;auto&quot;</span>
 <span class="sd">        :type pipeline_input_source: str, optional</span>
@@ -601,7 +601,7 @@
     <span class="p">}</span>
 <div class="viewcode-block" id="DiffMethylTools.map_windows_to_genes">
 <a class="viewcode-back" href="../DiffMethylTools.html#DiffMethylTools.DiffMethylTools.map_windows_to_genes">[docs]</a>
-    <span class="k">def</span> <span class="nf">map_windows_to_genes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InputProcessor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">|</span><span class="nb">str</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;intron&quot;</span><span class="p">,</span> <span class="s2">&quot;exon&quot;</span><span class="p">,</span> <span class="s2">&quot;upstream&quot;</span><span class="p">,</span> <span class="s2">&quot;CCRE&quot;</span><span class="p">],</span> <span class="n">min_pos_diff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bed_file</span><span class="o">=</span><span class="s2">&quot;outfile_w_hm450.bed&quot;</span><span class="p">,</span> <span class="n">gtf_file</span><span class="o">=</span><span class="s2">&quot;gencode.v41.chr_patch_hapl_scaff.annotation.gtf&quot;</span><span class="p">,</span> <span class="n">enhd_thr</span> <span class="o">=</span> <span class="mi">500000</span><span class="p">,</span> <span class="n">enhp_thr</span> <span class="o">=</span> <span class="mi">50000</span><span class="p">,</span> <span class="n">prom_thr</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">pipeline_input_source</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">map_windows_to_genes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InputProcessor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">|</span><span class="nb">str</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;intron&quot;</span><span class="p">,</span> <span class="s2">&quot;exon&quot;</span><span class="p">,</span> <span class="s2">&quot;upstream&quot;</span><span class="p">,</span> <span class="s2">&quot;CCRE&quot;</span><span class="p">],</span> <span class="n">min_pos_diff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bed_file</span><span class="o">=</span><span class="s2">&quot;CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed&quot;</span><span class="p">,</span> <span class="n">gtf_file</span><span class="o">=</span><span class="s2">&quot;gencode.v42.chr_patch_hapl_scaff.annotation.gtf&quot;</span><span class="p">,</span> <span class="n">enhd_thr</span> <span class="o">=</span> <span class="mi">500000</span><span class="p">,</span> <span class="n">enhp_thr</span> <span class="o">=</span> <span class="mi">50000</span><span class="p">,</span> <span class="n">prom_thr</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">pipeline_input_source</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Map windows to genes.</span>
 
 <span class="sd">        .. note::</span>
@@ -614,9 +614,9 @@
 <span class="sd">        :type gene_regions: list[str] | str, optional</span>
 <span class="sd">        :param min_pos_diff: Minimum position difference for mapping, defaults to 0</span>
 <span class="sd">        :type min_pos_diff: int, optional</span>
-<span class="sd">        :param bed_file: BED annotation file with unflexible input, defaults to &quot;outfile_w_hm450.bed&quot;</span>
+<span class="sd">        :param bed_file: BED annotation file with unflexible input, defaults to &quot;CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed&quot;</span>
 <span class="sd">        :type bed_file: str, optional</span>
-<span class="sd">        :param gtf_file: GTF annotation file with unflexible input, defaults to &quot;gencode.v41.chr_patch_hapl_scaff.annotation.gtf&quot;</span>
+<span class="sd">        :param gtf_file: GTF annotation file with unflexible input, defaults to &quot;gencode.v42.chr_patch_hapl_scaff.annotation.gtf&quot;</span>
 <span class="sd">        :type gtf_file: str, optional</span>
 <span class="sd">        :param enhd_thr: Distal enhancer distance threshold for finding nearest gene to CCRE, defaults to 500000</span>
 <span class="sd">        :type enhd_thr: int, optional</span>
@@ -798,7 +798,7 @@
     <span class="p">}</span>
 <div class="viewcode-block" id="DiffMethylTools.coverage_plot">
 <a class="viewcode-back" href="../DiffMethylTools.html#DiffMethylTools.DiffMethylTools.coverage_plot">[docs]</a>
-    <span class="k">def</span> <span class="nf">coverage_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">ctr_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;coverage_plot.png&quot;</span><span class="p">,</span> <span class="n">cov_min</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cov_max</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cov_max_percentile</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">x_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">coverage_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">ctr_data</span><span class="p">:</span> <span class="n">InputProcessor</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;coverage_plot.png&quot;</span><span class="p">,</span> <span class="n">cov_min</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cov_max</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cov_max_percentile</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">99.5</span><span class="p">,</span> <span class="n">bins</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">x_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a coverage plot.</span>
 
 <span class="sd">        .. note::</span>
@@ -812,11 +812,11 @@
 <span class="sd">        :type ctr_data: InputProcessor</span>
 <span class="sd">        :param name: Output file name, defaults to &quot;coverage_plot.png&quot;</span>
 <span class="sd">        :type name: str, optional</span>
-<span class="sd">        :param cov_min: Minimum coverage display, defaults to -1</span>
+<span class="sd">        :param cov_min: Minimum coverage display, defaults to 1</span>
 <span class="sd">        :type cov_min: int, optional</span>
 <span class="sd">        :param cov_max: Maximum coverage display, defaults to -1</span>
 <span class="sd">        :type cov_max: int, optional</span>
-<span class="sd">        :param cov_max_percentile: Maximum coverage percentile display, defaults to -1. Overrides ``cov_max`` if set.</span>
+<span class="sd">        :param cov_max_percentile: Maximum coverage percentile display. Ranges from 0.0-100.0, defaults to 99.5. Overrides ``cov_max`` if set.</span>
 <span class="sd">        :type cov_max_percentile: float, optional</span>
 <span class="sd">        :param bins: Number of bins, defaults to 20</span>
 <span class="sd">        :type bins: int, optional</span>
