@@ -324,25 +324,10 @@ class Plots():
         if title is not None:
             fig.suptitle(title, fontsize=30, y=0.98)
         else:
-<<<<<<< HEAD
             fig.suptitle(f"", fontsize=30, y=0.98)
         plt.tight_layout(rect=[0, 0, 1, 0.94], pad=3.0, w_pad=4.0, h_pad=4.0)
         plt.savefig(name, dpi=600)
     def __prepare_gene_methylation(self, position_data: InputProcessor.data_container,region_data: InputProcessor.data_container, left_distance: int = 1000, right_distance: int = 100, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf", position_or_region: str = "region"):        
-=======
-            fig.suptitle(f"Gene Locations vs. Average Methylation Difference", fontsize=20)
-        plt.tight_layout()
-        plt.savefig(name, dpi=300)
-
-    def __prepare_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, gtf_file: str= ""):
-        """ 
-        
-        Required Columns: 
-        
-        position_data: ["chrom", "chromStart", "diff"]
-        gene_data: ONE of the following: [("intron", "intron_diff"), ("exon", "exon_diff"), ("upstream", "upstream_diff")]
-        
->>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
         """
             use the gtf file to get the upstream region for each gene
         """
@@ -411,33 +396,6 @@ class Plots():
             names.extend([gene])
             results = np.vstack([results, np.expand_dims(avg, axis=0)])
         return results, names
-<<<<<<< HEAD
-=======
-    
-    def graph_upstream_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", png_name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= ""):
-        """ 
-
-        Required Columns: 
-
-        position_data: ["chrom", "chromStart", "diff"]
-        gene_data: ONE of the following: [("intron", "intron_diff"), ("exon", "exon_diff"), ("upstream", "upstream_diff")]
-
-        """
-
-        if position_data is not None:
-            assert isinstance(position_data, pd.DataFrame), "List input not acceptable for this function."
-        if gene_data is not None:
-            assert isinstance(gene_data, pd.DataFrame), "List input not acceptable for this function."
-        assert (position_data is not None and gene_data is not None) or (position_data is None and gene_data is None and csv is not None), "Either provide position_data and gene_data or a csv file."
-        # column checks are done in __prepare_gene_methylation
-
-        if csv is not None:
-            df = pd.read_csv(csv, index_col=0)
-            gene_names = list(df.index.values)
-            results = df.to_numpy()
-        else:
-            results, gene_names = self.__prepare_gene_methylation(position_data, gene_data, gene_region, left_distance, right_distance, window_size, hypermethylated, gene_hypermethylated_min, window_hypermethylated_min, min_hypermethylated_windows, hypomethylated, gene_hypomethylated_max, window_hypomethylated_max, min_hypomethylated_windows, position_count, gtf_file)
->>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
         
     def graph_upstream_gene_methylation(self, position_data: InputProcessor.data_container, region_data: InputProcessor.data_container, name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 1000, right_distance: int = 1000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf", position_or_region:str = "region"):
         random.seed(42)
@@ -507,43 +465,6 @@ class Plots():
         plt.savefig(name, dpi=600, bbox_inches='tight')
         df.to_csv(csv_name)
 
-<<<<<<< HEAD
-=======
-    def graph_average_upstream_gene_methylation(self, position_data: InputProcessor.data_container, gene_data: InputProcessor.data_container, gene_region: str = "upstream", png_name="average_upstream_methylation.png", csv_name: str = "average_upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, y_label:str = None, gtf_file: str= ""):        
-        if csv is not None:
-            df = pl.read_csv(csv)
-        else:
-            results, gene_names = self.__prepare_gene_methylation(position_data, gene_data, gene_region, left_distance, right_distance, window_size, hypermethylated, gene_hypermethylated_min, window_hypermethylated_min, min_hypermethylated_windows, hypomethylated, gene_hypomethylated_max, window_hypomethylated_max, min_hypomethylated_windows, position_count, gtf_file)
-        
-            results = results.tolist()
-
-            df = pl.DataFrame(results, orient="row")
-
-            df = df.with_columns(pl.Series(name="index", values=gene_names))
-
-        means = np.array(df.select(pl.exclude("index").mean()).rows()[0])
-        deviations = np.array(df.select(pl.exclude("index").std()).rows()[0])
-
-        plt.clf()
-
-        if title is None:
-            text = "Hypomethylated" if hypomethylated else ("Hypermethylated" if hypermethylated else "")
-            text = "Hypomethylated and Hypermethylated" if hypermethylated and hypomethylated else text
-            plt.title(f"Average of {text}\nGene Regions")
-        else:
-            plt.title(title)
-        plt.ylim(-100,100)
-        plt.xticks([])
-        plt.errorbar(range(len(means)), means, yerr=deviations, fmt='o--', ms=4, color = "orange")
-
-        if y_label is not None:
-            plt.ylabel(y_label)
-        else:
-            plt.ylabel("AVG(case - control)%")
-
-        plt.savefig(png_name, dpi=300, bbox_inches='tight')
-
->>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
     def graph_upstream_UCSC(self, gene_name: str, position_data: InputProcessor.data_container, name: str="UCSC_graph.bedGraph", before_tss: int = 5000, gtf_file: str = ""):
         """
         
@@ -610,11 +531,7 @@ class Plots():
                     _, inner_start, percent = row
                     file.write(f"{chr}\t{inner_start}\t{inner_start+1}\t{percent}\n")
 
-<<<<<<< HEAD
     def graph_full_gene(self, gene_name:str, position_data: InputProcessor.data_container, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, aggregate_samples: bool = False, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control", gtf_file: str = ""):        
-=======
-    def graph_full_gene(self, gene_name:str, position_data: InputProcessor.data_container, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control", gtf_file: str = ""):        
->>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
         """
         
         Required Columns: ["chrom", "chromStart", "blockSizes_*"]
