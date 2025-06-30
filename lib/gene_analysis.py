@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import multiprocessing
 from joblib import Parallel, delayed
+from pathlib import Path
 
 def assert_required_columns(df, required_columns):
         from lib import Analysis
@@ -260,6 +261,20 @@ def position_based_gene(positions: InputProcessor.data_container, gene_regions: 
     Required Columns: ["chrom", "chromStart", "diff"]
     
     """
+    def max_abs_windowed_diff(loop_result, name, window_size=100, pos_col="chromStart"):
+        loop_result = loop_result.copy()
+        loop_result["bin"] = (loop_result[pos_col] // window_size)
+        binned_diff = (
+            loop_result.groupby(["gene", "bin"])["diff"]
+            .mean()
+            .reset_index()
+        )
+        idx = binned_diff.groupby("gene")["diff"].apply(lambda x: x.abs().idxmax())
+        max_abs_per_gene = binned_diff.loc[idx].set_index("gene")["diff"].rename(name)
+        return max_abs_per_gene
+
+    if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent.parent / gtf_file
+    if bed_file == "outfile_w_hm450.bed": bed_file = Path(__file__).resolve().parent.parent / bed_file
 
     assert_required_columns(positions, ["chrom", "chromStart", "diff"])
     
@@ -298,34 +313,42 @@ def position_based_gene(positions: InputProcessor.data_container, gene_regions: 
     gene_locations = gene_locations.with_columns(gene=pl.col("gene_info").list.get(2)) \
             .with_columns(pl.col("gene").str.slice(12)) \
             .with_columns(pl.col("gene").str.head(-1))
+
+    # gene_strand_map = gene_locations.select(["gene", "strand"]).to_pandas().drop_duplicates() ###################
     
     gene_locations = gene_locations.with_columns(pl.col("start")-1)
     
-    
+    print(bed)
     # df_ = pa.Table.from_pandas(df)
     result = pd.DataFrame() 
     ccre_result = pd.DataFrame()
     # change to extend/append dataframe by row
     for pos in gene_regions:
         filtered_table = bed.filter(
-            pl.col("gene_string").str.to_lowercase().str.contains(pos.lower())
+            pl.col("gene_string").str.to_lowercase().str.contains(pos.lower()) ###############################
         ).with_columns(
-            # Split the rows by '/' to get value:key pairs
+        #  Split the rows by '/' to get value:key pairs
             pl.col("gene_string").str.split("/").alias("pairs")
         ).explode("pairs")\
         .filter(
             pl.col("pairs").str.to_lowercase().str.contains(pos.lower())
         ).with_columns(
-            # Split each pair by ':' to separate values and keys
+        #    # Split each pair by ':' to separate values and keys
             pl.col("pairs").str.split(":").list.get(0 if pos != "CCRE" else 1).alias("gene")
-        ).select(pl.col(["chrom","chromStart","gene"]))
+        ).select(pl.col(["chrom","chromStart","gene"])) #######################################
+        # print(pos)
+        # print(df)
         # print(pos, filtered_table)
         loop_result = df.join(filtered_table, how="inner", on=["chrom","chromStart"])
+        # print(loop_result)
         loop_result = loop_result.to_pandas()
+        # print(pos)
+        # print(loop_result)
         loop_result = loop_result[loop_result["diff"].abs() > min_pos_diff]
         # print(loop_result)
         genes = loop_result["gene"].value_counts().rename(pos)
-        diffs = (loop_result.groupby(loop_result["gene"])["diff"].sum().div(genes)).rename(pos + "_diff")
+        # diffs = (loop_result.groupby(loop_result["gene"])["diff"].sum().div(genes)).rename(pos + "_diff")
+        diffs = max_abs_windowed_diff(loop_result, pos + "_diff")
         if pos == "CCRE":
             ccre_result = pd.concat([ccre_result, genes.to_frame(), diffs.to_frame()]).fillna(0)
         else:
@@ -390,4 +413,109 @@ def position_based_gene(positions: InputProcessor.data_container, gene_regions: 
         ccre_result["nearest_genes"] = nearest_genes
         ccre_result["CCRE"] = ccre_result["CCRE"].astype(int)
 
+    # result = result.merge(gene_strand_map, left_index=True, right_on="gene", how="left") ###############################
+    # if "CCRE" in gene_regions: ##############################
+    #    ccre_result = ccre_result.merge(gene_strand_map, left_on="nearest_genes", right_on="gene", how="left") ###############################
+
     return result, ccre_result
+def match_region_annotation(regions_df: InputProcessor.data_container, bed_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed"):
+    """
+    Reads region file and annotation file, finds matches, and counts occurrences.
+    """
+    if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent.parent / bed_file
+    # regions_df = pd.read_csv(regions, sep=',', header=0, names=['chr', 'start', 'end'], usecols=[0,1,2])
+    annotation_df = pd.read_csv(bed_file, sep='\t', header=None, names=['chr', 'start', 'end', 'id', 'annotation'])
+    total_counts_1 = defaultdict(int)
+    total_counts_2 = defaultdict(int)
+    total_counts_3 = defaultdict(int)
+    total_counts_4 = defaultdict(int)
+    total_counts_p4 = defaultdict(int)
+    total_gene = {}
+    for _, region in regions_df.iterrows():
+        matched_annotations = annotation_df[
+            (annotation_df['chr'] == region['chromosome']) &
+            (annotation_df['start'] <= region['end']) &
+            (annotation_df['end'] >= region['start'])
+        ]
+        this_counts_1 = defaultdict(int)
+        this_counts_2 = defaultdict(int)
+        en_list = defaultdict(int)
+        this_counts_3 = defaultdict(int)
+        this_counts_4 = defaultdict(int)
+        gend_counts = defaultdict(int)
+        gend_counts_diff = defaultdict(int)
+        for _, annotation in matched_annotations.iterrows():
+            categories, encode_types, repeat, cpg_epic, gene_list = parse_annotation(annotation['annotation'])
+            for _ge in gene_list:
+               for _de in gene_list[ _ge ]:
+                  if (_ge + ':'+_de) not in gend_counts: gend_counts[  _ge + ':'+_de ] = 1; gend_counts_diff[  _ge + ':'+_de + "_diff"] = [annotation["diff"]]
+                  else: gend_counts[  _ge + ':'+_de ] += 1; gend_counts_diff[  _ge + ':'+_de + "_diff"].append(annotation["diff"])
+            for cat in categories:
+                this_counts_1[cat] += 1
+                this_counts_2['Gene_Body' if 'Gene_' in cat else cat] += 1
+            if len(repeat)==0: this_counts_3['No_repeat'] += 1;
+            else:
+                for rep_c in repeat:
+                    this_counts_3[rep_c] += 1
+            if len(cpg_epic)==0:
+                this_counts_4['non-EPIC'] += 1;
+            else:
+                this_counts_4['EPIC'] += 1;
+            for encode_type in encode_types:
+                this_counts_1[encode_type] += 1
+                this_counts_2[encode_type] += 1
+                en_list[encode_type] += 1
+        de_gede = []
+        for _gede in gend_counts:
+           if _gede[-3:]=='_nb' and _gede[:-3] in gend_counts:
+              gend_counts[ _gede[:-3] ] += gend_counts[ _gede ]
+              gend_counts_diff[_gede[:-3]+"_diff"].extend(gend_counts_diff[ _gede ])
+              de_gede.append( _gede)
+        for _gede in de_gede:
+           del gend_counts[ _gede ]
+           del gend_counts_diff[ _gede ]
+        if 'Gene_Intron' in this_counts_1 or 'Gene_Exon' in this_counts_1 or len(en_list)>0:
+           if 'IG' in this_counts_1: del this_counts_1['IG']
+           if 'IG' in this_counts_2: del this_counts_2['IG']
+        if 'enhD' in en_list or 'enhP' in en_list or 'prom' in en_list or 'K4m3' in en_list or 'enh' in en_list:
+           if 'Gene_Intron' in this_counts_1: del this_counts_1['Gene_Intron']
+        if 'No_repeat' in this_counts_3 and this_counts_3['No_repeat']< matched_annotations.shape[0] - this_counts_3['No_repeat']:
+           del this_counts_3['No_repeat']
+        if 'Gene_Exon' in this_counts_1:
+           print("Exon", region)
+        en_dis = []
+        en_cod_type = list(this_counts_1.keys())
+        for _c in en_cod_type:
+           if '_' in _c and _c.split('_')[0] in ['enhD', 'enhP', 'prom', 'K4m3', 'enh'] and _c.split('_')[0] in en_cod_type:
+              en_dis.append( _c )
+        for _c in en_dis:
+           if _c in this_counts_1: del this_counts_1[_c]
+           if _c in this_counts_2: del this_counts_2[_c]
+        for _c in this_counts_1:
+           total_counts_1[ _c ] += 1
+        for _c in this_counts_2:
+           total_counts_2[ _c ] += 1
+        for _c in this_counts_3:
+           total_counts_3[ _c ] += 1
+        for _c in this_counts_4:
+           total_counts_4[ _c ] += 1
+        for _c in this_counts_4:
+           total_counts_p4[ _c ] += this_counts_4[ _c ]
+    cols = ['CDS', 'CTCF', 'CTCF_nb', 'K4m3', 'K4m3_nb', 'enhD', 'enhD_nb', 'enhP', 'enhP_nb', 'exon', 'intron', 'prom', 'prom_nb']
+    d = {}
+    for e, val in gend_counts.items():
+        k = e.split(":")
+        diff_l = gend_counts_diff[e+"_diff"]
+        if len(k) != 2:
+            continue
+        if k[0] in cols:
+            col, gene = k[0], k[1]
+        else:
+            gene, col = k[0], k[1]
+        if col not in cols:
+            continue
+        if gene not in d:
+            d[gene] = {}
+        d[gene][col] = d[gene].get(col, 0) + val
+        d[gene][col+"_diff"] = sum(diff_l)/len(diff_l)
+    return total_counts_1, total_counts_2, total_counts_3, total_counts_4, total_counts_p4, d

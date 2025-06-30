@@ -69,7 +69,7 @@ INPUT_COLUMN_RENAME = {
     "chromosome":"chrom", "position_start":"chromStart", "position_end":"chromEnd",
     "region_start":"start", "region_end":"end",
     "methylation_percentage.*":"blockSizes_{ctr_case}_{name}", "coverage_KEY.*":"coverage_{ctr_case}_{name}", 
-    "positive_methylation_count":"positive_{name}", "negative_methylation_count":"negative_{name}", "q_value":"q-value", "p_val":"p-val"
+    "positive_methylation_count.*":"positive_{name}", "negative_methylation_count.*":"negative_{name}", "q_value":"q-value", "p_val":"p-val"
     }
 
 class InputProcessor():
@@ -116,38 +116,38 @@ class InputProcessor():
 
         if not isinstance(data, list):
             data = [data]
-        if not isinstance(methylation_names, list):
+        if not isinstance(methylation_names, list) and methylation_names is not None:
             methylation_names = [methylation_names]
-        if not isinstance(coverage_names, list):
+        if not isinstance(coverage_names, list) and coverage_names is not None:
             coverage_names = [coverage_names]
-        if not isinstance(positive_names, list):
+        if not isinstance(positive_names, list) and positive_names is not None:
             positive_names = [positive_names]
-        if not isinstance(negative_names, list):
+        if not isinstance(negative_names, list) and negative_names is not None:
             negative_names = [negative_names]
-        if not isinstance(methylation_ctr_case, list):
+        if not isinstance(methylation_ctr_case, list) and methylation_ctr_case is not None:
             methylation_ctr_case = [methylation_ctr_case]
-        if not isinstance(coverage_ctr_case, list):
+        if not isinstance(coverage_ctr_case, list) and coverage_ctr_case is not None:
             coverage_ctr_case = [coverage_ctr_case]
         
 
         self.raw_data = data
         self.raw_format = format  
         self.methylation_names = deque(methylation_names) if methylation_names is not None else None
-        self.methylation_names_copy = self.methylation_names.copy()
+        self.methylation_names_copy = self.methylation_names.copy() if self.methylation_names is not None else None
         self.no_methylation_names = 1
         self.coverage_names = deque(coverage_names) if coverage_names is not None else None
-        self.coverage_names_copy = self.coverage_names.copy()
+        self.coverage_names_copy = self.coverage_names.copy() if self.coverage_names is not None else None
         self.no_coverage_names = 1
         self.positive_names = deque(positive_names) if positive_names is not None else None
-        self.positive_names_copy = self.positive_names.copy()
+        self.positive_names_copy = self.positive_names.copy() if self.positive_names is not None else None
         self.no_positive_names = 1
         self.negative_names = deque(negative_names) if negative_names is not None else None
-        self.negative_names_copy = self.negative_names.copy
+        self.negative_names_copy = self.negative_names.copy () if self.negative_names is not None else None
         self.no_negative_names = 1
         self.methylation_ctr_case = deque(methylation_ctr_case) if methylation_ctr_case is not None else None
-        self.methylation_ctr_case_copy = self.methylation_ctr_case.copy()
+        self.methylation_ctr_case_copy = self.methylation_ctr_case.copy() if self.methylation_ctr_case is not None else None
         self.coverage_ctr_case = deque(coverage_ctr_case) if coverage_ctr_case is not None else None
-        self.coverage_ctr_case_copy = self.coverage_ctr_case.copy()
+        self.coverage_ctr_case_copy = self.coverage_ctr_case.copy() if self.coverage_ctr_case is not None else None
         self.zero_indexed_positions = zero_indexed_positions
         self.has_header = deque(has_header) 
 
@@ -165,10 +165,11 @@ class InputProcessor():
         # Helper function to read data from different sources
         def read_data(source, sep):
             if isinstance(source, pd.DataFrame):
-                return pl.from_pandas(source)
+                # print)
+                return pl.from_pandas(source), source.index
             if isinstance(source, str):
                 has_header = self.has_header.popleft() if len(self.has_header) != 0 else True
-                return pl.read_csv(source, separator=sep, has_header=has_header)
+                return pl.read_csv(source, separator=sep, has_header=has_header), None
             raise ValueError("Unsupported data source type")
 
         def rename_columns(df):
@@ -222,7 +223,6 @@ class InputProcessor():
                 
                 renamed_columns[col] = new_col
 
-            print("renaming in rename_columns")
             return df.rename(renamed_columns)
 
         for i, file in enumerate(self.raw_data):
@@ -231,19 +231,17 @@ class InputProcessor():
             else:
                 format_def = self.raw_format
             
-            print("reading")
-            df = read_data(file, format_def.separator if format_def is not None else ",")
-            print("done")
+            df, index = read_data(file, format_def.separator if format_def is not None else ",")
 
+            print(index)
             # map names according to the ones from the FormatDefinition. 
             if format_def is not None and format_def.mapping != {}:
                 
                 selected_columns = []
                 old_column_names = []
 
-                print("Map percentage and coverage")
                 for col, idx in format_def.mapping.items():
-                    if col in ["methylation_percentage", "coverage_KEY"] and isinstance(idx, list):
+                    if col in ["methylation_percentage", "coverage_KEY", "positive_methylation_count", "negative_methylation_count"] and isinstance(idx, list):
                         for sub_idx in idx:
                             old_column_names.append(df.columns[sub_idx])
                             selected_columns.append(pl.col(df.columns[sub_idx]).alias(f"{col}_{sub_idx}"))
@@ -251,36 +249,31 @@ class InputProcessor():
                         old_column_names.append(df.columns[idx])
                         selected_columns.append(pl.col(df.columns[idx]).alias(col))
 
-                print("include old columns")
                 # include columns not in the mapping
                 for col in reversed(df.columns):
                     if col not in old_column_names:
                         selected_columns.insert(0, pl.col(col))
                 df = df.select(selected_columns) 
+                print(df)
 
 
-            print("Rename columns")
             # remap any of those names to the conventions used in the program
             renamed_df = rename_columns(df)
 
-            print("if not in self.zero_indexed_positions")
             if not self.zero_indexed_positions:
                 if "chromStart" in renamed_df.columns:
                     renamed_df = renamed_df.with_columns(pl.col("chromStart") + 1)
                 if "chromEnd" in renamed_df.columns:
                     renamed_df = renamed_df.with_columns(pl.col("chromEnd") + 1)
 
-            print("to_pandas")
             renamed_df = renamed_df.to_pandas()
 
-            print("if gene in renamed_df.columns")
             if "gene" in renamed_df.columns:
                 renamed_df.set_index("gene", inplace=True, drop=True)
 
-            print("append")
-
             data.append(renamed_df)
 
-            print("done")
+            if index is not None:
+                data[-1].index = index
 
         self.data = data if len(data) > 1 else data[0]

@@ -92,42 +92,31 @@ def position_limma(data, features, test_factor, model):
         design_matrix = design_matrix.set_index(["Sample"])
     else:
         design_matrix = pd.read_csv(features, index_col=0)
+        print("design_matrix", design_matrix)
+        print("loc columns", ["_".join(x.split("_")[2:]) for x in m_df.columns])
         design_matrix = design_matrix.loc[["_".join(x.split("_")[2:]) for x in m_df.columns]]
     design_matrix["Group"] = [int("case" in x) for x in m_df.columns]
     design_matrix["Intercept"] = [1] * len(m_df.columns)
-
-    m_df = m_df.rename({x:(x[x.find("_", len("blockSizes_"))+1:]) for x in m_df.columns}, axis='columns')
+    print({x:(x[x.find("_")+1:]) for x in m_df.columns})
+    m_df = m_df.rename({x:(x[x.find("_")+1:]) for x in m_df.columns}, axis='columns')
     
-    print(m_df)
-    print(design_matrix)
     
-    start_time = time()
-    print(f"Time at start: {start_time}")
 
     df_r = pandas2ri.py2rpy(m_df)
-    print(f"Converted m_df to R dataframe: {time() - start_time} seconds")
-    start_time = time()
-
     r_design = pandas2ri.py2rpy(design_matrix)
-    print(f"Converted design_matrix to R dataframe: {time() - start_time} seconds")
-    start_time = time()
 
     if not limma.is_fullrank(r_design)[0]:
         print(f"Column(s) {limma.nonEstimable(r_design)} are linear combinations of each other. This is not allowed. No p-values have been calculated.")
         return
     print(f"Checked if design matrix is full rank: {time() - start_time} seconds")
-    start_time = time()
 
     fit = limma.lmFit(df_r, r_design)
-    print(f"Fitted linear model: {time() - start_time} seconds")
     start_time = time()
 
     contrast_matrix = limma.makeContrasts(Group=test_factor, levels=r_design)
-    print(f"Created contrast matrix: {time() - start_time} seconds")
     start_time = time()
 
     fit = limma.contrasts_fit(fit, contrast_matrix)
-    print(f"Fitted contrasts: {time() - start_time} seconds")
     start_time = time()
 
     py_fit = pandas2ri.rpy2py(fit)
@@ -135,27 +124,38 @@ def position_limma(data, features, test_factor, model):
     stdev_unscaled[stdev_unscaled < 0.1] = 0.1
     py_fit.rx2["stdev.unscaled"] = stdev_unscaled
     fit = pandas2ri.py2rpy(py_fit)
-    print(f"Adjusted standard deviations: {time() - start_time} seconds")
     start_time = time()
 
-    if model == "eBayes":
-        results = limma.eBayes(fit, trend=False, robust=False, proportion=1, stdev_coef_lim=r['c'](0.1, np.inf))
-        print(f"Performed eBayes: {time() - start_time} seconds")
-    elif model == "treat":
+    if model.lower() == "ebayes":
+        # results = limma.eBayes(fit, trend=False, robust=False, proportion=1, stdev_coef_lim=r['c'](0.1, np.inf))
+        results = limma.eBayes(fit, trend=False, robust=False, proportion=1, stdev_coef_lim=r['c'](0.1, np.inf), winsor_tail_p = 0.03)
+    elif model.lower() == "treat":
         results = limma.treat(fit, lfc=0.2, trend=False, robust=False)
-        print(f"Performed treat: {time() - start_time} seconds")
     start_time = time()
 
+    results2 = limma.topTable(results, adjust_method='BH', number=data.shape[0], sort_by="p")
+    
     final["p-val"] = results.rx2('p.value')
-    print(f"Extracted p-values: {time() - start_time} seconds")
+
+    results_df = pandas2ri.rpy2py(results2)
+
+    final["q-value"] = results_df['adj.P.Val'] #.rx2('adj.P.Val')
     start_time = time()
 
     final = final.reset_index(drop=True)
-    print(f"Reset index: {time() - start_time} seconds")
     start_time = time()
 
     final_sorted = final.sort_values(["chrom", "chromStart"])
-    print(f"Sorted final dataframe: {time() - start_time} seconds")
     start_time = time()
+
+    print(f"Initial data shape: {data.shape}")
+    print(f"Final data shape after set_index: {final.shape}")
+    print(f"m_df shape after filtering: {m_df.shape}")
+    print(f"Design matrix shape: {design_matrix.shape}")
+    # print(f"R dataframe shape (m_df): {df_r.shape}")
+    # print(f"R dataframe shape (design_matrix): {r_design.shape}")
+    print(f"Final shape before p-value assignment: {final.shape}")
+    # print(f"Results p-value shape: {results.rx2('p.value').shape}")
+    print(f"Final sorted shape: {final_sorted.shape}")
 
     return final_sorted

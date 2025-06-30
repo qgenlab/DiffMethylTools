@@ -1,31 +1,158 @@
 from typing import Callable, Optional, Type, get_args, get_origin, Union
 from types import UnionType
-from lib import InputProcessor, Analysis, Plots, FormatDefinition
+from lib import InputProcessor, Plots, FormatDefinition, Analysis#################Analysis
 from scipy.stats import mannwhitneyu
+from functools import wraps
 import inspect
 import argparse
 import pandas as pd
+import os
+import yaml
+import inspect
+from pathlib import Path
 
 class DiffMethylTools():
-    def __init__(self, pipeline=True):
+    def __init__(self, pipeline=True, results_path=None):
         self.pipeline = pipeline
+        if results_path is None:
+            results_path = os.getcwd()
+        if results_path is not None and results_path[-1] == "/":
+            results_path = results_path[:-1]
+        self.results_path = results_path
         self.obj = Analysis()
         self.plots = Plots()
         self.saved_results = {}
 
     def __prepare_parameters(self, parameters, **kwargs):
         parameters.pop("self")
+        if "rerun" in parameters.keys():
+            parameters.pop("rerun")
+        
         for key in parameters:
             if key in kwargs.keys():
                 parameters[key] = kwargs[key]
         
         return parameters
+    
+    def analysis_function(func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            if os.path.exists(self.results_path + "/data/state.yaml"):
+                with open(self.results_path + "/data/state.yaml", "r") as file:
+                    state = yaml.safe_load(file)
+
+                
+                func_state = state.get(func.__name__, False)
+                # if function is "True" in state.yml and rerun is "False", 
+                if func_state and not kwargs.get("rerun", False):
+                    
+                    is_gene = "to_genes" in func.__name__
+                    genes = False
+                    CCRE = False
+
+                    if is_gene:
+                        genes = os.path.exists(self.results_path + "/data/" + func.__name__ + "_genes.csv")
+                        CCRE = os.path.exists(self.results_path + "/data/" + func.__name__ + "_CCRE.csv")
+                
+                    if genes or CCRE or os.path.exists(self.results_path + "/data/" + func.__name__ + ".csv"):     
+                        print(f"Skipping {func.__name__} as it has already been run.")
+                        if not genes and not CCRE:
+                            res = InputProcessor(self.results_path + "/data/" + func.__name__ + ".csv", format=FormatDefinition(sep=","))
+                            res.process()
+                            result = res.data_container
+                        else:
+                            res = []
+                            if genes:
+                                res.append(InputProcessor(self.results_path + "/data/" + func.__name__ + "_genes.csv", format=FormatDefinition(sep=",")))
+                                res[-1].process()
+                                res[-1] = res[-1].data_container
+                            if CCRE:
+                                res.append(InputProcessor(self.results_path + "/data/" + func.__name__ + "_CCRE.csv", format=FormatDefinition(sep=",")))
+                                res[-1].process()
+                                res[-1] = res[-1].data_container
+                            print(res)
+                            result = tuple(res)
+                        return result
+                        
+                        # turn chromstart chromend into ints
+                        # result["chr"] = result["chr"].astype(str)
+                        # result["chromStart"] = result["chromStart"].astype(int)
+                        # result["chromEnd"] = result["chromEnd"].astype(int)
+                        return result
+                    else:
+                        state[func.__name__] = False
+                        with open(self.results_path + "/data/state.yaml", "w") as file:
+                            yaml.dump(state, file)
+
+            # make folders
+            if self.results_path is not None:  
+                os.makedirs(self.results_path, exist_ok=True)
+                os.makedirs(self.results_path + "/plots", exist_ok=True)
+                os.makedirs(self.results_path + "/data", exist_ok=True)
+
+                
+            png_name = kwargs.get("name", None)
+            csv_name = kwargs.get("csv_name", None)
+
+            if png_name is not None:
+                if "/" not in png_name:
+                    kwargs["name"] = self.results_path + "/plots/" + png_name
+
+            if csv_name is not None:
+                if "/" not in csv_name:
+                    kwargs["csv_name"] = self.results_path + "/plots/" + csv_name
+
+            result = func(self, *args, **kwargs)
+
+            if self.results_path is not None:
+                
+                try:
+                    with open(self.results_path + "/data/state.yaml", "r") as file:
+                        state = yaml.safe_load(file)
+                except FileNotFoundError:
+                    state = {}
+
+                state[func.__name__] = True
+
+                with open(self.results_path + "/data/state.yaml", "w") as file:
+                    yaml.dump(state, file)
+
+                if result is not None:
+                    if isinstance(result, tuple):
+                        result = list(result)
+                    elif isinstance(result, pd.DataFrame):
+                        result = [result]
+                    
+                    result_len = len(result)
+                    for i, dataframe in enumerate(result):
+                        if result_len > 1:
+                            if func.__name__ == "map_positions_to_genes" or func.__name__ == "map_windows_to_genes":
+                                if i == 0:
+                                    dataframe.to_csv(self.results_path + "/data/" + func.__name__ + "_genes.csv", index=False)
+                                else:
+                                    dataframe.to_csv(self.results_path + "/data/" + func.__name__ + "_CCRE.csv", index=False)
+                            else:
+                                dataframe.to_csv(self.results_path + "/data/" + func.__name__ + "_" + str(i) + ".csv", index=False)
+                        else:
+                            if func.__name__ == "map_positions_to_genes" or func.__name__ == "map_windows_to_genes":
+                                for j, df in enumerate(dataframe):
+                                    if df is not None:
+                                        if isinstance(df, pd.DataFrame):
+                                            df.to_csv(self.results_path + "/data/" + func.__name__ + "_" + ("genes" if j == 0 else "CCRE") + ".csv", index=False)
+                                        else:
+                                            raise ValueError(f"Invalid dataframe type: {type(df)}")
+                            else:
+                                dataframe.to_csv(self.results_path + "/data/" + func.__name__ + ".csv", index=False)
+                
+            return result
+        return wrapper
 
     MERGE_TABLES_REQUIRED_COLUMNS = {
-        "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count"],
-        "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count"]
+        "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_counta", "strand"],
+        "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"]
     }
-    def merge_tables(self, case_data: InputProcessor, ctr_data: InputProcessor, min_cov = 10, cov_percentile = 1.0, min_samp_ctr = 2, min_samp_case = 2) -> pd.DataFrame:
+    @analysis_function
+    def merge_tables(self, case_data: InputProcessor, ctr_data: InputProcessor, min_cov_individual = 10, min_cov_group = 15, filter_samples_ratio=0.6, meth_group_threshold=0.2, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2, rerun=False, small_mean = 1) -> pd.DataFrame:
         """Merge case and control data tables.
 
         .. note::
@@ -38,101 +165,49 @@ class DiffMethylTools():
         :type case_data: InputProcessor
         :param ctr_data: The control data to be merged.
         :type ctr_data: InputProcessor
-        :param min_cov: Minimum coverage filter, defaults to 10
+        :param min_cov_individual: Minimum coverage filter (individual), defaults to 10
+        :type min_cov_individual: int, optional
         :type min_cov: int, optional
-        :param cov_percentile: Maximum coverage filter (percentile of sample coverage), defaults to 1.0
+        :param min_cov_group: Minimum coverage filter (group), defaults to 15
+        :param filter_samples_ratio: Minimum sample ratio filter. Used with min_cov_group, defaults to 0.6
+        :type filter_samples_ratio: float, optional
+        :param meth_group_threshold: Methylation group threshold. Used with min_cov_group, defaults to 0.2
+        :type meth_group_threshold: float, optional
+        :type min_cov_group: int, optional
+        :param cov_percentile: Maximum coverage filter (percentile of sample coverage). Ranges from 0.0-100.0, defaults to 100.0
         :type cov_percentile: float, optional
         :param min_samp_ctr: Minimum samples in control, defaults to 2
         :type min_samp_ctr: int, optional
         :param min_samp_case: Minimum samples in case, defaults to 2
         :type min_samp_case: int, optional
+        :param rerun: Rerun the analysis. If False, load previous output. Defaults to False.
+        :type rerun: bool, optional
         :return: Merged data table
         :rtype: pd.DataFrame
         """
+
         parameters = locals().copy()
 
         case_data = case_data.copy()
         ctr_data = ctr_data.copy()
 
-        print("process")
         case_data.process()
-        print("process2")
         ctr_data.process()
 
-        print("parameters")
         parameters = self.__prepare_parameters(parameters, case_data=case_data.data_container, ctr_data=ctr_data.data_container)
 
-        print("function")
         res = self.obj.merge_tables(**parameters)
 
-        print("return")
-        if self.pipeline:
-            self.saved_results[self.merge_tables] = res
-
-        return res
-    
-    WINDOW_BASED_REQUIRED_COLUMNS = {
-        "data": ["chromosome", "position_start", "methylation_percentage*", "avg_case", "avg_ctr"]
-    }
-    def window_based(self, data: Optional[InputProcessor] = None, statistical_test : Callable = mannwhitneyu, window = 1000, step = 500, min_nbr_per_win = 5, processes=12, min_std=0.1) -> pd.DataFrame:
-        """Perform window-based analysis.
         
-        .. note::
-            ``data`` must contain the following column format:
-                - ``["chromosome", "position_start", "methylation_percentage*", "avg_case", "avg_ctr"]``
-                - There must be a ``methylation_percentage`` column for each sample to test.
-
-        .. note::
-            ``statistical_test`` must be a function from the `scipy.stats <https://docs.scipy.org/doc/scipy/reference/stats.html>`_ package. Accepted functions include:
-                - ``mannwhitneyu``
-                - ``ttest_ind``
-                - ``ranksums``
-                - ``ks_2samp``
-                - ``median_test``
-                - ``brunnermunzel``
-
-        :param data: Input data. Not necessary if the pipeline is in use, defaults to None
-        :type data: InputProcessor, optional
-        :param statistical_test: Statistical test to use, must be from `scipy.stats <https://docs.scipy.org/doc/scipy/reference/stats.html>`_ package, defaults to ``mannwhitneyu``
-        :type statistical_test: Callable, optional
-        :param window: Sample window size (in bp), defaults to 1000
-        :type window: int, optional
-        :param step: Window step size, defaults to 500
-        :type step: int, optional
-        :param min_nbr_per_win: Minimum number of sample positions per window, defaults to 5
-        :type min_nbr_per_win: int, optional
-        :param processes: Number of CPU processes, defaults to 12
-        :type processes: int, optional
-        :param min_std: Minimum standard deviation filter, defaults to 0.1
-        :type min_std: float, optional
-        :return: Window-based analysis results
-        :rtype: pd.DataFrame
-        """
-        assert (not self.pipeline and data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
-
-        parameters = locals().copy()
-
-        if data is not None:
-            data = data.copy()
-            data.process()
-            data = data.data_container
-        else:
-            # pipeline is in use here, due to assert and data is None
-            data = self.saved_results[self.merge_tables]
-            
-        parameters = self.__prepare_parameters(parameters, data=data)
-
-        res = self.obj.window_based(**parameters)
-
         if self.pipeline:
-            self.saved_results[self.window_based] = res
+            self.saved_results[self.merge_tables.__name__] = res
 
         return res
-    
     POSITION_BASED_REQUIRED_COLUMNS = {
         "data": ["chromosome", "position_start", "methylation_percentage*"]
     }
-    def position_based(self, data: Optional[InputProcessor] = None , method="limma", features=None, test_factor="Group", processes=12, model="eBayes", min_std=0.1, fill_na:bool=True) -> pd.DataFrame:
+    @analysis_function
+    def position_based(self, data: Optional[InputProcessor] = None , method="limma", features=None, test_factor="Group", processes=12, model="eBayes", min_std=0.1, fill_na:bool=True, rerun=False) -> pd.DataFrame:
         """Perform position-based analysis. Has options for using the gamma function, or the limma R package.
 
         .. note::
@@ -155,6 +230,9 @@ class DiffMethylTools():
         :param min_std: Minimum standard deviation filter, defaults to 0.1
         :type min_std: float, optional
         :param fill_na: Fill NA values with row group average, defaults to True
+        :type fill_na: bool, optional
+        :param rerun: Rerun the analysis. If False, load previous output. Defaults to False.
+        :type rerun: bool, optional
         :return: Position-based analysis results
         :rtype: pd.DataFrame
         """
@@ -168,14 +246,15 @@ class DiffMethylTools():
             data = data.data_container
         else:
             # pipeline is in use here, due to assert and data is None
-            data = self.saved_results[self.merge_tables]
+            print(self.saved_results)
+            data = self.saved_results[self.merge_tables.__name__]
             
         parameters = self.__prepare_parameters(parameters, data=data)
 
         res = self.obj.position_based(**parameters)
 
         if self.pipeline:
-            self.saved_results[self.position_based] = res
+            self.saved_results[self.position_based.__name__] = res
 
         return res
 
@@ -183,7 +262,8 @@ class DiffMethylTools():
         "window_data": ["chromosome", "region_start", "region_end"],
         "position_data": ["chromosome", "position_start", "avg_case", "avg_ctr"]
     }
-    def map_win_2_pos(self, window_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, processes=12, sub_window_size = 100, sub_window_step = 100, sub_window_min_diff=0, pipeline_window_result: str = "auto") -> pd.DataFrame:
+    @analysis_function
+    def map_win_2_pos(self, window_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, processes=12, sub_window_size = 100, sub_window_step = 100, sub_window_min_diff=0, pipeline_window_result: str = "auto", rerun=False) -> pd.DataFrame:
         """Map windows to positions.
 
         .. note::
@@ -207,6 +287,8 @@ class DiffMethylTools():
         :type sub_window_min_diff: int, optional
         :param pipeline_window_result: The function results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "filters", "generate_q_values", "window_based"]``, defaults to "auto"
         :type pipeline_window_result: str, optional
+        :param rerun: Rerun the analysis. If False, load previous output. Defaults to False.
+        :type rerun: bool, optional
         :return: Mapped windows to positions
         :rtype: pd.DataFrame
         """
@@ -223,25 +305,25 @@ class DiffMethylTools():
             # pipeline is in use here, due to assert and data is None
             # TODO after adding the DMR function, add option for which data to use
             if pipeline_window_result == "auto":
-                if self.saved_results.get(self.filters) is not None:
-                    window_data = self.saved_results[self.window_based]
-                elif self.saved_results.get(self.generate_q_values) is not None:
-                    window_data = self.saved_results[self.generate_q_values]
-                elif self.saved_results.get(self.window_based) is not None:
-                    window_data = self.saved_results[self.window_based]
+                if self.saved_results.get(self.filters.__name__) is not None:
+                    window_data = self.saved_results[self.window_based.__name__]
+                elif self.saved_results.get(self.generate_q_values.__name__) is not None:
+                    window_data = self.saved_results[self.generate_q_values.__name__]
+                elif self.saved_results.get(self.window_based.__name__) is not None:
+                    window_data = self.saved_results[self.window_based.__name__]
             elif pipeline_window_result == "filters":
-                window_data = self.saved_results[self.filters]
+                window_data = self.saved_results[self.filters.__name__]
             elif pipeline_window_result == "generate_q_values":
-                window_data = self.saved_results[self.generate_q_values]
+                window_data = self.saved_results[self.generate_q_values.__name__]
             elif pipeline_window_result == "window_based":
-                window_data = self.saved_results[self.window_based]
+                window_data = self.saved_results[self.window_based.__name__]
         if position_data is not None:
             position_data = position_data.copy()
             position_data.process()
             position_data = position_data.data_container
         else:
             # pipeline is in use here, due to assert and data is None
-            position_data = self.saved_results[self.merge_tables]
+            position_data = self.saved_results[self.merge_tables.__name__]
         
         parameters.pop("pipeline_window_result")
         parameters = self.__prepare_parameters(parameters, window_data=window_data, position_data=position_data)
@@ -249,67 +331,15 @@ class DiffMethylTools():
         res = self.obj.map_win_2_pos(**parameters)
 
         if self.pipeline:
-            self.saved_results[self.map_win_2_pos] = res
-
-        return res
-
-    GENERATE_Q_VALUES_REQUIRED_COLUMNS = {
-        "data": ["p-val"]
-    }
-    def generate_q_values(self, data: Optional[InputProcessor] = None, method: str = "fdr_bh", position_or_window: str = "auto") -> pd.DataFrame:
-        """Generate q-values (also referred to as adjusted p-values or FDR).
-
-        .. note::
-            Required columns for ``data``:
-                - ``["p-val"]``
-
-        :param data: Input p-value data. Not necessary if the pipeline is in use, defaults to None
-        :type data: InputProcessor, optional
-        :param method: P-value adjustment method to use from `statsmodels.stats.multitest.multipletests <https://www.statsmodels.org/dev/generated/statsmodels.stats.multitest.multipletests.html#statsmodels.stats.multitest.multipletests-parameters>`_, defaults to "fdr_bh".
-        :type method: str, optional
-        :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
-        :type position_or_window: str, optional
-        :return: Data with q-values (adjusted p-values or FDR)
-        :rtype: pd.DataFrame
-        """
-        assert (not self.pipeline and data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
-        assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
-
-        parameters = locals().copy()
-
-        if data is not None:
-            data = data.copy()
-            data.process()
-            data = data.data_container
-        else:
-            # pipeline is in use here, due to assert and data is None
-            if position_or_window == "auto":
-                if self.saved_results.get(self.window_based) is not None:
-                    data = self.saved_results[self.window_based]
-                    position_or_window = "window"
-                else:
-                    data = self.saved_results[self.position_based]
-                    position_or_window = "position"
-            elif position_or_window == "position":
-                data = self.saved_results[self.position_based]
-            else:
-                data = self.saved_results[self.window_based]
-            
-            
-        parameters.pop("position_or_window")
-        parameters = self.__prepare_parameters(parameters, data=data)
-
-        res = self.obj.generate_q_values(**parameters)
-
-        if self.pipeline:
-            self.saved_results[(self.generate_q_values, position_or_window)] = res
+            self.saved_results[self.map_win_2_pos.__name__] = res
 
         return res
 
     FILTERS_REQUIRED_COLUMNS = {
         "data": ["q-value", "diff"]
     }
-    def filters(self, data: Optional[InputProcessor] = None, max_q_value=0.05, abs_min_diff=25, position_or_window: str = "auto") -> pd.DataFrame:
+    @analysis_function
+    def filters(self, data: Optional[InputProcessor] = None, max_q_value=0.05, abs_min_diff=0.10, position_or_window: str = "auto", rerun=False) -> pd.DataFrame:
         """Filter data by q-value and minimum difference.
 
         .. note::
@@ -320,10 +350,12 @@ class DiffMethylTools():
         :type data: InputProcessor, optional
         :param max_q_value: Maximum q-value filter, defaults to 0.05
         :type max_q_value: float, optional
-        :param abs_min_diff: Absolute minimum difference filter, defaults to 25
+        :param abs_min_diff: Absolute minimum difference filter, defaults to 0.25
         :type abs_min_diff: int, optional
         :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
+        :param rerun: Rerun the analysis. If False, load previous output. Defaults to False.
+        :type rerun: bool, optional
         :return: Filtered input data
         :rtype: pd.DataFrame
         """
@@ -339,11 +371,11 @@ class DiffMethylTools():
         else:
             # pipeline is in use here, due to assert and data is None
             if position_or_window == "auto":
-                if self.saved_results.get((self.generate_q_values, "window")) is not None:
-                    data = self.saved_results[(self.generate_q_values, "window")]
+                if self.saved_results.get((self.generate_q_values.__name__, "window")) is not None:
+                    data = self.saved_results[(self.generate_q_values.__name__, "window")]
                     position_or_window = "window"
-                elif self.saved_results.get((self.generate_q_values, "position")) is not None:
-                    data = self.saved_results[(self.generate_q_values, "position")]
+                elif self.saved_results.get((self.generate_q_values.__name__, "position")) is not None:
+                    data = self.saved_results[(self.generate_q_values.__name__, "position")]
                     position_or_window = "position"
                 else:
                     # TODO invalid
@@ -356,7 +388,7 @@ class DiffMethylTools():
         res = self.obj.filters(**parameters)
 
         if self.pipeline:
-            self.saved_results[(self.filters, position_or_window)] = res
+            self.saved_results[(self.filters.__name__, position_or_window)] = res
 
         return res
 
@@ -364,7 +396,8 @@ class DiffMethylTools():
         "significant_position_data": ["chromosome", "position_start", "diff"],
         "position_data": ["chromosome", "position_start", "diff"]
     }
-    def generate_DMR(self, significant_position_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, min_pos=3, neutral_change_limit=7.5, neutral_perc=30, opposite_perc=10, significant_position_pipeline: str = "auto") -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    @analysis_function
+    def generate_DMR(self, significant_position_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, min_pos=3, neural_change_limit=7.5, neurl_perc=30, opposite_perc=10, significant_position_pipeline: str = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         # TODO ask chris what to write here for documentation
         """Generate Differentially Methylated Regions (DMRs).
         
@@ -382,12 +415,14 @@ class DiffMethylTools():
         :type min_pos: int, optional
         :param neutral_change_limit: Neutral change limit, defaults to 7.5
         :type neutral_change_limit: float, optional
-        :param neutral_perc: Neutral percentage, defaults to 30
-        :type neutral_perc: int, optional
+        :param neurl_perc: Neutral percentage, defaults to 30
+        :type neurl_perc: int, optional
         :param opposite_perc: Opposite percentage, defaults to 10
         :type opposite_perc: int, optional
         :param significant_position_pipeline: The significant position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type significant_position_pipeline: str, optional
+        :param rerun: Rerun the analysis. If False, load previous output. Defaults to False.
+        :type rerun: bool, optional
         :return: DMR results
         :rtype: tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
         """
@@ -404,17 +439,17 @@ class DiffMethylTools():
             # pipeline is in use here, due to assert and data is None
             # can be either auto, position or window
             if significant_position_pipeline == "auto":
-                if self.saved_results.get((self.filters, "position")) is not None:
-                    significant_position_data = self.saved_results[(self.filters, "position")]
-                elif self.saved_results.get(self.map_win_2_pos) is not None:
-                    significant_position_data = self.saved_results[self.map_win_2_pos]
+                if self.saved_results.get((self.filters.__name__, "position")) is not None:
+                    significant_position_data = self.saved_results[(self.filters.__name__, "position")]
+                elif self.saved_results.get(self.map_win_2_pos.__name__) is not None:
+                    significant_position_data = self.saved_results[self.map_win_2_pos.__name__]
                 else:
                     # TODO invalid
                     pass
             elif significant_position_pipeline == "position":
-                significant_position_data = self.saved_results[(self.filters, "position")]
+                significant_position_data = self.saved_results[(self.filters.__name__, "position")]
             else:
-                significant_position_data = self.saved_results[self.map_win_2_pos]
+                significant_position_data = self.saved_results[self.map_win_2_pos.__name__]
 
         if position_data is not None:
             position_data = position_data.copy()
@@ -422,7 +457,7 @@ class DiffMethylTools():
             position_data = position_data.data_container
         else:
             # pipeline is in use here, due to assert and data is None
-            position_data = self.saved_results[self.merge_tables]
+            position_data = self.saved_results[self.merge_tables.__name__]
         
         
         parameters.pop("significant_position_pipeline")
@@ -431,15 +466,17 @@ class DiffMethylTools():
         res = self.obj.generate_DMR(**parameters)
 
         if self.pipeline:
-            self.saved_results[(self.generate_DMR, "cluster_df")] = res[0]
-            self.saved_results[(self.generate_DMR, "unclustered_dms_df")] = res[1]
-            self.saved_results[(self.generate_DMR, "clustered_dms_df")] = res[2]
+            self.saved_results[(self.generate_DMR.__name__, "cluster_df")] = res[0]
+            self.saved_results[(self.generate_DMR.__name__, "unclustered_dms_df")] = res[1]
+            self.saved_results[(self.generate_DMR.__name__, "clustered_dms_df")] = res[2]
         return res
     
     MAP_POSITIONS_TO_GENES_REQUIRED_COLUMNS = {
         "positions": ["chromosome", "position_start", "diff"]
     }
-    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="outfile_w_hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
+    @analysis_function
+    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", bed_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
+    #def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
         """Map positions to genes.
 
         .. note::
@@ -452,12 +489,14 @@ class DiffMethylTools():
         :type gene_regions: list[str] | str, optional
         :param min_pos_diff: Minimum position difference for mapping, defaults to 0
         :type min_pos_diff: int, optional
-        :param bed_file: BED annotation file with unflexible input, defaults to "outfile_w_hm450.bed"
+        :param bed_file: BED annotation file with unflexible input format, defaults to "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed"
         :type bed_file: str, optional
-        :param gtf_file: GTF annotation file with unflexible input, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
+        :param gtf_file: GTF annotation file with unflexible input format, defaults to "gencode.v42.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         :param pipeline_input_source: Pipeline input source for pipelining, options are ["auto", "map_win_2_pos", "generate_q_values", "filters"], defaults to "auto"
         :type pipeline_input_source: str, optional
+        :param rerun: Rerun the analysis. If False, load previous output. Defaults to False.
+        :type rerun: bool, optional
         :return: Mapped positions to genes in a list: ``[gene mapping dataframe, CCRE mapping dataframe]``
         :rtype: list[pd.DataFrame] 
         """
@@ -466,6 +505,9 @@ class DiffMethylTools():
 
         parameters = locals().copy()
 
+        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
+        if bed_file == "outfile_w_hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+
         if positions is not None:
             positions = positions.copy()
             positions.process()
@@ -473,106 +515,35 @@ class DiffMethylTools():
         else:
             # pipeline is in use here, due to assert and data is None
             if pipeline_input_source == "auto":
-                if self.saved_results.get((self.filters, "position")) is not None:
-                    positions = self.saved_results[(self.filters, "position")]
-                elif self.saved_results.get((self.generate_q_values, "position")) is not None:
-                    positions = self.saved_results[(self.generate_q_values, "position")]
-                elif self.saved_results.get(self.map_win_2_pos) is not None:
-                    positions = self.saved_results[self.map_win_2_pos]
+                if self.saved_results.get((self.filters.__name__, "position")) is not None:
+                    positions = self.saved_results[(self.filters.__name__, "position")]
+                elif self.saved_results.get((self.generate_q_values.__name__, "position")) is not None:
+                    positions = self.saved_results[(self.generate_q_values.__name__, "position")]
+                elif self.saved_results.get(self.map_win_2_pos.__name__) is not None:
+                    positions = self.saved_results[self.map_win_2_pos.__name__]
             elif pipeline_input_source == "map_win_2_pos":
-                positions = self.saved_results[self.map_win_2_pos]
+                positions = self.saved_results[self.map_win_2_pos.__name__]
             elif pipeline_input_source == "generate_q_values":
-                positions = self.saved_results[(self.generate_q_values, "position")]
+                positions = self.saved_results[(self.generate_q_values.__name__, "position")]
             else:
-                positions = self.saved_results[(self.filters, "position")]
+                positions = self.saved_results[(self.filters.__name__, "position")]
         
         
         parameters.pop("pipeline_input_source")
-        parameters = self.__prepare_parameters(parameters, positions=positions)
+        parameters = self.__prepare_parameters(parameters, positions=positions, gtf_file =gtf_file, bed_file= bed_file)
 
         res = self.obj.map_positions_to_genes(**parameters)
 
         if self.pipeline:
-            self.saved_results[(self.map_positions_to_genes, "gene")] = res[0]
-            self.saved_results[(self.map_positions_to_genes, "CCRE")] = res[1]
-
-        return tuple(x.reset_index() for x in res)
-    
-    MAP_WINDOWS_TO_GENES_REQUIRED_COLUMNS = {    
-        "windows": ["chromosome", "region_start", "region_end", "diff"]
-    }
-    def map_windows_to_genes(self, windows: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="outfile_w_hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", enhd_thr = 500000, enhp_thr = 50000, prom_thr = 2000, processes=12, pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
-        """Map windows to genes.
-
-        .. note::
-            Required columns for ``windows``:
-                - ``["chromosome", "region_start", "region_end", "diff"]``
-
-        :param windows: Window data. Not necessary if the pipeline is in use, defaults to None
-        :type windows: InputProcessor, optional
-        :param gene_regions: Gene regions to map to. Options are any combination of ``["intron", "exon", "upstream", "CCRE"]``, defaults to ``["intron", "exon", "upstream", "CCRE"]``
-        :type gene_regions: list[str] | str, optional
-        :param min_pos_diff: Minimum position difference for mapping, defaults to 0
-        :type min_pos_diff: int, optional
-        :param bed_file: BED annotation file with unflexible input, defaults to "outfile_w_hm450.bed"
-        :type bed_file: str, optional
-        :param gtf_file: GTF annotation file with unflexible input, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
-        :type gtf_file: str, optional
-        :param enhd_thr: Distal enhancer distance threshold for finding nearest gene to CCRE, defaults to 500000
-        :type enhd_thr: int, optional
-        :param enhp_thr: Proximal enhancer distance threshold for finding nearest gene to CCRE, defaults to 50000
-        :type enhp_thr: int, optional
-        :param prom_thr: Promoter enhancer distance threshold for finding nearest gene to CCRE, defaults to 2000
-        :type prom_thr: int, optional
-        :param processes: Number of CPU processes, defaults to 12
-        :type processes: int, optional
-        :param pipeline_input_source: Pipeline input source for pipelining, options are ["auto", "generate_DMR", "generate_q_values", "filters"], defaults to "auto"
-        :type pipeline_input_source: str, optional
-        :return: Mapped windows to genes in a list: ``[gene mapping dataframe, CCRE mapping dataframe]``
-        :rtype: list[pd.DataFrame]
-        """
-        assert (not self.pipeline and windows is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
-        assert pipeline_input_source in ["auto", "generate_DMR", "generate_q_values", "filters"], "Invalid parameter for pipeline_input_source. Options are: [""auto"", ""generate_DMR"", ""generate_q_values"", ""filters""]"
-
-        parameters = locals().copy()
-
-        if windows is not None:
-            windows = windows.copy()
-            windows.process()
-            windows = windows.data_container
-        else:
-            # pipeline is in use here, due to assert and data is None
-            if pipeline_input_source == "auto":
-                if self.saved_results.get(self.generate_DMR) is not None:
-                    windows = self.saved_results[(self.generate_DMR, "clustered_dms_df")]
-                elif self.saved_results.get((self.filters, "window")) is not None:
-                    windows = self.saved_results[(self.filters, "window")]
-                elif self.saved_results.get((self.generate_q_values, "window")) is not None:
-                    windows = self.saved_results[(self.generate_q_values, "window")]
-            elif pipeline_input_source == "generate_DMR":
-                windows = self.saved_results[(self.generate_DMR, "clustered_dms_df")]
-            elif pipeline_input_source == "generate_q_values":
-                windows = self.saved_results[(self.generate_q_values, "window")]
-            else:
-                windows = self.saved_results[(self.filters, "window")]
-        
-        
-        parameters.pop("pipeline_input_source")
-
-        parameters = self.__prepare_parameters(parameters, windows=windows)
-
-        res = self.obj.map_windows_to_genes(**parameters)
-
-        if self.pipeline:
-            self.saved_results[(self.map_windows_to_genes, "gene")] = res[0]
-            self.saved_results[(self.map_windows_to_genes, "CCRE")] = res[1]
+            self.saved_results[(self.map_positions_to_genes.__name__, "gene")] = res[0]
+            self.saved_results[(self.map_positions_to_genes.__name__, "CCRE")] = res[1]
 
         return tuple(x.reset_index() for x in res)
     
     VOLCANO_PLOT_REQUIRED_COLUMNS = {
         "data": ["q-value", "diff"]
     }
-    def volcano_plot(self, data: Optional[InputProcessor] = None, name : str = "volcano_plot.png", threshold : Optional[float] = 0.05, line: Optional[float] = 15, x_range: tuple[int, int] = (-100, 100), y_max: int = None, title: str = None, x_label: str = None, y_label: str = None, position_or_window: str = "auto") -> None:
+    def volcano_plot(self, data: Optional[InputProcessor] = None, name : str = "volcano_plot.png", threshold : Optional[float] = 0.05, line: Optional[float] = None, x_range: tuple[int, int] = (-1, 1), y_max: int = None, title: str = None, x_label: str = None, y_label: str = None, position_or_window: str = "auto") -> None:
         """Generate a volcano plot.
         
         .. note::
@@ -585,9 +556,9 @@ class DiffMethylTools():
         :type name: str, optional
         :param threshold: Q-value threshold for horizontal line. Set to None to have no line, defaults to 0.05
         :type threshold: float, optional
-        :param line: Vertical line threshold for the `abs(line)` vertical line. Set to NOne to have no lines, defaults to 15
+        :param line: Vertical line threshold for the `abs(line)` vertical line. Set to NOne to have no lines, defaults to None
         :type line: float, optional
-        :param x_range: X-axis range, defaults to (-100, 100)
+        :param x_range: X-axis range, defaults to (-1, 1)
         :type x_range: tuple[int, int], optional
         :param y_max: Y-axis maximum, defaults to None
         :type y_max: int, optional
@@ -600,6 +571,7 @@ class DiffMethylTools():
         :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         """
+        name = self.results_path + "/" + name
         assert (not self.pipeline and data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
 
@@ -612,17 +584,17 @@ class DiffMethylTools():
         else:
             # pipeline is in use here, due to assert and data is None
             if position_or_window == "auto":
-                if self.saved_results.get((self.generate_q_values, "window")) is not None:
-                    data = self.saved_results[(self.generate_q_values, "window")]
-                elif self.saved_results.get((self.generate_q_values, "position")) is not None:
-                    data = self.saved_results[(self.generate_q_values, "position")]
+                if self.saved_results.get((self.generate_q_values.__name__, "window")) is not None:
+                    data = self.saved_results[(self.generate_q_values.__name__, "window")]
+                elif self.saved_results.get((self.generate_q_values.__name__, "position")) is not None:
+                    data = self.saved_results[(self.generate_q_values.__name__, "position")]
                 else:
                     # TODO invalid
                     pass
             elif position_or_window == "position":
-                data = self.saved_results[(self.generate_q_values, "position")]
+                data = self.saved_results[(self.generate_q_values.__name__, "position")]
             else:
-                data = self.saved_results[(self.generate_q_values, "window")]
+                data = self.saved_results[(self.generate_q_values.__name__, "window")]
             
         parameters.pop("position_or_window")
         parameters = self.__prepare_parameters(parameters, data=data)
@@ -655,6 +627,7 @@ class DiffMethylTools():
         :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         """        
+        name = self.results_path + "/" + name
         assert (not self.pipeline and data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
 
@@ -668,17 +641,17 @@ class DiffMethylTools():
         else:
             # pipeline is in use here, due to assert and data is None
             if position_or_window == "auto":
-                if self.saved_results.get((self.generate_q_values, "window")) is not None:
-                    data = self.saved_results[(self.generate_q_values, "window")]
-                elif self.saved_results.get((self.generate_q_values, "position")) is not None:
-                    data = self.saved_results[(self.generate_q_values, "position")]
+                if self.saved_results.get((self.generate_q_values.__name__, "window")) is not None:
+                    data = self.saved_results[(self.generate_q_values.__name__, "window")]
+                elif self.saved_results.get((self.generate_q_values.__name__, "position")) is not None:
+                    data = self.saved_results[(self.generate_q_values.__name__, "position")]
                 else:
                     # TODO invalid
                     pass
             elif position_or_window == "position":
-                data = self.saved_results[(self.generate_q_values, "position")]
+                data = self.saved_results[(self.generate_q_values.__name__, "position")]
             else:
-                data = self.saved_results[(self.generate_q_values, "window")]
+                data = self.saved_results[(self.generate_q_values.__name__, "window")]
                 
         parameters.pop("position_or_window")
         parameters = self.__prepare_parameters(parameters, data=data)
@@ -689,7 +662,7 @@ class DiffMethylTools():
         "case_data": ["coverage", "positive_methylation_count", "negative_methylation_count"],
         "ctr_data": ["coverage", "positive_methylation_count", "negative_methylation_count"]
     }
-    def coverage_plot(self, case_data: InputProcessor, ctr_data: InputProcessor, name : str = "coverage_plot.png", cov_min : int = -1, cov_max : int = -1, cov_max_percentile : float = -1, bins:int = 20, title: str = None, x_label: str = None, y_label: str = None) -> None:
+    def coverage_plot(self, case_data: InputProcessor, ctr_data: InputProcessor, name : str = "coverage_plot.png", cov_min : int = 1, cov_max : int = -1, cov_max_percentile : float = 99.5, bins:int = 20, title: str = None, x_label: str = None, y_label: str = None) -> None:
         """Generate a coverage plot.
 
         .. note::
@@ -703,11 +676,11 @@ class DiffMethylTools():
         :type ctr_data: InputProcessor
         :param name: Output file name, defaults to "coverage_plot.png"
         :type name: str, optional
-        :param cov_min: Minimum coverage display, defaults to -1
+        :param cov_min: Minimum coverage display, defaults to 1
         :type cov_min: int, optional
         :param cov_max: Maximum coverage display, defaults to -1
         :type cov_max: int, optional
-        :param cov_max_percentile: Maximum coverage percentile display, defaults to -1. Overrides ``cov_max`` if set.
+        :param cov_max_percentile: Maximum coverage percentile display. Ranges from 0.0-100.0, defaults to 99.5. Overrides ``cov_max`` if set.
         :type cov_max_percentile: float, optional
         :param bins: Number of bins, defaults to 20
         :type bins: int, optional
@@ -718,6 +691,7 @@ class DiffMethylTools():
         :param y_label: Y-axis label, defaults to None for a generic label
         :type y_label: str, optional
         """
+        name = self.results_path + "/" + name
         parameters = locals().copy()
 
         case_data = case_data.copy()
@@ -734,7 +708,7 @@ class DiffMethylTools():
         "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"],
         "ccre_data": ["CCRE", "CCRE_diff"]
     }
-    def graph_gene_regions(self, gene_data: Optional[InputProcessor] = None, ccre_data: Optional[InputProcessor] = None, name: str ="gene_regions.png", gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], intron_cutoff: int = -1, exon_cutoff: int = -1, upstream_cutoff: int = -1, CCRE_cutoff: int = -1, title: str = None, x_label: str = None, intron_y_label: str = None, exon_y_label: str = None, upstream_y_label: str = None, CCRE_y_label: str = None, position_or_window: str = "auto") -> None:
+    def graph_gene_regions(self, gene_data: Optional[InputProcessor] = None, ccre_data: Optional[InputProcessor] = None, name: str ="gene_regions.png", gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], intron_cutoff: int = -1, exon_cutoff: int = -1, upstream_cutoff: int = -1, CCRE_cutoff: int = -1, prom_cutoff:int = -1, title: str = None, x_label: str = None, intron_y_label: str = None, exon_y_label: str = None, upstream_y_label: str = None, CCRE_y_label: str = None, prom_y_label: str = None , position_or_window: str = "auto") -> None:
         """Generate a graph of gene regions.
         
         .. note::
@@ -776,6 +750,7 @@ class DiffMethylTools():
         :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
         """
+        name = self.results_path + "/" + name
         assert (not self.pipeline and (gene_data is not None or ccre_data is not None)) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
 
@@ -787,17 +762,17 @@ class DiffMethylTools():
             gene_data = gene_data.data_container
         else:
             if position_or_window == "auto":
-                if self.saved_results.get((self.map_positions_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
-                elif self.saved_results.get((self.map_windows_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
+                if self.saved_results.get((self.map_positions_to_genes.__name__, "gene")) is not None:
+                    gene_data = self.saved_results[(self.map_positions_to_genes.__name__, "gene")]
+                elif self.saved_results.get((self.map_windows_to_genes.__name__, "gene")) is not None:
+                    gene_data = self.saved_results[(self.map_windows_to_genes.__name__, "gene")]
                 else:
                     # TODO invalid
                     pass
             elif position_or_window == "position":
-                gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
+                gene_data = self.saved_results[(self.map_positions_to_genes.__name__, "gene")]
             else:
-                gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
+                gene_data = self.saved_results[(self.map_windows_to_genes.__name__, "gene")]
 
         if ccre_data is not None:
             ccre_data = ccre_data.copy()
@@ -805,28 +780,30 @@ class DiffMethylTools():
             ccre_data = ccre_data.data_container
         else:
             if position_or_window == "auto":
-                if self.saved_results.get((self.map_positions_to_genes, "CCRE")) is not None:
-                    ccre_data = self.saved_results[(self.map_positions_to_genes, "CCRE")]
-                elif self.saved_results.get((self.map_windows_to_genes, "CCRE")) is not None:
-                    ccre_data = self.saved_results[(self.map_windows_to_genes, "CCRE")]
+                if self.saved_results.get((self.map_positions_to_genes.__name__, "CCRE")) is not None:
+                    ccre_data = self.saved_results[(self.map_positions_to_genes.__name__, "CCRE")]
+                elif self.saved_results.get((self.map_windows_to_genes.__name__, "CCRE")) is not None:
+                    ccre_data = self.saved_results[(self.map_windows_to_genes.__name__, "CCRE")]
                 else:
                     # TODO invalid
                     pass
             elif position_or_window == "position":
-                ccre_data = self.saved_results[(self.map_positions_to_genes, "CCRE")]
+                ccre_data = self.saved_results[(self.map_positions_to_genes.__name__, "CCRE")]
             else:
-                ccre_data = self.saved_results[(self.map_windows_to_genes, "CCRE")]
+                ccre_data = self.saved_results[(self.map_windows_to_genes.__name__, "CCRE")]
         
         parameters.pop("position_or_window")
+        # print(gene_data)
+        # print(ccre_data)
         parameters = self.__prepare_parameters(parameters, gene_data=gene_data, ccre_data=ccre_data)
 
         res = self.plots.graph_gene_regions(**parameters)
 
     GRAPH_UPSTREAM_GENE_METHYLATION_REQUIRED_COLUMNS = {
-        "position_data": ["chromosome", "position_start", "diff"],
-        "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"]
+        "position_data": ["chromosome", "position_start", "diff"]
+        # "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"]
     }
-    def graph_upstream_gene_methylation(self, position_data: Optional[InputProcessor] = None, gene_data: Optional[InputProcessor] = None, gene_region: str = "upstream", png_name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf", position_or_window: str = "auto") -> None:
+    def graph_upstream_gene_methylation(self, position_data: Optional[InputProcessor] = None, region_data: Optional[InputProcessor] = None, name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 1000, right_distance: int = 1000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf", position_or_window: str = "auto", position_or_region:str = "region") -> None:
         """Generate a graph of upstream gene methylation.
         
         .. note::
@@ -843,8 +820,8 @@ class DiffMethylTools():
         :type gene_data: InputProcessor, optional
         :param gene_region: Gene region, defaults to "upstream"
         :type gene_region: str, optional
-        :param png_name: Output PNG file name, defaults to "upstream_methylation.png"
-        :type png_name: str, optional
+        :param name: Output PNG file name, defaults to "upstream_methylation.png"
+        :type name: str, optional
         :param csv_name: Output CSV file name, defaults to "upstream_methylation.csv"
         :type csv_name: str, optional
         :param csv: Input CSV file, defaults to None
@@ -857,25 +834,25 @@ class DiffMethylTools():
         :type window_size: int, optional
         :param hypermethylated: Include hypermethylated regions, defaults to True
         :type hypermethylated: bool, optional
-        :param gene_hypermethylated_min: Minimum hypermethylation for genes, defaults to 20
+        :param gene_hypermethylated_min: Minimum hypermethylation for genes, defaults to 0.20
         :type gene_hypermethylated_min: int, optional
-        :param window_hypermethylated_min: Minimum hypermethylation for windows, defaults to 5
+        :param window_hypermethylated_min: Minimum hypermethylation for windows, defaults to 0.05
         :type window_hypermethylated_min: int, optional
         :param min_hypermethylated_windows: Minimum hypermethylated windows, defaults to 5
         :type min_hypermethylated_windows: int, optional
         :param hypomethylated: Include hypomethylated regions, defaults to True
         :type hypomethylated: bool, optional
-        :param gene_hypomethylated_max: Maximum hypomethylation for genes, defaults to -20
+        :param gene_hypomethylated_max: Maximum hypomethylation for genes, defaults to -0.20
         :type gene_hypomethylated_max: int, optional
-        :param window_hypomethylated_max: Maximum hypomethylation for windows, defaults to -5
+        :param window_hypomethylated_max: Maximum hypomethylation for windows, defaults to -0.5
         :type window_hypomethylated_max: int, optional
         :param min_hypomethylated_windows: Minimum hypomethylated windows, defaults to 5
         :type min_hypomethylated_windows: int, optional
         :param position_count: Position count, defaults to 5
         :type position_count: int, optional
-        :param clamp_positive: Positive clamp value, defaults to 50
+        :param clamp_positive: Positive clamp value, defaults to 0.50
         :type clamp_positive: int, optional
-        :param clamp_negative: Negative clamp value, defaults to -50
+        :param clamp_negative: Negative clamp value, defaults to -0.50
         :type clamp_negative: int, optional
         :param title: Plot title, defaults to None for a generic title
         :type title: str, optional
@@ -884,139 +861,78 @@ class DiffMethylTools():
         :param position_or_window: Position or window, options are ["auto", "position", "window"], defaults to "auto"
         :type position_or_window: str, optional
         """
-        assert (not self.pipeline and gene_data is not None and position_data is not None) or (not self.pipeline and csv is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
+        name = self.results_path + "/" + name
+
+        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
+        assert (not self.pipeline and position_data is not None) or (not self.pipeline and csv is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
+        assert position_or_region in ["position", "region"], "Invalid parameter for position_or_window. Options are: [""position"", ""region""]"
 
         parameters = locals().copy()
 
-        if gene_data is not None:
-            gene_data = gene_data.copy()
-            gene_data.process()
-            gene_data = gene_data.data_container
-        elif csv is None:
-            if position_or_window == "auto":
-                if self.saved_results.get((self.map_positions_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
-                elif self.saved_results.get((self.map_windows_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
-                else:
-                    # TODO invalid
-                    pass
-            elif position_or_window == "position":
-                gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
-            else:
-                gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
+
+        #if gene_data is not None:
+        #    gene_data = gene_data.copy()
+        #    gene_data.process()
+        #    gene_data = gene_data.data_container
+        #    
+        #elif csv is None:
+        #    if position_or_window == "auto":
+        #        if self.saved_results.get((self.map_positions_to_genes.__name__, "gene")) is not None:
+        #            gene_data = self.saved_results[(self.map_positions_to_genes.__name__, "gene")]
+        #        elif self.saved_results.get((self.map_windows_to_genes.__name__, "gene")) is not None:
+        #            gene_data = self.saved_results[(self.map_windows_to_genes.__name__, "gene")]
+        #        else:
+        #            # TODO invalid
+        #            pass
+        #    elif position_or_window == "position":
+        #        gene_data = self.saved_results[(self.map_positions_to_genes.__name__, "gene")]
+        #    else:
+        #        gene_data = self.saved_results[(self.map_windows_to_genes.__name__, "gene")]
 
         if position_data is not None:
             position_data = position_data.copy()
             position_data.process()
             position_data = position_data.data_container
         elif csv is None:
-            position_data = self.saved_results[self.merge_tables]
-        
+            position_data = self.saved_results[self.merge_tables.__name__]
+
+        if region_data is not None:
+            region_data = region_data.copy()
+            region_data.process()
+            region_data = region_data.data_container
+        elif csv is None:
+            region_data = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
+
         parameters.pop("position_or_window")
-        parameters = self.__prepare_parameters(parameters, gene_data=gene_data, position_data=position_data)
+        parameters = self.__prepare_parameters(parameters, position_data=position_data, region_data=region_data)
 
         self.plots.graph_upstream_gene_methylation(**parameters)
 
-    GRAPH_AVERAGE_UPSTREAM_GENE_METHYLATION_REQUIRED_COLUMNS = {
-        "position_data": ["chromosome", "position_start", "diff"],
-        "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"]
+
+    PROCESS_REGIONS_REQUIRED_COLUMNS = {
+        "region_file": ["chromosome","start","end"]
     }
-    def graph_average_upstream_gene_methylation(self, position_data: Optional[InputProcessor] = None, gene_data: Optional[InputProcessor] = None, gene_region: str = "upstream", png_name="average_upstream_methylation.png", csv_name: str = "average_upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 5000, right_distance: int = 5000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, y_label:str=None, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf", position_or_window="auto") -> None:   
-        """Generate a graph of average upstream gene methylation.
+    def process_regions(self, region_file: Optional[InputProcessor] = None, annotation_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gene_bed_file:str = "gencode.v42.chr_patch_hapl_scaff.annotation.genes.bed", ccre_file:str ="encodeCcreCombined.bed") -> list:
+        if annotation_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": annotation_file = Path(__file__).resolve().parent / annotation_file
+        if gene_bed_file == "gencode.v42.chr_patch_hapl_scaff.annotation.genes.bed": gene_bed_file = Path(__file__).resolve().parent / gene_bed_file
+        if ccre_file == "encodeCcreCombined.bed": ccre_file = Path(__file__).resolve().parent / ccre_file
 
-        .. note::
-            Required columns for ``position_data``:
-                - ``["chromosome", "position_start", "diff"]``
-            Required columns for ``gene_data``:
-                - If ``"intron"`` is in ``gene_regions``: ``["intron", "intron_diff"]``
-                - If ``"exon"`` is in ``gene_regions``: ``["exon", "exon_diff"]``
-                - If ``"upstream"`` is in ``gene_regions``: ``["upstream", "upstream_diff"]``
-
-        :param position_data: Position data. Not necessary if the pipeline is in use, defaults to None
-        :type position_data: InputProcessor, optional
-        :param gene_data: Gene data. Not necessary if the pipeline is in use, defaults to None
-        :type gene_data: InputProcessor, optional
-        :param gene_region: Gene region, defaults to "upstream"
-        :type gene_region: str, optional
-        :param png_name: Output PNG file name, defaults to "upstream_methylation.png"
-        :type png_name: str, optional
-        :param csv_name: Output CSV file name, defaults to "upstream_methylation.csv"
-        :type csv_name: str, optional
-        :param csv: Input CSV file, defaults to None
-        :type csv: str, optional
-        :param left_distance: Left distance, defaults to 5000
-        :type left_distance: int, optional
-        :param right_distance: Right distance, defaults to 5000
-        :type right_distance: int, optional
-        :param window_size: Window size, defaults to 100
-        :type window_size: int, optional
-        :param hypermethylated: Include hypermethylated regions, defaults to True
-        :type hypermethylated: bool, optional
-        :param gene_hypermethylated_min: Minimum hypermethylation for genes, defaults to 20
-        :type gene_hypermethylated_min: int, optional
-        :param window_hypermethylated_min: Minimum hypermethylation for windows, defaults to 5
-        :type window_hypermethylated_min: int, optional
-        :param min_hypermethylated_windows: Minimum hypermethylated windows, defaults to 5
-        :type min_hypermethylated_windows: int, optional
-        :param hypomethylated: Include hypomethylated regions, defaults to True
-        :type hypomethylated: bool, optional
-        :param gene_hypomethylated_max: Maximum hypomethylation for genes, defaults to -20
-        :type gene_hypomethylated_max: int, optional
-        :param window_hypomethylated_max: Maximum hypomethylation for windows, defaults to -5
-        :type window_hypomethylated_max: int, optional
-        :param min_hypomethylated_windows: Minimum hypomethylated windows, defaults to 5
-        :type min_hypomethylated_windows: int, optional
-        :param position_count: Position count, defaults to 5
-        :type position_count: int, optional
-        :param clamp_positive: Positive clamp value, defaults to 50
-        :type clamp_positive: int, optional
-        :param clamp_negative: Negative clamp value, defaults to -50
-        :type clamp_negative: int, optional
-        :param title: Plot title, defaults to None for a generic title
-        :type title: str, optional
-        :param y_label: Y-axis label, defaults to None for a generic label
-        :type y_label: str, optional
-        :param gtf_file: GTF file, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
-        :type gtf_file: str, optional
-        :param position_or_window: Position or window, defaults to "auto"
-        :type position_or_window: str, optional
-        """
-        assert (not self.pipeline and gene_data is not None and position_data is not None) or (not self.pipeline and csv is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
-        assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
-
+        assert (not self.pipeline and region_file is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
         parameters = locals().copy()
 
-        if gene_data is not None:
-            gene_data = gene_data.copy()
-            gene_data.process()
-            gene_data = gene_data.data_container
-        elif csv is None:
-            if position_or_window == "auto":
-                if self.saved_results.get((self.map_positions_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
-                elif self.saved_results.get((self.map_windows_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
-                else:
-                    # TODO invalid
-                    pass
-            elif position_or_window == "position":
-                gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
-            else:
-                gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
 
-        if position_data is not None:
-            position_data = position_data.copy()
-            position_data.process()
-            position_data = position_data.data_container
-        elif csv is None:
-            position_data = self.saved_results[self.merge_tables]
-        
-        parameters.pop("position_or_window")
-        parameters = self.__prepare_parameters(parameters, gene_data=gene_data, position_data=position_data)
+        if region_file is not None:
+            region_file = region_file.copy()
+            region_file.process()
+            region_file = region_file.data_container
+        else:
+            region_file = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
 
-        self.plots.graph_average_upstream_gene_methylation(**parameters)
+        parameters = self.__prepare_parameters(parameters, region_file = region_file)
+
+        res = self.obj.process_regions(**parameters)
+        return res
 
     GRAPH_UPSTREAM_UCSC_REQUIRED_COLUMNS = {
         "position_data": ["chromosome", "position_start", "methylation_percentage*"]
@@ -1040,6 +956,13 @@ class DiffMethylTools():
         :param gtf_file: GTF file, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         """
+        name = self.results_path + "/" + name
+
+
+        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
+        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+
+
         assert (not self.pipeline and position_data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         parameters = locals().copy()
 
@@ -1048,7 +971,7 @@ class DiffMethylTools():
             position_data.process()
             position_data = position_data.data_container
         else:
-            position_data = self.saved_results[self.merge_tables]
+            position_data = self.saved_results[self.merge_tables.__name__]
         
         parameters = self.__prepare_parameters(parameters, position_data=position_data)
 
@@ -1057,7 +980,7 @@ class DiffMethylTools():
     GRAPH_FULL_GENE_REQUIRED_COLUMNS = {
         "position_data": ["chromosome", "position_start", "methylation_percentage*"]
     }
-    def graph_full_gene(self, gene_name:str, position_data: Optional[InputProcessor] = None, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control",  gtf_file: str = "gencode.v41.chr_patch_hapl_scaff.annotation.gtf") -> None:
+    def graph_full_gene(self, gene_name:str, position_data: Optional[InputProcessor] = None, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, aggregate_samples: bool=True, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control",  gtf_file: str = "gencode.v41.chr_patch_hapl_scaff.annotation.gtf") -> None:
         """Generate a graph of full gene methylation.
 
         .. note::
@@ -1083,6 +1006,8 @@ class DiffMethylTools():
         :type end_marker: bool, optional
         :param deviation_display: Display standard deviation regions, defaults to True
         :type deviation_display: bool, optional
+        :param aggregate_samples: Aggregate samples and display mean, defaults to True
+        :type aggregate_samples: bool, optional
         :param legend_size: Legend size, defaults to 12
         :type legend_size: int, optional
         :param title: Plot title, defaults to None for a generic title
@@ -1098,6 +1023,11 @@ class DiffMethylTools():
         :param gtf_file: GTF file, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         """
+        name = self.results_path + "/" + name
+
+        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
+        # if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+
         assert (not self.pipeline and position_data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         parameters = locals().copy()
 
@@ -1106,105 +1036,46 @@ class DiffMethylTools():
             position_data.process()
             position_data = position_data.data_container
         else:
-            position_data = self.saved_results[self.merge_tables]
+            position_data = self.saved_results[self.merge_tables.__name__]
         
         parameters = self.__prepare_parameters(parameters, position_data=position_data)
 
         self.plots.graph_full_gene(**parameters)
 
-    PIE_CHART_REQUIRED_COLUMNS = {
-        "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"],
-        "ccre_data": ["CCRE", "CCRE_diff"]
+    PLOT_METHYLATION_CURVE_REQUIRED_COLUMNS ={
+        "region_data":['chromosome', 'start', 'end'],
+	"position_data": ['chrom', 'chromStart', 'blockSizes_case*', 'blockSizes_ctr*']
     }
-    def pie_chart(self, gene_data: Optional[InputProcessor] = None, CCRE_data: Optional[InputProcessor] = None, regions: list[str]|str = ["intron", "exon", "CCRE", "upstream"], name: str = "pie_chart.png", hypermethylated:bool = True, hypomethylated:bool = True, hypermehylated_min:float = 20, hypomethylated_max:float = -20, hypermethylated_title:str = None, hypomethylated_title:str = None, title:str = None, position_or_window: str = "auto") -> None:
-        """Generate a pie chart of gene regions.
+    def plot_methylation_curve(self, region_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, name:str = ".", repeat_regions_df: str = "rmsk.txt", enhancer_promoter_df: str = "encodeCcreCombined.bed", repeat_regions_columns:list[int] = [5,6,7,11], enhancer_promoter_columns:list[int] = [0,1,2,12,13], window_size:int = 50, step_size:int = 25, chr_filter:str = None, start_filter:int = None, end_filter:int = None, sample_start_ind:int = 3) -> dict:
+        
+        assert (not self.pipeline and region_data is not None and position_data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
 
-        .. note::
-            Required columns for ``gene_data``:
-                - If ``"intron"`` is in ``gene_regions``: ``["intron"]``
-                - If ``"exon"`` is in ``gene_regions``: ``["exon"]``
-                - If ``"upstream"`` is in ``gene_regions``: ``["upstream"]``
-            Required columns for ``CCRE_data``:
-                - If ``"CCRE"`` is in ``gene_regions``: ``["CCRE"]``
-
-        :param gene_data: Gene data. Not necessary if the pipeline is in use, defaults to None
-        :type gene_data: InputProcessor, optional
-        :param CCRE_data: CCRE data. Not necessary if the pipeline is in use, defaults to None
-        :type CCRE_data: InputProcessor, optional
-        :param regions: Gene regions, defaults to ["intron", "exon", "CCRE", "upstream"]
-        :type regions: list[str] | str, optional
-        :param name: Output PNG file name, defaults to "pie_chart.png"
-        :type name: str, optional
-        :param hypermethylated: Include hypermethylated regions, defaults to True
-        :type hypermethylated: bool, optional
-        :param hypomethylated: Include hypomethylated regions, defaults to True
-        :type hypomethylated: bool, optional
-        :param hypermehylated_min: Minimum hypermethylation, defaults to 20
-        :type hypermehylated_min: float, optional
-        :param hypomethylated_max: Maximum hypomethylation, defaults to -20
-        :type hypomethylated_max: float, optional
-        :param hypermethylated_title: Hypermethylated title, defaults to None for a generic title
-        :type hypermethylated_title: str, optional
-        :param hypomethylated_title: Hypomethylated title, defaults to None for a generic title
-        :type hypomethylated_title: str, optional
-        :param title: Plot title, defaults to None for a generic title
-        :type title: str, optional
-        :param position_or_window: Position or window, options are ["auto", "position", "window"], defaults to "auto"
-        :type position_or_window: str, optional
-        """
-        assert (not self.pipeline and (gene_data is not None or CCRE_data is not None)) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
-        assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
-
+        if repeat_regions_df == "rmsk.txt": repeat_regions_df = Path(__file__).resolve().parent / repeat_regions_df
+        if enhancer_promoter_df == "encodeCcreCombined.bed": enhancer_promoter_df = Path(__file__).resolve().parent / enhancer_promoter_df
 
         parameters = locals().copy()
-
-        if gene_data is not None:
-            gene_data = gene_data.copy()
-            gene_data.process()
-            gene_data = gene_data.data_container
+        if region_data is not None:
+            region_data = region_data.copy()
+            region_data.process()
+            region_data = region_data.data_container
         else:
-            if position_or_window == "auto":
-                if self.saved_results.get((self.map_positions_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
-                elif self.saved_results.get((self.map_windows_to_genes, "gene")) is not None:
-                    gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
-                else:
-                    # TODO invalid
-                    pass
-            elif position_or_window == "position":
-                gene_data = self.saved_results[(self.map_positions_to_genes, "gene")]
-            else:
-                gene_data = self.saved_results[(self.map_windows_to_genes, "gene")]
-
-        if CCRE_data is not None:
-            CCRE_data = CCRE_data.copy()
-            CCRE_data.process()
-            CCRE_data = CCRE_data.data_container
+            region_data = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
+        if position_data is not None:
+            position_data = position_data.copy()
+            position_data.process()
+            position_data = position_data.data_container
         else:
-            if position_or_window == "auto":
-                if self.saved_results.get((self.map_positions_to_genes, "CCRE")) is not None:
-                    CCRE_data = self.saved_results[(self.map_positions_to_genes, "CCRE")]
-                elif self.saved_results.get((self.map_windows_to_genes, "CCRE")) is not None:
-                    CCRE_data = self.saved_results[(self.map_windows_to_genes, "CCRE")]
-                else:
-                    # TODO invalid
-                    pass
-            elif position_or_window == "position":
-                CCRE_data = self.saved_results[(self.map_positions_to_genes, "CCRE")]
-            else:
-                CCRE_data = self.saved_results[(self.map_windows_to_genes, "CCRE")]
-        
-        parameters.pop("position_or_window")
-        parameters = self.__prepare_parameters(parameters, gene_data=gene_data, CCRE_data=CCRE_data)
-
-        self.plots.pie_chart(**parameters)
+            position_data = self.saved_results[(self.filters.__name__, "position")]	
+        parameters = self.__prepare_parameters(parameters, region_data=region_data, position_data=position_data)
+        res = self.plots.plot_methylation_curve(**parameters)
+        return pd.DataFrame(res)
 
     ALL_ANALYSIS_REQUIRED_COLUMNS = {
-        "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count"],
-        "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count"]
+        "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"],
+        "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"]
     }
 
-    def all_analysis(self, case_data: InputProcessor, ctr_data: InputProcessor, window_based=True, prefix=".", min_cov = 10, cov_percentile = 1.0, min_samp_ctr = 2, min_samp_case = 2) -> pd.DataFrame:
+    def all_analysis(self, case_data: InputProcessor, ctr_data: InputProcessor, window_based=False, min_cov_individual = 10, min_cov_group = 15, filter_samples_ratio=0.6, meth_group_threshold=0.2, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2, max_q_value=0.05, abs_min_diff=0.0) -> pd.DataFrame:
         """Run all analysis methods.
 
         .. note::
@@ -1231,64 +1102,103 @@ class DiffMethylTools():
         :type ctr_data: InputProcessor
         :param window_based: Window-based analysis, defaults to True
         :type window_based: bool, optional
-        :param prefix: Output file directory, defaults to "."
-        :type prefix: str, optional
-        :param min_cov: Minimum coverage, defaults to 10
+        :param min_cov_individual: Minimum coverage filter (individual), defaults to 10
+        :type min_cov_individual: int, optional
         :type min_cov: int, optional
-        :param cov_percentile: Coverage percentile, defaults to 1.0
+        :param min_cov_group: Minimum coverage filter (group), defaults to 15
+        :param filter_samples_ratio: Minimum sample ratio filter. Used with min_cov_group, defaults to 0.6
+        :type filter_samples_ratio: float, optional
+        :param meth_group_threshold: Methylation group threshold. Used with min_cov_group, defaults to 0.2
+        :type meth_group_threshold: float, optional
+        :type min_cov_group: int, optional
+        :param cov_percentile: Maximum coverage filter (percentile of sample coverage). Ranges from 0.0-100.0, defaults to 100.0
         :type cov_percentile: float, optional
-        :param min_samp_ctr: Minimum control samples, defaults to 2
+        :param min_samp_ctr: Minimum samples in control, defaults to 2
         :type min_samp_ctr: int, optional
-        :param min_samp_case: Minimum case samples, defaults to 2
+        :param min_samp_case: Minimum samples in case, defaults to 2
         :type min_samp_case: int, optional
+        :param max_q_value: Maximum q-value filter, defaults to 0.05
+        :type max_q_value: float, optional
+        :param abs_min_diff: Minimum absolute difference filter, defaults to 0.25
+        :type abs_min_diff: float, optional
         :return: Final significant positions
         :rtype: pd.DataFrame
         """
         self.pipeline = False # True may take a lot of memory
         print("merging")
-        merged = self.merge_tables(case_data, ctr_data, min_cov=min_cov, cov_percentile=cov_percentile, min_samp_ctr=min_samp_ctr, min_samp_case=min_samp_case)
+        merged = self.merge_tables(case_data, ctr_data, min_cov_individual = min_cov_individual, min_cov_group = min_cov_group, filter_samples_ratio=filter_samples_ratio, meth_group_threshold=meth_group_threshold, cov_percentile = cov_percentile, min_samp_ctr = min_samp_ctr, min_samp_case = min_samp_case)
         del case_data, ctr_data
-        merged.to_csv(f"{prefix}/merged.csv", index=False)
         if window_based:
             print("windows")
             res = self.window_based(InputProcessor(merged))
-            res.to_csv(f"{prefix}/windows.csv", index=False)
             print("p-val")
-            res = self.generate_q_values(InputProcessor(res))
-            res.to_csv(f"{prefix}/q_values.csv", index=False)
+            # res = self.generate_q_values(InputProcessor(res))
             print("filter")
-            res = self.filters(InputProcessor(res))
-            res.to_csv(f"{prefix}/significant_windows.csv", index=False)
+            res = self.filters(InputProcessor(res), max_q_value=max_q_value, abs_min_diff=abs_min_diff)
             print("mapping")
             res = self.map_win_2_pos(InputProcessor(res), InputProcessor(merged))
-            res.to_csv(f"{prefix}/mapped_positions.csv", index=False)
         else:
             res = self.position_based(InputProcessor(merged))
             del merged
-            res.to_csv(f"{prefix}/positions.csv", index=False)
-            res = self.generate_q_values(InputProcessor(res))
-            res.to_csv(f"{prefix}/q_values.csv", index=False)
-            res = self.filters(InputProcessor(res))
-            res.to_csv(f"{prefix}/significant_positions.csv", index=False)
-        return res
+            # res = self.generate_q_values(InputProcessor(res))
+            res_filter = self.filters(InputProcessor(res), max_q_value=max_q_value, abs_min_diff=abs_min_diff)
+            ####################################
+        DMR = self.generate_DMR(InputProcessor(res_filter), InputProcessor(res))
+        pos_mapped = self.map_win_2_pos(InputProcessor(DMR[0]) , InputProcessor(res) )
+        mapped = self.map_positions_to_genes(InputProcessor(pos_mapped))
+        return mapped
     
     ALL_PLOTS_REQUIRED_COLUMNS = {
         "data": ["chromosome", "position_start", "region_start", "q-value", "diff", "methylation_percentage*", "coverage"],
         "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"],
         "ccre_data": ["CCRE", "CCRE_diff"]
     }
-    def all_plots(self, data: InputProcessor, gene_data: InputProcessor, ccre_data: InputProcessor) -> None:
+    def all_plots(self, data: InputProcessor, window_data: InputProcessor, gene: InputProcessor, ccre: InputProcessor) -> None:
         """Run all plot methods."""
         self.pipeline = False
-        self.volcano_plot(data)
-        self.manhattan_plot(data)
-        self.graph_gene_regions(gene_data, ccre_data)
-        self.graph_upstream_gene_methylation(data, gene_data)
-        self.graph_average_upstream_gene_methylation(data, gene_data)
-        self.pie_chart(gene_data, ccre_data)
-    
+        self.volcano_plot(data) #
+        self.manhattan_plot(data) #
+        #try:
+        self.graph_upstream_gene_methylation(data, window_data, position_count = 50, min_hypomethylated_windows= 20, min_hypermethylated_windows = 20, left_distance = 4000, right_distance = 100, clamp_negative = -100, clamp_positive = 100)
+        #except:
+        #    print("No graph_upstream_gene_methylation generated")
+        # self.pie_chart(gene_data, ccre_data)
+        self.graph_gene_regions(gene, ccre)
+    MATCH_REGION_ANNOTATION_REQUIRED_COLUMNS ={
+        "regions_df":['chrom', 'chromStart', 'chromEnd'],
+    }
+    def match_region_annotation(self, regions_df: Optional[InputProcessor] = None, bed_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", name:str="match_region_annotation", annotation_or_region: str = "region") -> list:
 
+        assert (not self.pipeline and regions_df is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
+        assert annotation_or_region in ["annotation", "region"], "Invalid parameter for annotation_or_region. Options are: [""annotation"", ""region""]"
 
+        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        parameters = locals().copy()
+        if regions_df is not None:
+            regions_df = regions_df.copy()
+            regions_df.process()
+            regions_df = regions_df.data_container
+        else:
+            regions_df = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
+        parameters = self.__prepare_parameters(parameters, regions_df=regions_df)
+        res = self.plots.match_region_annotation(**parameters)
+        return res    
+    MATCH_POSITION_ANNOTATION_REQUIRED_COLUMNS ={
+        "regions_df":['chrom', 'chromStart'],
+    }
+    def match_position_annotation(self, regions_df: Optional[InputProcessor] = None, bed_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", name:str="match_position_annotation") -> list:
+        assert (not self.pipeline and regions_df is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
+        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        parameters = locals().copy()
+        if regions_df is not None:
+            regions_df = regions_df.copy()
+            regions_df.process()
+            regions_df = regions_df.data_container
+        else:
+            regions_df = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
+        parameters = self.__prepare_parameters(parameters, regions_df=regions_df)
+        res = self.plots.match_position_annotation(**parameters)
+        return res
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="CLI for DiffMethylTools")
@@ -1305,6 +1215,7 @@ def parse_arguments():
         method_parser = subparsers.add_parser(name, help=f"Run the {name} method")
         sig = inspect.signature(method)
         for param_name, param in sig.parameters.items():
+            # print(param_name, param) #######################################
             if param_name == "self":
                 continue
             arg_type = param.annotation if param.annotation != inspect.Parameter.empty else str
@@ -1439,6 +1350,11 @@ def main():
     elif type(result) == list:
         for i, df in enumerate(result):
             df.to_csv(f"{output}_{i}.csv", index=False)
+    elif type(result) == tuple:
+        for i, l in enumerate(list(result)):
+            f = open(f"{output}_{i}.txt", "w")
+            f.write("\n".join(l))
+            f.close()
 
 if __name__ == "__main__":
     main()
