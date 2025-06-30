@@ -151,8 +151,12 @@ class DiffMethylTools():
         "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_counta", "strand"],
         "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"]
     }
+<<<<<<< HEAD
     @analysis_function
     def merge_tables(self, case_data: InputProcessor, ctr_data: InputProcessor, min_cov_individual = 10, min_cov_group = 15, filter_samples_ratio=0.6, meth_group_threshold=0.2, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2, rerun=False, small_mean = 1) -> pd.DataFrame:
+=======
+    def merge_tables(self, case_data: InputProcessor, ctr_data: InputProcessor, min_cov = 10, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2) -> pd.DataFrame:
+>>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
         """Merge case and control data tables.
 
         .. note::
@@ -168,12 +172,15 @@ class DiffMethylTools():
         :param min_cov_individual: Minimum coverage filter (individual), defaults to 10
         :type min_cov_individual: int, optional
         :type min_cov: int, optional
+<<<<<<< HEAD
         :param min_cov_group: Minimum coverage filter (group), defaults to 15
         :param filter_samples_ratio: Minimum sample ratio filter. Used with min_cov_group, defaults to 0.6
         :type filter_samples_ratio: float, optional
         :param meth_group_threshold: Methylation group threshold. Used with min_cov_group, defaults to 0.2
         :type meth_group_threshold: float, optional
         :type min_cov_group: int, optional
+=======
+>>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
         :param cov_percentile: Maximum coverage filter (percentile of sample coverage). Ranges from 0.0-100.0, defaults to 100.0
         :type cov_percentile: float, optional
         :param min_samp_ctr: Minimum samples in control, defaults to 2
@@ -474,9 +481,13 @@ class DiffMethylTools():
     MAP_POSITIONS_TO_GENES_REQUIRED_COLUMNS = {
         "positions": ["chromosome", "position_start", "diff"]
     }
+<<<<<<< HEAD
     @analysis_function
     def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", bed_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
     #def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
+=======
+    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="gencode.v42.chr_patch_hapl_scaff.annotation.gtf", pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
+>>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
         """Map positions to genes.
 
         .. note::
@@ -535,8 +546,84 @@ class DiffMethylTools():
         res = self.obj.map_positions_to_genes(**parameters)
 
         if self.pipeline:
+<<<<<<< HEAD
             self.saved_results[(self.map_positions_to_genes.__name__, "gene")] = res[0]
             self.saved_results[(self.map_positions_to_genes.__name__, "CCRE")] = res[1]
+=======
+            self.saved_results[(self.map_positions_to_genes, "gene")] = res[0]
+            self.saved_results[(self.map_positions_to_genes, "CCRE")] = res[1]
+
+        return tuple(x.reset_index() for x in res)
+    
+    MAP_WINDOWS_TO_GENES_REQUIRED_COLUMNS = {    
+        "windows": ["chromosome", "region_start", "region_end", "diff"]
+    }
+    def map_windows_to_genes(self, windows: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="gencode.v42.chr_patch_hapl_scaff.annotation.gtf", enhd_thr = 500000, enhp_thr = 50000, prom_thr = 2000, processes=12, pipeline_input_source = "auto") -> tuple[pd.DataFrame, pd.DataFrame]:
+        """Map windows to genes.
+
+        .. note::
+            Required columns for ``windows``:
+                - ``["chromosome", "region_start", "region_end", "diff"]``
+
+        :param windows: Window data. Not necessary if the pipeline is in use, defaults to None
+        :type windows: InputProcessor, optional
+        :param gene_regions: Gene regions to map to. Options are any combination of ``["intron", "exon", "upstream", "CCRE"]``, defaults to ``["intron", "exon", "upstream", "CCRE"]``
+        :type gene_regions: list[str] | str, optional
+        :param min_pos_diff: Minimum position difference for mapping, defaults to 0
+        :type min_pos_diff: int, optional
+        :param bed_file: BED annotation file with unflexible input, defaults to "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed"
+        :type bed_file: str, optional
+        :param gtf_file: GTF annotation file with unflexible input, defaults to "gencode.v42.chr_patch_hapl_scaff.annotation.gtf"
+        :type gtf_file: str, optional
+        :param enhd_thr: Distal enhancer distance threshold for finding nearest gene to CCRE, defaults to 500000
+        :type enhd_thr: int, optional
+        :param enhp_thr: Proximal enhancer distance threshold for finding nearest gene to CCRE, defaults to 50000
+        :type enhp_thr: int, optional
+        :param prom_thr: Promoter enhancer distance threshold for finding nearest gene to CCRE, defaults to 2000
+        :type prom_thr: int, optional
+        :param processes: Number of CPU processes, defaults to 12
+        :type processes: int, optional
+        :param pipeline_input_source: Pipeline input source for pipelining, options are ["auto", "generate_DMR", "generate_q_values", "filters"], defaults to "auto"
+        :type pipeline_input_source: str, optional
+        :return: Mapped windows to genes in a list: ``[gene mapping dataframe, CCRE mapping dataframe]``
+        :rtype: list[pd.DataFrame]
+        """
+        assert (not self.pipeline and windows is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
+        assert pipeline_input_source in ["auto", "generate_DMR", "generate_q_values", "filters"], "Invalid parameter for pipeline_input_source. Options are: [""auto"", ""generate_DMR"", ""generate_q_values"", ""filters""]"
+
+        parameters = locals().copy()
+
+        if windows is not None:
+            windows = windows.copy()
+            windows.process()
+            windows = windows.data_container
+        else:
+            # pipeline is in use here, due to assert and data is None
+            if pipeline_input_source == "auto":
+                if self.saved_results.get(self.generate_DMR) is not None:
+                    windows = self.saved_results[(self.generate_DMR, "clustered_dms_df")]
+                elif self.saved_results.get((self.filters, "window")) is not None:
+                    windows = self.saved_results[(self.filters, "window")]
+                elif self.saved_results.get((self.generate_q_values, "window")) is not None:
+                    windows = self.saved_results[(self.generate_q_values, "window")]
+            elif pipeline_input_source == "generate_DMR":
+                windows = self.saved_results[(self.generate_DMR, "clustered_dms_df")]
+            elif pipeline_input_source == "generate_q_values":
+                windows = self.saved_results[(self.generate_q_values, "window")]
+            else:
+                windows = self.saved_results[(self.filters, "window")]
+        
+        
+        parameters.pop("pipeline_input_source")
+
+        parameters = self.__prepare_parameters(parameters, windows=windows)
+
+        res = self.obj.map_windows_to_genes(**parameters)
+
+        if self.pipeline:
+            self.saved_results[(self.map_windows_to_genes, "gene")] = res[0]
+            self.saved_results[(self.map_windows_to_genes, "CCRE")] = res[1]
+>>>>>>> 5c754e21216943eb7fd99182e3a2b0c183256976
 
         return tuple(x.reset_index() for x in res)
     

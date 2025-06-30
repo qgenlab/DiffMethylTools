@@ -68,7 +68,7 @@ def process_chunk(chunk, bed_gene_strings, bed_chrom_starts, gene_starts, gene_e
         results.append(result)
     return results
 
-def window_based_gene(positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="outfile_w_hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", enhd_thr = 500000, enhp_thr = 50000, prom_thr = 2000, processes=12):
+def window_based_gene(positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="", gtf_file="", enhd_thr = 500000, enhp_thr = 50000, prom_thr = 2000, processes=12):
     """ 
     
     Required Columns: ["chrom", "start", "end", "diff"]
@@ -255,7 +255,7 @@ def window_based_gene(positions: InputProcessor.data_container, gene_regions: li
     print(ccre_result)
     return result, ccre_result
     
-def position_based_gene(positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="outfile_w_hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
+def position_based_gene(positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="", gtf_file=""):
     """
     
     Required Columns: ["chrom", "chromStart", "diff"]
