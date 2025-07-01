@@ -1167,7 +1167,7 @@ class DiffMethylTools():
     MATCH_REGION_ANNOTATION_REQUIRED_COLUMNS ={
         "regions_df":['chrom', 'chromStart', 'chromEnd'],
     }
-    def match_region_annotation(self, regions_df: Optional[InputProcessor] = None, bed_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", name:str="match_region_annotation", annotation_or_region: str = "region") -> list:
+    def match_region_annotation(self, regions_df: Optional[InputProcessor] = None, bed_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", name:str="match_region_annotation", annotation_or_region: str = "region", show_counts: bool = False) -> list:
 
         assert (not self.pipeline and regions_df is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
         assert annotation_or_region in ["annotation", "region"], "Invalid parameter for annotation_or_region. Options are: [""annotation"", ""region""]"
