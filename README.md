@@ -17,6 +17,11 @@ Then activate the environment with
 conda activate DiffMethylTools
 ```
 
+### Download annotation databases
+```
+wget https://github.com/qgenlab/DiffMethylTools/releases/download/v0.1/CpG_gencode_annotation_2025July08.bed.gz
+gzip -d CpG_gencode_annotation_2025July08.bed.gz
+```
 
 ## Usage
 
