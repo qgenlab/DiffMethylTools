@@ -21,6 +21,8 @@ conda activate DiffMethylTools
 ```
 wget https://github.com/qgenlab/DiffMethylTools/releases/download/v0.1/CpG_gencode_annotation_2025July08.bed.gz
 gzip -d CpG_gencode_annotation_2025July08.bed.gz
+chmod +x get_files.sh
+./get_files.sh
 ```
 
 ## Usage
