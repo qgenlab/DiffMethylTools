@@ -255,7 +255,7 @@ def window_based_gene(positions: InputProcessor.data_container, gene_regions: li
     print(ccre_result)
     return result, ccre_result
     
-def position_based_gene(positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="outfile_w_hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
+def position_based_gene(positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
     """
     
     Required Columns: ["chrom", "chromStart", "diff"]
@@ -274,7 +274,7 @@ def position_based_gene(positions: InputProcessor.data_container, gene_regions: 
         return max_abs_per_gene
 
     if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent.parent / gtf_file
-    if bed_file == "outfile_w_hm450.bed": bed_file = Path(__file__).resolve().parent.parent / bed_file
+    if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent.parent / bed_file
 
     assert_required_columns(positions, ["chrom", "chromStart", "diff"])
     
