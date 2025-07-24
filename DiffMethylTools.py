@@ -475,7 +475,7 @@ class DiffMethylTools():
         "positions": ["chromosome", "position_start", "diff"]
     }
     @analysis_function
-    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", bed_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
+    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
     #def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
         """Map positions to genes.
 
@@ -506,7 +506,7 @@ class DiffMethylTools():
         parameters = locals().copy()
 
         if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
-        if bed_file == "outfile_w_hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
 
         if positions is not None:
             positions = positions.copy()

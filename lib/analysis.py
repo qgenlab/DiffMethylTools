@@ -470,7 +470,7 @@ class Analysis():
         clustered_dms_df = pd.concat(clustered_dms) if clustered_dms else pd.DataFrame()
         return cluster_df, unclustered_dms_df.reset_index(), clustered_dms_df.reset_index()
 
-    def map_positions_to_genes(self, positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="outfile_w_hm450.bed"):#"gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
+    def map_positions_to_genes(self, positions: InputProcessor.data_container, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed"):#"gencode.v41.chr_patch_hapl_scaff.annotation.gtf"):
         """
         
         Required columns: ["chrom", "chromStart", "chromEnd", "diff"]
