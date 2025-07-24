@@ -12,3 +12,6 @@ wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bigBedToBed
 chmod +x bigBedToBed
 ./bigBedToBed encodeCcreCombined.bb encodeCcreCombined.bed
 rm ./bigBedToBed
+
+# For easier use
+mv CpG_gencode_annotation_2025July08.bed CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed
