@@ -522,7 +522,8 @@ class Plots():
             for key in data.columns:
                 key_trim = key[key.find("_")+1:]
                 case_ctr_str = key_trim[:key_trim.find("_")]
-                file.write(f"track type=bedGraph name=\"{gene} {key}\" visibility=full color={"200,100,0" if case_ctr_str == "ctr" else "0,100,200" if case_ctr_str == "case" else "200,0,100"} altColor=0,100,200\n")
+                color = "200,100,0" if case_ctr_str == "ctr" else "0,100,200" if case_ctr_str == "case" else "200,0,100"
+                file.write(f"track type=bedGraph name=\"{gene} {key}\" visibility=full color={color} altColor=0,100,200\n")
 
                 positions = position_data[["chrom", "chromStart", key]]
                 
