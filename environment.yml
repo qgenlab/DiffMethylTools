@@ -1,10 +1,8 @@
 name: DiffMethylTools
 channels:
-  - r
-  - anaconda
   - conda-forge
   - bioconda
-  - defaults
+  - r
 dependencies:
   - scipy=1.13.1=py312h2809609_0
   - pandas=2.2.2=py312h526ad5a_0
