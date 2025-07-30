@@ -108,6 +108,8 @@ def position_limma(data, features, test_factor, model):
     if not limma.is_fullrank(r_design)[0]:
         print(f"Column(s) {limma.nonEstimable(r_design)} are linear combinations of each other. This is not allowed. No p-values have been calculated.")
         return
+
+    start_time = time()
     print(f"Checked if design matrix is full rank: {time() - start_time} seconds")
 
     fit = limma.lmFit(df_r, r_design)
