@@ -6,6 +6,8 @@ The package integrates statistical testing, biological annotation, and high-qual
 
 By combining flexibility with usability, DiffMethylTools provides researchers with a practical and efficient platform for epigenomic analysis. It supports high-throughput and reproducible workflows and is especially well-suited for studies investigating the role of DNA methylation in development, differentiation, and disease progression.
 
+*This tutorial is still a work in progress.*
+
 ## Installation
 ### Install python dependencies
 To create DiffMethylTools environment, run:
@@ -148,3 +150,9 @@ python ../DiffMethylTools.py match_region_annotation \
   --regions_df_has_header \
   --annotation_or_region annotation
 ```
+
+## Citing DiffMethylTools
+If you used DiffMethylTools please cite:
+Derbel, Houssemeddine, et al. "DiffMethylTools: a toolbox of the detection, annotation and visualization of differential DNA methylation." bioRxiv (2025): 2025-07.
+
+*(Manuscript currently under peer review)*
