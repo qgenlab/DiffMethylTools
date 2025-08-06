@@ -153,6 +153,7 @@ python ../DiffMethylTools.py match_region_annotation \
 
 ## Citing DiffMethylTools
 If you used DiffMethylTools please cite:
+
 Derbel, Houssemeddine, Evan Kinnear, Justin J-L. Wong, and Qian Liu. "DiffMethylTools: a toolbox of the detection, annotation and visualization of differential DNA methylation." bioRxiv (2025): 2025-07.
 
 *(Manuscript currently under peer review)*
