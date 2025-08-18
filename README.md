@@ -53,8 +53,8 @@ python ../DiffMethylTools.py all_analysis \
   --case_data_negative_methylation_count_column_index 4 \
   --ctr_data_positive_methylation_count_column_index 3 \
   --ctr_data_negative_methylation_count_column_index 4 \
-  --case_data_separator '\t' \
-  --ctr_data_separator '\t'
+  --case_data_separator 't' \
+  --ctr_data_separator 't'
 ```
 #### Input Format 2: BED Format with % Methylation
 ```
@@ -67,8 +67,8 @@ Run all analysis with:
 python ../DiffMethylTools.py all_analysis \
   --case_data_file space_separated_case_file_paths \
   --ctr_data_file space_separated_ctr_file_paths \
-  --case_data_separator '\t' \
-  --ctr_data_separator '\t' \
+  --case_data_separator 't' \
+  --ctr_data_separator 't' \
   --case_data_chromosome_column_index 0 \
   --ctr_data_chromosome_column_index 0 \
   --case_data_position_start_column_index 1 \
