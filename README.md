@@ -100,8 +100,8 @@ This folder contains the required input and intermediate files used during the a
 - `position_based.csv`: Methylation data summarized at the individual CpG or position level, including q-value and difference information.
 - `filters.csv`: Filtered data based on methylation difference and statistical significance (q-value).
 - `generate_DMR_0.csv`: Differentially methylated regions (DMRs), aggregated from position-level data.
-- `generate_DMR_1.csv`: Differentially methylated loci (DMLs) located within identified DMRs.
-- `generate_DMR_2.csv`: DMLs that do not fall within any DMR (isolated differential sites).
+- `generate_DMR_2.csv`: Differentially methylated loci (DMLs) located within identified DMRs.
+- `generate_DMR_1.csv`: DMLs that do not fall within any DMR (isolated differential sites).
 - `map_positions_to_genes_genes.csv`: Mapping of methylation regions to annotated gene features.
 - `map_positions_to_genes_CCRE.csv`: Mapping of methylation regions to candidate cis-regulatory elements (CCREs).
 - `map_win_2_pos.csv`: Maps DMR regions to all underlying CpG positions (includes both DML and non-DML positions, unlike `generate_DMR_1.csv`).
