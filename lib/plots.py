@@ -293,7 +293,7 @@ class Plots():
             cutoff = eval(f"{type}_cutoff")
             data = pl.from_pandas(ccre_data if type == "CCRE" else gene_data)
             counts = data[type].to_numpy()
-            
+            if counts.size ==0: continue 
             counts_99_9 = np.percentile(counts, 99.9)
             counts = np.minimum(counts, counts_99_9)
 
@@ -850,6 +850,7 @@ class Plots():
         """
         Reads region file and annotation file, finds matches, and counts occurrences.
         """
+        print(bed_file)
         if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent.parent / bed_file
         annotation_df = pd.read_csv(bed_file, sep='\t', header=None, names=['chr', 'start', 'end', 'id', 'annotation'])
         total_counts_1 = defaultdict(int)
@@ -886,7 +887,10 @@ class Plots():
                     all_cpg_epic = []
                     all_gene_list = {}
                     for _, annotation in matched_annotations.iterrows():
-                        categories, encode_types, repeat, cpg_epic, gene_list = Analysis.parse_annotation(annotation['annotation'])
+                        try:
+                            categories, encode_types, repeat, cpg_epic, gene_list = Analysis.parse_annotation(annotation['annotation'])
+                        except AttributeError:
+                            continue
                         all_categories.extend(categories)
                         all_encode_types.extend(encode_types)
                         all_repeat.extend(repeat)
@@ -933,7 +937,10 @@ class Plots():
                 else:
                     add_to_name = "region_based"
                     for _, annotation in matched_annotations.iterrows():
-                        categories, encode_types, repeat, cpg_epic, gene_list = Analysis.parse_annotation(annotation['annotation'])
+                        try:
+                            categories, encode_types, repeat, cpg_epic, gene_list = Analysis.parse_annotation(annotation['annotation'])
+                        except AttributeError:
+                            continue
                         for _ge in gene_list:
                             for _de in gene_list[_ge]:
                                 key = _ge + ':' + _de

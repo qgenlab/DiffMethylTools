@@ -475,8 +475,8 @@ class DiffMethylTools():
         "positions": ["chromosome", "position_start", "diff"]
     }
     @analysis_function
-    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, gtf_file="gencode.v41.chr_patch_hapl_scaff.annotation.gtf", bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
-    #def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gtf_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
+    def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, ref_folder:str = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, gtf_file="gencode.chr_patch_hapl_scaff.annotation.gtf", bed_file="CpG_gencode_annotation.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
+    #def map_positions_to_genes(self, positions: Optional[InputProcessor] = None, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], min_pos_diff=0, bed_file="CpG_gencode_annotation.bed", gtf_file="outfile_w_hm450.bed", pipeline_input_source = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame]:
         """Map positions to genes.
 
         .. note::
@@ -489,7 +489,7 @@ class DiffMethylTools():
         :type gene_regions: list[str] | str, optional
         :param min_pos_diff: Minimum position difference for mapping, defaults to 0
         :type min_pos_diff: int, optional
-        :param bed_file: BED annotation file with unflexible input format, defaults to "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed"
+        :param bed_file: BED annotation file with unflexible input format, defaults to "CpG_gencode_annotation.bed"
         :type bed_file: str, optional
         :param gtf_file: GTF annotation file with unflexible input format, defaults to "gencode.v42.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
@@ -505,8 +505,7 @@ class DiffMethylTools():
 
         parameters = locals().copy()
 
-        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
-        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        if ref_folder!= None: gtf_file = Path(__file__).resolve().parent / ref_folder / gtf_file ; bed_file = Path(__file__).resolve().parent / ref_folder / bed_file
 
         if positions is not None:
             positions = positions.copy()
@@ -530,6 +529,7 @@ class DiffMethylTools():
         
         
         parameters.pop("pipeline_input_source")
+        parameters.pop("ref_folder")
         parameters = self.__prepare_parameters(parameters, positions=positions, gtf_file =gtf_file, bed_file= bed_file)
 
         res = self.obj.map_positions_to_genes(**parameters)
@@ -803,7 +803,7 @@ class DiffMethylTools():
         "position_data": ["chromosome", "position_start", "diff"]
         # "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"]
     }
-    def graph_upstream_gene_methylation(self, position_data: Optional[InputProcessor] = None, region_data: Optional[InputProcessor] = None, name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 1000, right_distance: int = 1000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= "gencode.v41.chr_patch_hapl_scaff.annotation.gtf", position_or_window: str = "auto", position_or_region:str = "region") -> None:
+    def graph_upstream_gene_methylation(self, position_data: Optional[InputProcessor] = None, ref_folder:str = None, region_data: Optional[InputProcessor] = None, name: str = "upstream_methylation.png", csv_name: str = "upstream_methylation.csv", csv: Optional[str] = None, left_distance: int = 1000, right_distance: int = 1000, window_size: int = 100, hypermethylated: bool = True, gene_hypermethylated_min: int = 20, window_hypermethylated_min: int = 5, min_hypermethylated_windows: int = 5, hypomethylated: bool = True, gene_hypomethylated_max: int = -20, window_hypomethylated_max: int = -5, min_hypomethylated_windows: int = 5, position_count: int = 5, clamp_positive: int = 50, clamp_negative: int = -50, title:str = None, gtf_file: str= "gencode.chr_patch_hapl_scaff.annotation.gtf", position_or_window: str = "auto", position_or_region:str = "region") -> None:
         """Generate a graph of upstream gene methylation.
         
         .. note::
@@ -856,14 +856,14 @@ class DiffMethylTools():
         :type clamp_negative: int, optional
         :param title: Plot title, defaults to None for a generic title
         :type title: str, optional
-        :param gtf_file: GTF file, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
+        :param gtf_file: GTF file, defaults to "gencode.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         :param position_or_window: Position or window, options are ["auto", "position", "window"], defaults to "auto"
         :type position_or_window: str, optional
         """
         name = self.results_path + "/" + name
 
-        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
+        if ref_folder!= None: gtf_file = Path(__file__).resolve().parent / ref_folder / gtf_file
         assert (not self.pipeline and position_data is not None) or (not self.pipeline and csv is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         assert position_or_window in ["auto", "position", "window"], "Invalid parameter for position_or_window. Options are: [""auto"", ""position"", ""window""]"
         assert position_or_region in ["position", "region"], "Invalid parameter for position_or_window. Options are: [""position"", ""region""]"
@@ -905,6 +905,7 @@ class DiffMethylTools():
             region_data = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
 
         parameters.pop("position_or_window")
+        parameters.pop("ref_folder")
         parameters = self.__prepare_parameters(parameters, position_data=position_data, region_data=region_data)
 
         self.plots.graph_upstream_gene_methylation(**parameters)
@@ -913,10 +914,8 @@ class DiffMethylTools():
     PROCESS_REGIONS_REQUIRED_COLUMNS = {
         "region_file": ["chromosome","start","end"]
     }
-    def process_regions(self, region_file: Optional[InputProcessor] = None, annotation_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", gene_bed_file:str = "gencode.v42.chr_patch_hapl_scaff.annotation.genes.bed", ccre_file:str ="encodeCcreCombined.bed") -> list:
-        if annotation_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": annotation_file = Path(__file__).resolve().parent / annotation_file
-        if gene_bed_file == "gencode.v42.chr_patch_hapl_scaff.annotation.genes.bed": gene_bed_file = Path(__file__).resolve().parent / gene_bed_file
-        if ccre_file == "encodeCcreCombined.bed": ccre_file = Path(__file__).resolve().parent / ccre_file
+    def process_regions(self, region_file: Optional[InputProcessor] = None, ref_folder:str = None, annotation_file:str = "CpG_gencode_annotation.bed", gene_bed_file:str = "gencode.v42.chr_patch_hapl_scaff.annotation.genes.bed", ccre_file:str ="encodeCcreCombined.bed") -> list:
+        if ref_folder!= None : annotation_file = Path(__file__).resolve().parent /ref_folder / annotation_file ; gene_bed_file = Path(__file__).resolve().parent / ref_folder / gene_bed_file; ccre_file = Path(__file__).resolve().parent / ref_folder / ccre_file
 
         assert (not self.pipeline and region_file is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
         parameters = locals().copy()
@@ -931,13 +930,15 @@ class DiffMethylTools():
 
         parameters = self.__prepare_parameters(parameters, region_file = region_file)
 
+        parameters.pop("ref_folder")
+
         res = self.obj.process_regions(**parameters)
         return res
 
     GRAPH_UPSTREAM_UCSC_REQUIRED_COLUMNS = {
         "position_data": ["chromosome", "position_start", "methylation_percentage*"]
     }
-    def graph_upstream_UCSC(self, gene_name: str, position_data: Optional[InputProcessor] = None, name: str="UCSC_graph.bedGraph", before_tss: int = 5000, gtf_file: str = "gencode.v41.chr_patch_hapl_scaff.annotation.gtf") -> None:
+    def graph_upstream_UCSC(self, gene_name: str, position_data: Optional[InputProcessor] = None, ref_folder:str = None , name: str="UCSC_graph.bedGraph", before_tss: int = 5000, gtf_file: str = "gencode.chr_patch_hapl_scaff.annotation.gtf") -> None:
         """Generate a UCSC graph of upstream gene methylation.
 
         .. note::
@@ -953,14 +954,13 @@ class DiffMethylTools():
         :type name: str, optional
         :param before_tss: Distance before transcrption start site (TSS), defaults to 5000
         :type before_tss: int, optional
-        :param gtf_file: GTF file, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
+        :param gtf_file: GTF file, defaults to "gencode.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         """
         name = self.results_path + "/" + name
 
 
-        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
-        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        if ref_folder != None: gtf_file = Path(__file__).resolve().parent / ref_folder / gtf_file ; bed_file = Path(__file__).resolve().parent / ref_folder / bed_file
 
 
         assert (not self.pipeline and position_data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
@@ -973,6 +973,7 @@ class DiffMethylTools():
         else:
             position_data = self.saved_results[self.merge_tables.__name__]
         
+        parameters.pop("ref_folder")
         parameters = self.__prepare_parameters(parameters, position_data=position_data)
 
         self.plots.graph_upstream_UCSC(**parameters)
@@ -980,7 +981,7 @@ class DiffMethylTools():
     GRAPH_FULL_GENE_REQUIRED_COLUMNS = {
         "position_data": ["chromosome", "position_start", "methylation_percentage*"]
     }
-    def graph_full_gene(self, gene_name:str, position_data: Optional[InputProcessor] = None, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, aggregate_samples: bool=True, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control",  gtf_file: str = "gencode.v41.chr_patch_hapl_scaff.annotation.gtf") -> None:
+    def graph_full_gene(self, gene_name:str, position_data: Optional[InputProcessor] = None, ref_folder:str = None, name="gene_methylation_graph.png", before_tss: int = 0, after_tss: Optional[int] = None, bin_size: int = 500, start_marker: bool = True, end_marker: bool = True, deviation_display: bool = True, aggregate_samples: bool=True, legend_size:int = 12, title: str = None, x_label:str = None, y_label:str=None, case_name: str = "Case", ctr_name: str = "Control",  gtf_file: str = "gencode.chr_patch_hapl_scaff.annotation.gtf") -> None:
         """Generate a graph of full gene methylation.
 
         .. note::
@@ -1020,13 +1021,12 @@ class DiffMethylTools():
         :type case_name: str, optional
         :param ctr_name: Control name in the legend, defaults to "Control"
         :type ctr_name: str, optional
-        :param gtf_file: GTF file, defaults to "gencode.v41.chr_patch_hapl_scaff.annotation.gtf"
+        :param gtf_file: GTF file, defaults to "gencode.chr_patch_hapl_scaff.annotation.gtf"
         :type gtf_file: str, optional
         """
         name = self.results_path + "/" + name
 
-        if gtf_file == "gencode.v41.chr_patch_hapl_scaff.annotation.gtf": gtf_file = Path(__file__).resolve().parent / gtf_file
-        # if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        if ref_folder != None: gtf_file = Path(__file__).resolve().parent /ref_folder / gtf_file ; bed_file = Path(__file__).resolve().parent / ref_folder / bed_file
 
         assert (not self.pipeline and position_data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided." 
         parameters = locals().copy()
@@ -1038,6 +1038,7 @@ class DiffMethylTools():
         else:
             position_data = self.saved_results[self.merge_tables.__name__]
         
+        parameters.pop("ref_folder")
         parameters = self.__prepare_parameters(parameters, position_data=position_data)
 
         self.plots.graph_full_gene(**parameters)
@@ -1046,12 +1047,11 @@ class DiffMethylTools():
         "region_data":['chromosome', 'start', 'end'],
 	"position_data": ['chrom', 'chromStart', 'blockSizes_case*', 'blockSizes_ctr*']
     }
-    def plot_methylation_curve(self, region_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, name:str = ".", repeat_regions_df: str = "rmsk.txt", enhancer_promoter_df: str = "encodeCcreCombined.bed", repeat_regions_columns:list[int] = [5,6,7,11], enhancer_promoter_columns:list[int] = [0,1,2,12,13], window_size:int = 50, step_size:int = 25, chr_filter:str = None, start_filter:int = None, end_filter:int = None, sample_start_ind:int = 3) -> dict:
+    def plot_methylation_curve(self, region_data: Optional[InputProcessor] = None, ref_folder:str = None, position_data: Optional[InputProcessor] = None, name:str = ".", repeat_regions_df: str = "rmsk.txt", enhancer_promoter_df: str = "encodeCcreCombined.bed", repeat_regions_columns:list[int] = [5,6,7,11], enhancer_promoter_columns:list[int] = [0,1,2,12,13], window_size:int = 50, step_size:int = 25, chr_filter:str = None, start_filter:int = None, end_filter:int = None, sample_start_ind:int = 3) -> dict:
         
         assert (not self.pipeline and region_data is not None and position_data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
 
-        if repeat_regions_df == "rmsk.txt": repeat_regions_df = Path(__file__).resolve().parent / repeat_regions_df
-        if enhancer_promoter_df == "encodeCcreCombined.bed": enhancer_promoter_df = Path(__file__).resolve().parent / enhancer_promoter_df
+        if ref_folder != None: repeat_regions_df = Path(__file__).resolve().parent / ref_folder / repeat_regions_df ; enhancer_promoter_df = Path(__file__).resolve().parent / ref_folder / enhancer_promoter_df
 
         parameters = locals().copy()
         if region_data is not None:
@@ -1066,6 +1066,8 @@ class DiffMethylTools():
             position_data = position_data.data_container
         else:
             position_data = self.saved_results[(self.filters.__name__, "position")]	
+
+        parameters.pop("ref_folder")
         parameters = self.__prepare_parameters(parameters, region_data=region_data, position_data=position_data)
         res = self.plots.plot_methylation_curve(**parameters)
         return pd.DataFrame(res)
@@ -1075,7 +1077,7 @@ class DiffMethylTools():
         "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"]
     }
 
-    def all_analysis(self, case_data: InputProcessor, ctr_data: InputProcessor, window_based=False, min_cov_individual = 10, min_cov_group = 15, filter_samples_ratio=0.6, meth_group_threshold=0.2, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2, max_q_value=0.05, abs_min_diff=0.0) -> pd.DataFrame:
+    def all_analysis(self, case_data: InputProcessor, ctr_data: InputProcessor, ref_folder = None,window_based=False, min_cov_individual = 10, min_cov_group = 15, filter_samples_ratio=0.6, meth_group_threshold=0.2, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2, max_q_value=0.05, abs_min_diff=0.0) -> pd.DataFrame:
         """Run all analysis methods.
 
         .. note::
@@ -1145,7 +1147,7 @@ class DiffMethylTools():
             ####################################
         DMR = self.generate_DMR(InputProcessor(res_filter), InputProcessor(res))
         pos_mapped = self.map_win_2_pos(InputProcessor(DMR[0]) , InputProcessor(res) )
-        mapped = self.map_positions_to_genes(InputProcessor(pos_mapped))
+        mapped = self.map_positions_to_genes(InputProcessor(pos_mapped), ref_folder= ref_folder)
         return mapped
     
     ALL_PLOTS_REQUIRED_COLUMNS = {
@@ -1153,13 +1155,13 @@ class DiffMethylTools():
         "gene_data": ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"],
         "ccre_data": ["CCRE", "CCRE_diff"]
     }
-    def all_plots(self, data: InputProcessor, window_data: InputProcessor, gene: InputProcessor, ccre: InputProcessor) -> None:
+    def all_plots(self, data: InputProcessor, ref_folder: str,  window_data: InputProcessor, gene: InputProcessor, ccre: InputProcessor) -> None:
         """Run all plot methods."""
         self.pipeline = False
         self.volcano_plot(data) #
         self.manhattan_plot(data) #
         #try:
-        self.graph_upstream_gene_methylation(data, window_data, position_count = 50, min_hypomethylated_windows= 20, min_hypermethylated_windows = 20, left_distance = 4000, right_distance = 100, clamp_negative = -100, clamp_positive = 100)
+        self.graph_upstream_gene_methylation(position_data=data, region_data=window_data, ref_folder = ref_folder,  position_count = 50, min_hypomethylated_windows= 20, min_hypermethylated_windows = 20, left_distance = 4000, right_distance = 100, clamp_negative = -100, clamp_positive = 100)
         #except:
         #    print("No graph_upstream_gene_methylation generated")
         # self.pie_chart(gene_data, ccre_data)
@@ -1167,12 +1169,12 @@ class DiffMethylTools():
     MATCH_REGION_ANNOTATION_REQUIRED_COLUMNS ={
         "regions_df":['chrom', 'chromStart', 'chromEnd'],
     }
-    def match_region_annotation(self, regions_df: Optional[InputProcessor] = None, bed_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", name:str="match_region_annotation", annotation_or_region: str = "region", show_counts: bool = False) -> list:
+    def match_region_annotation(self, regions_df: Optional[InputProcessor] = None, ref_folder:str = None, bed_file:str = "CpG_gencode_annotation.bed", name:str="match_region_annotation", annotation_or_region: str = "region", show_counts: bool = False) -> list:
 
         assert (not self.pipeline and regions_df is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
         assert annotation_or_region in ["annotation", "region"], "Invalid parameter for annotation_or_region. Options are: [""annotation"", ""region""]"
 
-        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        if ref_folder!= None : bed_file = Path(__file__).resolve().parent / ref_folder / bed_file
         parameters = locals().copy()
         if regions_df is not None:
             regions_df = regions_df.copy()
@@ -1180,15 +1182,17 @@ class DiffMethylTools():
             regions_df = regions_df.data_container
         else:
             regions_df = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
+
+        parameters.pop("ref_folder")
         parameters = self.__prepare_parameters(parameters, regions_df=regions_df)
         res = self.plots.match_region_annotation(**parameters)
         return res    
     MATCH_POSITION_ANNOTATION_REQUIRED_COLUMNS ={
         "regions_df":['chrom', 'chromStart'],
     }
-    def match_position_annotation(self, regions_df: Optional[InputProcessor] = None, bed_file:str = "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed", name:str="match_position_annotation") -> list:
+    def match_position_annotation(self, regions_df: Optional[InputProcessor] = None, ref_folder:str = None, bed_file:str = "CpG_gencode_annotation.bed", name:str="match_position_annotation") -> list:
         assert (not self.pipeline and regions_df is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
-        if bed_file == "CpG_gencodev42ccrenb_repeat_epic1v2hm450.bed": bed_file = Path(__file__).resolve().parent / bed_file
+        if ref_folder!= None : bed_file = Path(__file__).resolve().parent / ref_folder / bed_file
         parameters = locals().copy()
         if regions_df is not None:
             regions_df = regions_df.copy()
@@ -1196,6 +1200,8 @@ class DiffMethylTools():
             regions_df = regions_df.data_container
         else:
             regions_df = self.saved_results[(self.generate_DMR.__name__, "cluster_df")]
+
+        parameters.pop("ref_folder")
         parameters = self.__prepare_parameters(parameters, regions_df=regions_df)
         res = self.plots.match_position_annotation(**parameters)
         return res
