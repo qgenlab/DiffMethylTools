@@ -506,6 +506,7 @@ class Analysis():
       gene_list = dict();
       nb_suf = 'nb100'
       #EPIC not consider
+      #print(annotation)
       annotations = annotation.split('/')
       for entry in annotations:
           if ':' in entry:
