@@ -20,11 +20,15 @@ conda activate DiffMethylTools
 ```
 
 ### Download annotation databases
+#### For hg19
 ```
-wget https://github.com/qgenlab/DiffMethylTools/releases/download/v0.1/CpG_gencode_annotation_2025July08.bed.gz
-gzip -d CpG_gencode_annotation_2025July08.bed.gz
-chmod +x get_files.sh
-./get_files.sh
+chmod +x get_files_hg19.sh
+./get_files_hg19.sh
+```
+#### For hg38
+```
+chmod +x get_files_hg38.sh
+./get_files_hg38.sh
 ```
 
 ## Usage
@@ -54,7 +58,8 @@ python ../DiffMethylTools.py all_analysis \
   --ctr_data_positive_methylation_count_column_index 3 \
   --ctr_data_negative_methylation_count_column_index 4 \
   --case_data_separator 't' \
-  --ctr_data_separator 't'
+  --ctr_data_separator 't' \
+  --ref_folder (hg19 or hg38)
 ```
 #### Input Format 2: BED Format with % Methylation
 ```
@@ -76,7 +81,8 @@ python ../DiffMethylTools.py all_analysis \
   --case_data_methylation_percentage_column_index 10 \
   --case_data_coverage_column_index 9 \
   --ctr_data_methylation_percentage_column_index 10 \
-  --ctr_data_coverage_column_index 9
+  --ctr_data_coverage_column_index 9 \
+  --ref_folder (hg19 or hg38)
 ```
 #### Custom Methylation Format
 If the input format does not follow standard **BED** or **Bismark** formats but still contains methylation and coverage information, the user has to specify for both base and control files:
@@ -120,7 +126,8 @@ python ../DiffMethylTools.py all_plots \
   --gene_file data/map_positions_to_genes_genes.csv \
   --gene_has_header \
   --ccre_file data/map_positions_to_genes_CCRE.csv \
-  --ccre_has_header
+  --ccre_has_header \
+  --ref_folder (hg19 or hg38)
 ```
 To plot all DMR regions on chr1 between positions 3,664,000 and 3,668,000:
 ```
@@ -131,7 +138,8 @@ python ../DiffMethylTools.py plot_methylation_curve \
   --position_data_has_header \
   --chr_filter chr1 \
   --start_filter 3664000 \
-  --end_filter 3668000
+  --end_filter 3668000 \
+  --ref_folder (hg19 or hg38)
 ```
 Omitting the --chr_filter, --start_filter, and --end_filter options will generate plots for all DMRs.
 
@@ -139,7 +147,8 @@ Region-based DMR annotation pie chart:
 ```
 python ../DiffMethylTools.py match_region_annotation \
   --regions_df_file generate_DMR_0.csv \
-  --regions_df_has_header
+  --regions_df_has_header \
+  --ref_folder (hg19 or hg38)
 ```
 
 Annotation-based DMR annotation pie chart:
@@ -148,7 +157,8 @@ Annotation-based DMR annotation pie chart:
 python ../DiffMethylTools.py match_region_annotation \
   --regions_df_file generate_DMR_0.csv \
   --regions_df_has_header \
-  --annotation_or_region annotation
+  --annotation_or_region annotation \
+  --ref_folder (hg19 or hg38)
 ```
 
 ## Citing DiffMethylTools
