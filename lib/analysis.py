@@ -125,8 +125,8 @@ class Analysis():
         case_col.extend( d["case"][0].select(cs.starts_with("blockSizes_")).columns)
         nbr_case = len(d["case"])
         nbr_ctr = len(d["ctr"])
-        min_samp_case = max(min_samp_case, math.ceil(nbr_case * filter_samples_ratio))
-        min_samp_ctr = max(min_samp_ctr, math.ceil(nbr_ctr * filter_samples_ratio))
+        min_samp_case = max(int(min_samp_case), math.ceil(nbr_case * filter_samples_ratio))
+        min_samp_ctr = max(int(min_samp_ctr), math.ceil(nbr_ctr * filter_samples_ratio))
         for e in range(1,len(d["ctr"])):
             ctr = ctr.join(d["ctr"][e], on=MERGE_LIST, how='full', coalesce=True)
             ctr_col.extend( d["ctr"][e].select(cs.starts_with("coverage_")).columns)
