@@ -685,7 +685,7 @@ class Plots():
             if not window_data.empty:
                 # print("window_data.iloc[:, sample_start_ind:]:  ", window_data.iloc[:, sample_start_ind:])
                 # avg_values = window_data.iloc[:, sample_start_ind:].mean().to_dict() 
-                avg_values = window_data.filter(like="blockSizes_").mean().to_dict()
+                avg_values = window_data.filter(like="blockSizes_").astype(float).mean().to_dict()
                 avg_values[start_col] = start + window_size // 2 
                 new_rows.append(avg_values)
         return pd.DataFrame(new_rows)
