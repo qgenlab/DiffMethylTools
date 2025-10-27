@@ -679,7 +679,7 @@ class Plots():
     def __sliding_window_avg(self, df, start_col, window_size, step_size, sample_start_ind):
         new_rows = []
         min_pos, max_pos = df[start_col].min(), df[start_col].max()
-        for start in range(min_pos, max_pos - window_size + 1, step_size):
+        for start in range(int(min_pos), int(max_pos) - int(window_size) + 1, int(step_size)):
             end = start + window_size
             window_data = df[(df[start_col] >= start) & (df[start_col] < end)]
             if not window_data.empty:
