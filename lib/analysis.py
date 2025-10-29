@@ -70,8 +70,8 @@ class Analysis():
         
 
         d = {}
-        d["ctr"] = [pl.from_pandas(x) for x in ctr_data] # Why from pandas
-        d["case"] = [pl.from_pandas(x) for x in case_data] # Why from pandas
+        d["ctr"] = [pl.from_pandas(x).with_columns(pl.col("chrom").cast(pl.Utf8)) for x in ctr_data] 
+        d["case"] = [pl.from_pandas(x).with_columns(pl.col("chrom").cast(pl.Utf8)) for x in case_data] 
 
         # print(d)
         for key in ["ctr", "case"]:
