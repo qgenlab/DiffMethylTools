@@ -1128,6 +1128,13 @@ class DiffMethylTools():
         """
         self.pipeline = False # True may take a lot of memory
         print("merging")
+		min_cov_individual = int(min_cov_individual)
+		min_cov_group = int(min_cov_group)
+		filter_samples_ratio = float(filter_samples_ratio)
+		meth_group_threshold = float(meth_group_threshold)
+		cov_percentile = float(cov_percentile)
+		min_samp_ctr = int(min_samp_ctr)
+		min_samp_case = int(min_samp_case)
         merged = self.merge_tables(case_data, ctr_data, min_cov_individual = min_cov_individual, min_cov_group = min_cov_group, filter_samples_ratio=filter_samples_ratio, meth_group_threshold=meth_group_threshold, cov_percentile = cov_percentile, min_samp_ctr = min_samp_ctr, min_samp_case = min_samp_case)
         del case_data, ctr_data
         if window_based:
