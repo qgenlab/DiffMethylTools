@@ -253,7 +253,9 @@ class InputProcessor():
                 for col in reversed(df.columns):
                     if col not in old_column_names:
                         selected_columns.insert(0, pl.col(col))
-                df = df.select(selected_columns) 
+                df = df.select(selected_columns)
+                cols_to_cast = [c for c in df.columns if c.startswith("methylation_percentage")]
+                df = df.with_columns([pl.col(c).str.strip_chars().cast(pl.Float64) for c in cols_to_cast])
                 print(df)
 
 
