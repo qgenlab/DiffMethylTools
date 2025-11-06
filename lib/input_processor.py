@@ -169,7 +169,7 @@ class InputProcessor():
                 return pl.from_pandas(source), source.index
             if isinstance(source, str):
                 has_header = self.has_header.popleft() if len(self.has_header) != 0 else True
-                return pl.read_csv(source, separator=sep, has_header=has_header), None
+                return pl.read_csv(source, separator=sep, has_header=has_header, infer_schema_length=None), None
             raise ValueError("Unsupported data source type")
 
         def rename_columns(df):
