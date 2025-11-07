@@ -254,8 +254,22 @@ class InputProcessor():
                     if col not in old_column_names:
                         selected_columns.insert(0, pl.col(col))
                 df = df.select(selected_columns)
-                cols_to_cast = [c for c in df.columns if c.startswith("methylation_percentage")]
-                df = df.with_columns([pl.col(c).str.strip_chars().cast(pl.Float64) for c in cols_to_cast])
+                # cols_to_cast = [c for c in df.columns if c.startswith("methylation_percentage")]
+                # df = df.with_columns([pl.col(c).str.strip_chars().cast(pl.Float64) for c in cols_to_cast])
+                cast_patterns = {
+                  r"^methylation_percentage.*$": pl.Float64,
+                  r"^(coverage_KEY|positive_methylation_count|negative_methylation_count).*": pl.Int64,
+                }
+                cast_exprs = []
+                for pattern, dtype in cast_patterns.items():
+                    matching_cols = [c for c in df.columns if re.match(pattern, c)]
+                    for col_name in matching_cols:
+                        if df[col_name].dtype == pl.Utf8:
+                            cast_exprs.append(pl.col(matching_cols).str.strip_chars().cast(dtype, strict=False))
+                        else:
+                            cast_exprs.append(pl.col(col_name).cast(dtype, strict=False))
+                if cast_exprs:
+                    df = df.with_columns(cast_exprs)
                 print(df)
 
 
