@@ -1077,7 +1077,7 @@ class DiffMethylTools():
         "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"]
     }
 
-    def all_analysis(self, case_data: InputProcessor, ctr_data: InputProcessor, ref_folder = None,window_based=False, min_cov_individual = 10, min_cov_group = 15, filter_samples_ratio=0.6, meth_group_threshold=0.2, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2, max_q_value=0.05, abs_min_diff=0.0) -> pd.DataFrame:
+    def all_analysis(self, case_data: InputProcessor, ctr_data: InputProcessor, ref_folder = None,window_based=False, min_cov_individual = 10, min_cov_group = 15, filter_samples_ratio=0.6, meth_group_threshold=0.2, cov_percentile = 100.0, min_samp_ctr = 2, min_samp_case = 2, max_q_value=0.05, abs_min_diff=0.0, features=None) -> pd.DataFrame:
         """Run all analysis methods.
 
         .. note::
@@ -1147,7 +1147,7 @@ class DiffMethylTools():
             print("mapping")
             res = self.map_win_2_pos(InputProcessor(res), InputProcessor(merged))
         else:
-            res = self.position_based(InputProcessor(merged))
+            res = self.position_based(InputProcessor(merged), features = features)
             del merged
             # res = self.generate_q_values(InputProcessor(res))
             res_filter = self.filters(InputProcessor(res), max_q_value=max_q_value, abs_min_diff=abs_min_diff)

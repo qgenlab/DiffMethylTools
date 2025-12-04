@@ -86,20 +86,19 @@ def position_limma(data, features, test_factor, model):
     m_df = final.filter(regex=("blockSizes_.*"))
 
     # prepare features for linear regression
-    if features is None:
-        design_matrix = pd.DataFrame()
-        design_matrix["Sample"] = ["_".join(x.split("_")[2:]) for x in m_df.columns]
-        design_matrix = design_matrix.set_index(["Sample"])
-    else:
-        design_matrix = pd.read_csv(features, index_col=0)
-        print("design_matrix", design_matrix)
-        print("loc columns", ["_".join(x.split("_")[2:]) for x in m_df.columns])
-        design_matrix = design_matrix.loc[["_".join(x.split("_")[2:]) for x in m_df.columns]]
+    # if features is None:
+    design_matrix = pd.DataFrame()
+    design_matrix["Sample"] = ["_".join(x.split("_")[2:]) for x in m_df.columns]
+    design_matrix = design_matrix.set_index(["Sample"])
     design_matrix["Group"] = [int("case" in x) for x in m_df.columns]
     design_matrix["Intercept"] = [1] * len(m_df.columns)
+    if features is not None:
+        df = pd.read_csv(features)
+        df_numeric = df.select_dtypes(include=["int", "float"])
+        df_numeric.index = design_matrix.index
+        design_matrix = pd.concat([design_matrix, df_numeric], axis=1)
     print({x:(x[x.find("_")+1:]) for x in m_df.columns})
     m_df = m_df.rename({x:(x[x.find("_")+1:]) for x in m_df.columns}, axis='columns')
-    
     
 
     df_r = pandas2ri.py2rpy(m_df)
