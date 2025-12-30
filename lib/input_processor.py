@@ -11,11 +11,11 @@ ACCEPTABLE_COLUMNS = {"chromosome", "position_start", "position_end", "region_st
                       "positive_methylation_count", "negative_methylation_count", "avg_case", "avg_ctr", 
                       "diff", "p-val", "nbr", "q-value", "gene", "intron", "intron_diff", "exon", "exon_diff", 
                       "upstream", "upstream_diff", "CCRE", "CCRE_diff", "tag", "nearest_genes"}
-ACCEPTABLE_STYLES = {"DiffMethylTools_input", "Bismark", "DiffMethylTools_header"}
+ACCEPTABLE_STYLES = {"BED", "CR", "DiffMethylTools_header"}
 
 # Format pre-selected styles
-DIFFMETHYLTOOLS_INPUT_STYLE = {"chromosome":0, "position_start":1, "position_end":2, "strand":5, "coverage":9, "methylation_percentage":10}
-BISMARK_STYLE = {"chromosome":0, "position_start":1, "strand":2, "positive_methylation_count":3, "negative_methylation_count":4}
+BED = {"chromosome":0, "position_start":1, "position_end":2, "strand":5, "coverage":9, "methylation_percentage":10}
+CR = {"chromosome":0, "position_start":1, "strand":2, "positive_methylation_count":3, "negative_methylation_count":4}
 
 DIFFMETHYLTOOLS_HEADER_STYLE = {"chromosome":0, "position_start":1, "position_end":2, "strand":3}
 
@@ -32,10 +32,10 @@ class FormatDefinition():
         assert style is None or style in ACCEPTABLE_STYLES, f"Acceptable format styles are: {str(ACCEPTABLE_STYLES)}."
 
         final_mapping = {}
-        if style == "DiffMethylTools_input":
-            final_mapping = DIFFMETHYLTOOLS_INPUT_STYLE
-        elif style == "Bismark":
-            final_mapping = BISMARK_STYLE
+        if style == "BED":
+            final_mapping = BED
+        elif style == "CR":
+            final_mapping = CR
         elif style == "DiffMethylTools_header":
             final_mapping = DIFFMETHYLTOOLS_HEADER_STYLE
         

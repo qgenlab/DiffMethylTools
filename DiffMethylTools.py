@@ -10,6 +10,8 @@ import os
 import yaml
 import inspect
 from pathlib import Path
+import warnings
+
 
 class DiffMethylTools():
     def __init__(self, pipeline=True, results_path=None):
@@ -1126,6 +1128,7 @@ class DiffMethylTools():
         :return: Final significant positions
         :rtype: pd.DataFrame
         """
+        if ref_folder == None: warnings.warn("all_analysis requires a reference folder; if not provided, the script will stop after the DMR identification step.", category=UserWarning, stacklevel=2)
         self.pipeline = False # True may take a lot of memory
         print("merging")
         min_cov_individual = int(min_cov_individual)
@@ -1214,7 +1217,14 @@ class DiffMethylTools():
         return res
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="CLI for DiffMethylTools")
+    parser = argparse.ArgumentParser(description="DiffMethylTools")
+    
+    parser.add_argument(
+    "--version",
+    action="version",
+    version="%(prog)s 1.0.0"
+    )
+    
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     obj = DiffMethylTools(pipeline=False)
@@ -1227,6 +1237,8 @@ def parse_arguments():
 
         method_parser = subparsers.add_parser(name, help=f"Run the {name} method")
         sig = inspect.signature(method)
+        if name == "all_analysis" or name == "merge_tables":
+            method_parser.add_argument(f"--input_format", type=str, default=None, help=f"(Input the input file format (CR for Bismark cytosine report or BED for BED methylation file) default: {None})")
         for param_name, param in sig.parameters.items():
             # print(param_name, param) #######################################
             if param_name == "self":
@@ -1303,6 +1315,7 @@ def main():
     sig = inspect.signature(method)
     method_args = {}
     output = method.__name__ + ".csv"
+    
     for param_name, param in sig.parameters.items():
         if param_name == "self":
             continue
@@ -1321,6 +1334,7 @@ def main():
             file_name = getattr(args, param_name+"_file", None)
             has_header = getattr(args, param_name+"_has_header", True)
             separator = getattr(args, param_name+"_separator", ",")
+            input_format = getattr(args, "input_format", None)
 
             if separator == "t":
                 separator = "\t"
@@ -1335,6 +1349,8 @@ def main():
                 ctr_case = getattr(args, param_name+"_column_control_case", None)
             
             format = FormatDefinition(column_mapping=data_indicies, sep=separator)
+            if input_format != None:
+                format = FormatDefinition(input_format)
 
             # Convert CSV file paths to pandas DataFrames
             if len(file_name) == 1:
@@ -1354,6 +1370,7 @@ def main():
             value = getattr(args, param_name, None)
         method_args[param_name] = value
 
+    # print(method_args)
     # Call the method and print the result
     result = method(**method_args)
     # TODO send to csv if dataframe output. Remember there can be multiple dataframes in output. Make default name <function>.csv
