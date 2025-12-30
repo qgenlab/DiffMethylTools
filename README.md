@@ -35,16 +35,78 @@ chmod +x get_files_hg38.sh
 
 
 ### Generate DML/DMR and map positions to genes
-DiffMethylTools supports flexible input formats and provides multiple downstream analysis modes. Below are example commands using standard input types and parameters.
+`DiffMethylTools` supports both **default methylation input formats** and **fully customizable formats**. Users can either specify a standard format via `--input_format` or manually define column indices.
 
-#### Input Format 1: Bismark Report Format
+### Default Input Formats
+#### Input Format 1: BED Format with Methylation Percentage
+
+Supported via: ```--input_format BED```
+
+Expected BED-like format (example):
+```
+chr1    10468   10469   5mC  743   +   10468  10469  0,0,0   52   95.21
+chr1    10470   10471   5mC  850   +   10470  10471  0,0,0   58   94.26
+```
+
+Run all analysis with:
+```
+python ../DiffMethylTools/DiffMethylTools.py all_analysis \
+  --case_data_file case1.bed case2.bed \
+  --ctr_data_file ctr1.bed ctr2.bed \
+  --input_format BED \
+  --ref_folder hg38 (or hg19)
+```
+For BED input, DiffMethylTools automatically interprets:
+- Chromosome
+- Position
+- Coverage
+- Methylation percentage
+
+No manual column specification is required.
+
+#### Input Format 2: Bismark CpG Report Format (CR)
+
+Supported via: ```--input_format CR```
+
+Expected Bismark CpG report format:
+
 ```
 chr1    10468   +    12   4   CG   CGC
 chr1    10470   +     8   4   CG   CGC
 chr1    10483   +     7   2   CG   CGC
-...
 ```
-Run all analysis with:
+
+
+Run full analysis:
+
+```
+python ../DiffMethylTools/DiffMethylTools.py all_analysis \
+  --case_data_file case1_CpG_report.txt case2_CpG_report.txt case3_CpG_report.txt \
+  --ctr_data_file ctr1_CpG_report.txt ctr2_CpG_report.txt ctr3_CpG_report.txt \
+  --input_format CR \
+  --ref_folder hg38 (or hg19)
+```
+For CR input, DiffMethylTools automatically detects:
+- Chromosome
+- CpG position
+- Methylated counts
+- Unmethylated counts
+
+
+#### Flexible / Custom Input Format
+If the input files do not conform to standard BED or Bismark CpG report formats, users can manually specify column indices. For both case and control files, the user must define:
+- Field separator
+- Chromosome column index (0-based)
+- Start position column index
+- Either:
+  - Methylation percentage + coverage column indices
+  or
+  - Methylated + unmethylated count column indices
+
+
+
+##### Examples:
+Custom format with CpG report file as input
 ```
 python ../DiffMethylTools.py all_analysis \
   --case_data_file space_separated_case_file_paths \
@@ -61,13 +123,9 @@ python ../DiffMethylTools.py all_analysis \
   --ctr_data_separator 't' \
   --ref_folder (hg19 or hg38)
 ```
-#### Input Format 2: BED Format with % Methylation
-```
-chr1    10468   10469   5mC  743   +   10468  10469  0,0,0   52   95.21
-chr1    10470   10471   5mC  850   +   10470  10471  0,0,0   58   94.26
-...
-```
-Run all analysis with:
+
+Custom format with Bed file as input
+
 ```
 python ../DiffMethylTools.py all_analysis \
   --case_data_file space_separated_case_file_paths \
@@ -84,12 +142,6 @@ python ../DiffMethylTools.py all_analysis \
   --ctr_data_coverage_column_index 9 \
   --ref_folder (hg19 or hg38)
 ```
-#### Custom Methylation Format
-If the input format does not follow standard **BED** or **Bismark** formats but still contains methylation and coverage information, the user has to specify for both base and control files:
- - The separator .
- - The chromosome index (0 based).
- - The start position index.
- - The methylation percentage and coverage index or the number of methylation and unmethylated count index.
 
 Running *all_analysis* will generate two folders:
 
