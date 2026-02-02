@@ -150,7 +150,7 @@ class DiffMethylTools():
         return wrapper
 
     MERGE_TABLES_REQUIRED_COLUMNS = {
-        "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_counta", "strand"],
+        "case_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"],
         "ctr_data": ["chromosome", "position_start", "coverage", "methylation_percentage", "positive_methylation_count", "negative_methylation_count", "strand"]
     }
     @analysis_function
