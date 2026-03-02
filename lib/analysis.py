@@ -141,18 +141,24 @@ class Analysis():
         case = df_all.select(case_col)
         ctr = df_all.select(ctr_col)
         cov_columns = cs.starts_with("coverage_")
-        filtered_meth_df = df_all.with_columns(sum_=pl.sum_horizontal((cov_columns >= min_cov_group))).select(pl.col("sum_") >= (min_samp_case + min_samp_ctr))["sum_"]
+        # filtered_meth_df = df_all.with_columns(sum_=pl.sum_horizontal((cov_columns >= min_cov_group))).select(pl.col("sum_") >= (min_samp_case + min_samp_ctr))["sum_"]
+        filtered_meth_df = df_all.with_columns(sum_=pl.sum_horizontal(cov_columns)).select(pl.col("sum_") >= (min_cov_group * 2))["sum_"]
         case = case.filter(filtered_meth_df)
         ctr = ctr.filter(filtered_meth_df)
-        case1 = case.with_columns(sum_case=pl.sum_horizontal(case.select((cov_columns >= min_cov_group))))["sum_case"]
-        ctr1 = ctr.with_columns(sum_ctr=pl.sum_horizontal(ctr.select((cov_columns >= min_cov_group))))["sum_ctr"]
-        ctr_cov_cond = ctr.with_columns(sum_ctr=pl.sum_horizontal((cov_columns >= min_cov_group))).select(pl.col("sum_ctr") >= min_samp_ctr)["sum_ctr"]
-        case_cov_cond = case.with_columns(sum_case=pl.sum_horizontal((cov_columns >= min_cov_group))).select(pl.col("sum_case") >= min_samp_case)["sum_case"]
+        # case1 = case.with_columns(sum_case=pl.sum_horizontal(case.select((cov_columns >= min_cov_group))))["sum_case"]
+        # ctr1 = ctr.with_columns(sum_ctr=pl.sum_horizontal(ctr.select((cov_columns >= min_cov_group))))["sum_ctr"]
+        case1 = case.with_columns(sum_case=pl.sum_horizontal(case.select(cov_columns)))["sum_case"]
+        ctr1 = ctr.with_columns(sum_ctr=pl.sum_horizontal(ctr.select(cov_columns)))["sum_ctr"]
+        # ctr_cov_cond = ctr.with_columns(sum_ctr=pl.sum_horizontal((cov_columns >= min_cov_group))).select(pl.col("sum_ctr") >= min_samp_ctr)["sum_ctr"]
+        # case_cov_cond = case.with_columns(sum_case=pl.sum_horizontal((cov_columns >= min_cov_group))).select(pl.col("sum_case") >= min_samp_case)["sum_case"]
+        ctr_cov_cond = ctr1 >= min_cov_group
+        case_cov_cond = case1 >= min_cov_group
         case_mean = case.with_columns(mean_blockSizes=case.select(cs.contains("blockSizes_")).mean_horizontal())['mean_blockSizes']
         ctr_mean = ctr.with_columns(mean_blockSizes=ctr.select(cs.contains("blockSizes_")).mean_horizontal())['mean_blockSizes']
         group_filter = case_cov_cond & ctr_cov_cond
         if min_samp_case + min_samp_ctr < nbr_case + nbr_ctr:
-            group_filter = group_filter | ( ( ( case1 >= min_samp_case ) & ( ctr1 < min_samp_ctr) & ( ctr_mean < small_mean ) ) |  ( ( ctr1 >= min_samp_ctr    ) & ( case1 < min_samp_case ) & ( case_mean < small_mean ) ) )
+            group_filter = group_filter | ( ( ( case1 >= min_cov_group ) & ( ctr1 < min_cov_group) & ( ctr_mean < small_mean ) ) |  ( ( ctr1 >= min_cov_group ) & ( case1 < min_cov_group ) & ( case_mean < small_mean ) ) )
+            # group_filter = group_filter | ( ( ( case1 >= min_samp_case ) & ( ctr1 < min_samp_ctr) & ( ctr_mean < small_mean ) ) |  ( ( ctr1 >= min_samp_ctr    ) & ( case1 < min_samp_case ) & ( case_mean < small_mean ) ) )
         case = case.filter(group_filter)
         ctr = ctr.filter(group_filter)
         case = case.to_pandas()
