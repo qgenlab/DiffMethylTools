@@ -1,6 +1,6 @@
 from typing import Callable, Optional, Type, get_args, get_origin, Union
 from types import UnionType
-from lib import InputProcessor, Plots, FormatDefinition, Analysis#################Analysis
+from .lib import InputProcessor, Plots, FormatDefinition, Analysis#################Analysis
 from scipy.stats import mannwhitneyu
 from functools import wraps
 import inspect
@@ -11,6 +11,8 @@ import yaml
 import inspect
 from pathlib import Path
 import warnings
+import subprocess
+import sys
 
 
 class DiffMethylTools():
@@ -74,12 +76,6 @@ class DiffMethylTools():
                                 res[-1] = res[-1].data_container
                             print(res)
                             result = tuple(res)
-                        return result
-                        
-                        # turn chromstart chromend into ints
-                        # result["chr"] = result["chr"].astype(str)
-                        # result["chromStart"] = result["chromStart"].astype(int)
-                        # result["chromEnd"] = result["chromEnd"].astype(int)
                         return result
                     else:
                         state[func.__name__] = False
@@ -169,8 +165,8 @@ class DiffMethylTools():
         :type ctr_data: InputProcessor
         :param min_cov_individual: Minimum coverage filter (individual), defaults to 10
         :type min_cov_individual: int, optional
-        :type min_cov: int, optional
         :param min_cov_group: Minimum coverage filter (group), defaults to 15
+        :type min_cov_group: int, optional
         :param filter_samples_ratio: Minimum sample ratio filter. Used with min_cov_group, defaults to 0.6
         :type filter_samples_ratio: float, optional
         :param meth_group_threshold: Methylation group threshold. Used with min_cov_group, defaults to 0.2
@@ -210,7 +206,7 @@ class DiffMethylTools():
     }
     @analysis_function
     def position_based(self, data: Optional[InputProcessor] = None , method="limma", features=None, test_factor="Group", processes=12, model="eBayes", min_std=0.1, fill_na:bool=True, rerun=False) -> pd.DataFrame:
-        """Perform position-based analysis. Has options for using the gamma function, or the limma R package.
+        """Perform position-based DML detection. Has options for using the gamma function, or the limma R package.
 
         .. note::
             ``data`` must contain the following column format:
@@ -342,7 +338,7 @@ class DiffMethylTools():
     }
     @analysis_function
     def filters(self, data: Optional[InputProcessor] = None, max_q_value=0.05, abs_min_diff=0.10, position_or_window: str = "auto", rerun=False) -> pd.DataFrame:
-        """Filter data by q-value and minimum difference.
+        """Filter positions by q-value and minimum difference.
 
         .. note::
             Required columns for ``data``:
@@ -352,7 +348,7 @@ class DiffMethylTools():
         :type data: InputProcessor, optional
         :param max_q_value: Maximum q-value filter, defaults to 0.05
         :type max_q_value: float, optional
-        :param abs_min_diff: Absolute minimum difference filter, defaults to 0.25
+        :param abs_min_diff: Absolute minimum difference filter, defaults to 0.10
         :type abs_min_diff: int, optional
         :param position_or_window: The position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
         :type position_or_window: str, optional
@@ -399,9 +395,9 @@ class DiffMethylTools():
         "position_data": ["chromosome", "position_start", "diff"]
     }
     @analysis_function
-    def generate_DMR(self, significant_position_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, min_pos=3, neural_change_limit=7.5, neurl_perc=30, opposite_perc=10, significant_position_pipeline: str = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    def generate_DMR(self, significant_position_data: Optional[InputProcessor] = None, position_data: Optional[InputProcessor] = None, min_pos=3, neutral_change_limit=7.5, neutral_perc=30, opposite_perc=10, significant_position_pipeline: str = "auto", rerun=False) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         # TODO ask chris what to write here for documentation
-        """Generate Differentially Methylated Regions (DMRs).
+        """Generate Differentially Methylated Regions (DMRs) by clustering DMLs.
         
         .. note::
             Required columns for ``significant_position_data``:
@@ -417,8 +413,8 @@ class DiffMethylTools():
         :type min_pos: int, optional
         :param neutral_change_limit: Neutral change limit, defaults to 7.5
         :type neutral_change_limit: float, optional
-        :param neurl_perc: Neutral percentage, defaults to 30
-        :type neurl_perc: int, optional
+        :param neutral_perc: Neutral percentage, defaults to 30
+        :type neutral_perc: int, optional
         :param opposite_perc: Opposite percentage, defaults to 10
         :type opposite_perc: int, optional
         :param significant_position_pipeline: The significant position-based or window-based results to use as input if DiffMethylTools is pipelined and no data is provided. Options are ``["auto", "position", "window"]``, defaults to "auto"
@@ -558,7 +554,7 @@ class DiffMethylTools():
         :type name: str, optional
         :param threshold: Q-value threshold for horizontal line. Set to None to have no line, defaults to 0.05
         :type threshold: float, optional
-        :param line: Vertical line threshold for the `abs(line)` vertical line. Set to NOne to have no lines, defaults to None
+        :param line: Vertical line threshold for the `abs(line)` vertical line. Set to None to have no lines, defaults to None
         :type line: float, optional
         :param x_range: X-axis range, defaults to (-1, 1)
         :type x_range: tuple[int, int], optional
@@ -1050,6 +1046,46 @@ class DiffMethylTools():
 	"position_data": ['chrom', 'chromStart', 'blockSizes_case*', 'blockSizes_ctr*']
     }
     def plot_methylation_curve(self, region_data: Optional[InputProcessor] = None, ref_folder:str = None, position_data: Optional[InputProcessor] = None, name:str = ".", repeat_regions_df: str = "rmsk.txt", enhancer_promoter_df: str = "encodeCcreCombined.bed", repeat_regions_columns:list[int] = [5,6,7,11], enhancer_promoter_columns:list[int] = [0,1,2,12,13], window_size:int = 50, step_size:int = 25, chr_filter:str = None, start_filter:int = None, end_filter:int = None, sample_start_ind:int = 3) -> dict:
+        """Generate plots showing methylation curves across specific genomic regions, including annotations for repeats and enhancers/promoters.
+
+        .. note::
+            If ``pipeline`` mode is disabled, both ``region_data`` and ``position_data`` must be provided manually.
+            If ``pipeline`` mode is enabled, the function automatically retrieves results from ``generate_DMR`` and ``filters``.
+
+        .. note::
+            This method utilizes a sliding window approach (defined by ``window_size`` and ``step_size``) to smooth methylation values across regions.
+
+        :param region_data: DMR or cluster data. If None and pipelined, uses 'cluster_df' from generate_DMR.
+        :type region_data: InputProcessor, optional
+        :param ref_folder: Path to the reference genome folder containing annotation files.
+        :type ref_folder: str, optional
+        :param position_data: All position-level data. If None and pipelined, uses output from filters.
+        :type position_data: InputProcessor, optional
+        :param name: Directory path or prefix where the resulting plots will be saved, defaults to "."
+        :type name: str, optional
+        :param repeat_regions_df: Filename for repeat regions annotation (e.g., RepeatMasker), defaults to "rmsk.txt"
+        :type repeat_regions_df: str, optional
+        :param enhancer_promoter_df: Filename for enhancer/promoter annotation, defaults to "encodeCcreCombined.bed"
+        :type enhancer_promoter_df: str, optional
+        :param repeat_regions_columns: List of column indices to extract from the repeat regions file, defaults to [5,6,7,11]
+        :type repeat_regions_columns: list[int], optional
+        :param enhancer_promoter_columns: List of column indices to extract from the enhancer/promoter file, defaults to [0,1,2,12,13]
+        :type enhancer_promoter_columns: list[int], optional
+        :param window_size: Size of the sliding window in base pairs for smoothing, defaults to 50
+        :type window_size: int, optional
+        :param step_size: Step size for the sliding window in base pairs, defaults to 25
+        :type step_size: int, optional
+        :param chr_filter: Optional chromosome name to restrict plotting to a specific chromosome.
+        :type chr_filter: str, optional
+        :param start_filter: Optional genomic start coordinate to filter regions.
+        :type start_filter: int, optional
+        :param end_filter: Optional genomic end coordinate to filter regions.
+        :type end_filter: int, optional
+        :param sample_start_ind: Column index where individual sample methylation data begins in the input matrix, defaults to 3
+        :type sample_start_ind: int, optional
+        :return: A dictionary (converted to DataFrame) containing the plotted region metrics.
+        :rtype: dict
+        """
         
         assert (not self.pipeline and region_data is not None and position_data is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
 
@@ -1166,7 +1202,26 @@ class DiffMethylTools():
         "ccre_data": ["CCRE", "CCRE_diff"]
     }
     def all_plots(self, data: InputProcessor, ref_folder: str,  window_data: InputProcessor, gene: InputProcessor, ccre: InputProcessor) -> None:
-        """Run all plot methods."""
+        """
+        Execute a suite of visualization methods including Volcano plots, Manhattan plots, 
+        and gene-centric methylation graphs.
+
+        .. note::
+            This method forces ``self.pipeline = False`` to ensure that all plots are generated 
+            using the specific data objects provided as arguments rather than cached state.
+
+        :param data: Position-level methylation data (e.g., DMLs).
+        :type data: InputProcessor
+        :param ref_folder: Path to the reference genome folder containing necessary genomic annotations.
+        :type ref_folder: str
+        :param window_data: Window-based methylation data (e.g., DMRs).
+        :type window_data: InputProcessor
+        :param gene: Gene annotation data.
+        :type gene: InputProcessor
+        :param ccre: Candidate Cis-Regulatory Elements (cCRE) data.
+        :type ccre: InputProcessor
+        :return: None
+        """
         self.pipeline = False
         self.volcano_plot(data) #
         self.manhattan_plot(data) #
@@ -1180,7 +1235,30 @@ class DiffMethylTools():
         "regions_df":['chrom', 'chromStart', 'chromEnd'],
     }
     def match_region_annotation(self, regions_df: Optional[InputProcessor] = None, ref_folder:str = None, bed_file:str = "CpG_gencode_annotation.bed", name:str="match_region_annotation", annotation_or_region: str = "region", show_counts: bool = False) -> list:
+        """
+        Intersect identified regions (DMRs) with genomic annotations (e.g., GENCODE) to determine 
+        genomic context (promoters, exons, introns, etc.).
 
+        .. note::
+            Required columns in ``regions_df``: ``['chrom', 'chromStart', 'chromEnd']``.
+            If ``pipeline`` is enabled and ``regions_df`` is None, it defaults to the 'cluster_df' 
+            from the ``generate_DMR`` step.
+
+        :param regions_df: Input dataframe containing genomic regions to annotate.
+        :type regions_df: InputProcessor, optional
+        :param ref_folder: Path to the reference genome folder.
+        :type ref_folder: str, optional
+        :param bed_file: Filename of the annotation BED file located in the ref_folder, defaults to "CpG_gencode_annotation.bed"
+        :type bed_file: str, optional
+        :param name: Prefix for output files, defaults to "match_region_annotation"
+        :type name: str, optional
+        :param annotation_or_region: Determines the perspective of the output overlap ("annotation" or "region"), defaults to "region"
+        :type annotation_or_region: str, optional
+        :param show_counts: If True, returns count statistics of the annotations, defaults to False
+        :type show_counts: bool, optional
+        :return: A list of DataFrames containing annotated regions.
+        :rtype: list
+        """
         assert (not self.pipeline and regions_df is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
         assert annotation_or_region in ["annotation", "region"], "Invalid parameter for annotation_or_region. Options are: [""annotation"", ""region""]"
 
@@ -1201,6 +1279,25 @@ class DiffMethylTools():
         "regions_df":['chrom', 'chromStart'],
     }
     def match_position_annotation(self, regions_df: Optional[InputProcessor] = None, ref_folder:str = None, bed_file:str = "CpG_gencode_annotation.bed", name:str="match_position_annotation") -> list:
+        """
+        Intersect single genomic positions (DMLs) with genomic annotations to determine local context.
+
+        .. note::
+            Required columns in ``regions_df``: ``['chrom', 'chromStart']``.
+            Similar to ``match_region_annotation``, but optimized for single-base coordinate matching
+            rather than range-based intersection.
+
+        :param regions_df: Input dataframe containing genomic positions to annotate.
+        :type regions_df: InputProcessor, optional
+        :param ref_folder: Path to the reference genome folder.
+        :type ref_folder: str, optional
+        :param bed_file: Filename of the annotation BED file, defaults to "CpG_gencode_annotation.bed"
+        :type bed_file: str, optional
+        :param name: Prefix for output files, defaults to "match_position_annotation"
+        :type name: str, optional
+        :return: A list of DataFrames containing annotated positions.
+        :rtype: list
+        """
         assert (not self.pipeline and regions_df is not None) or (self.pipeline), "If the pipeline isn't in use, data must be provided."
         if ref_folder!= None : bed_file = Path(__file__).resolve().parent / ref_folder / bed_file
         parameters = locals().copy()
@@ -1216,6 +1313,29 @@ class DiffMethylTools():
         res = self.plots.match_position_annotation(**parameters)
         return res
 
+
+def run_setup(genome):
+    """Runs the setup scripts directly inside the package folder."""
+    package_home = os.path.dirname(os.path.abspath(__file__))
+    script_path = os.path.join(package_home, "bin", f"get_files_{genome}.sh")
+    if not os.path.exists(script_path):
+        print(f"Error: Could not find setup script at {script_path}")
+        sys.exit(1)
+    print(f"Downloading {genome} reference data into {package_home}...")
+    try:
+        subprocess.run(
+            ["bash", script_path], 
+            cwd=package_home, 
+            check=True
+        )
+        print(f"Success! {genome} data is ready.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error during setup: {e}")
+        sys.exit(1)
+
+
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="DiffMethylTools")
     
@@ -1224,6 +1344,8 @@ def parse_arguments():
     action="version",
     version="%(prog)s 1.0.0"
     )
+
+    parser.add_argument("--setup", choices=["hg19", "hg38"], help="Download required reference files for the specified genome.")
     
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
@@ -1301,6 +1423,10 @@ def parse_arguments():
 def main():
     parser = parse_arguments()
     args = parser.parse_args()
+
+    if args.setup:
+        run_setup(args.setup)
+        sys.exit(0) 
     if not args.command:
         parser.print_help()
         return

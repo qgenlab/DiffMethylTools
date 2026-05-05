@@ -1,4 +1,4 @@
-from lib import InputProcessor
+from . import InputProcessor
 import polars as pl
 import pandas as pd
 import numpy as np
@@ -7,7 +7,7 @@ from joblib import Parallel, delayed
 from pathlib import Path
 
 def assert_required_columns(df, required_columns):
-        from lib import Analysis
+        from . import Analysis
         Analysis().assert_required_columns(df, required_columns)
 
 def process_chromosome_group(chrom, group_filtered_table, df_chrom_lookup):
@@ -288,6 +288,8 @@ def position_based_gene(positions: InputProcessor.data_container, gene_regions: 
         df["strand"] = "+"
 
     df = pl.from_pandas(df)
+
+    print(bed_file)
 
     bed = pl.read_csv(bed_file, separator="\t", columns=[0,1,4], new_columns=["chrom","chromStart","gene_string"],has_header=False)
 

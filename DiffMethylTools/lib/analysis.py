@@ -15,7 +15,9 @@ import re
 
 from scipy.stats import mannwhitneyu, ttest_ind, ranksums, ks_2samp, median_test, brunnermunzel
 
-from lib import InputProcessor
+# from . import InputProcessor
+
+from .input_processor import InputProcessor
 
 from .position_p_vals import position_gamma, position_limma
 from .gene_analysis import window_based_gene, position_based_gene
@@ -298,7 +300,7 @@ class Analysis():
 
         return data
     
-    def generate_DMR(self, significant_position_data: InputProcessor.data_container, position_data: InputProcessor.data_container, min_pos=3, neural_change_limit=7.5, neurl_perc=30, opposite_perc=10):
+    def generate_DMR(self, significant_position_data: InputProcessor.data_container, position_data: InputProcessor.data_container, min_pos=3, neutral_change_limit=7.5, neutral_perc=30, opposite_perc=10):
         """
         
         significant_position_data:
@@ -307,7 +309,7 @@ class Analysis():
             Required Columns: ["chrom", "chromStart, "diff"]
         
         """
-        neural_change_limit = neural_change_limit/100
+        neutral_change_limit = neutral_change_limit/100
         assert isinstance(significant_position_data, pd.DataFrame), "List input not acceptable for this function."
         self.assert_required_columns(significant_position_data, ["chrom", "chromStart", "diff"])
         assert isinstance(position_data, pd.DataFrame), "List input not acceptable for this function."
@@ -367,11 +369,11 @@ class Analysis():
                                 start = time.time()
                                 cpg_diff = meth_df.loc[(chrom, slice(cluster_start, cluster_sites[-1])), "diff"]
                                 if not cpg_diff.empty:
-                                    pos_trend_pct = (cpg_diff>neural_change_limit).sum()*100/cpg_diff.shape[0];
-                                    neg_trend_pct = (cpg_diff<-neural_change_limit).sum()*100/cpg_diff.shape[0];
+                                    pos_trend_pct = (cpg_diff>neutral_change_limit).sum()*100/cpg_diff.shape[0];
+                                    neg_trend_pct = (cpg_diff<-neutral_change_limit).sum()*100/cpg_diff.shape[0];
                                     neutral_pct = 100 - pos_trend_pct - neg_trend_pct
                                     start = time.time()
-                                    if neutral_pct < neurl_perc and ( (sign_2[1]>0 and neg_trend_pct<opposite_perc) or (sign_2[0]>0 and pos_trend_pct<opposite_perc)):
+                                    if neutral_pct < neutral_perc and ( (sign_2[1]>0 and neg_trend_pct<opposite_perc) or (sign_2[0]>0 and pos_trend_pct<opposite_perc)):
                                         clustered_regions.append({
                                             "chromosome": chrom,
                                             "start": cluster_start,
@@ -431,10 +433,10 @@ class Analysis():
                 if (all(np.sign(cluster_diffs) == trend)):
                     cpg_diff = meth_df.loc[(chrom, slice(cluster_start, cluster_sites[-1])), "diff"]
                     if not cpg_diff.empty:
-                        pos_trend_pct = (cpg_diff>neural_change_limit).sum()*100/cpg_diff.shape[0];
-                        neg_trend_pct = (cpg_diff<-neural_change_limit).sum()*100/cpg_diff.shape[0];
+                        pos_trend_pct = (cpg_diff>neutral_change_limit).sum()*100/cpg_diff.shape[0];
+                        neg_trend_pct = (cpg_diff<-neutral_change_limit).sum()*100/cpg_diff.shape[0];
                         neutral_pct = 100 - pos_trend_pct - neg_trend_pct
-                        if neutral_pct < neurl_perc and ( (sign_2[1]>0 and neg_trend_pct<opposite_perc) or (sign_2[0]>0 and pos_trend_pct<opposite_perc)):
+                        if neutral_pct < neutral_perc and ( (sign_2[1]>0 and neg_trend_pct<opposite_perc) or (sign_2[0]>0 and pos_trend_pct<opposite_perc)):
                             clustered_regions.append({
                                 "chromosome": chrom,
                                 "start": cluster_start,
