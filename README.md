@@ -10,6 +10,11 @@ By combining flexibility with usability, DiffMethylTools provides researchers wi
 
 ## Installation
 ### Install python dependencies
+To download the package, run:
+```
+git clone https://github.com/qgenlab/DiffMethylTools.git
+```
+
 To create DiffMethylTools environment, run:
 ```
 conda env create -f environment.yml
