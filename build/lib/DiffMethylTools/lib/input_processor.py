@@ -1,0 +1,295 @@
+import pandas as pd
+import polars as pl
+from typing import Optional
+from collections import deque
+import re
+
+# TODO maybe enforce types for columns?
+
+ACCEPTABLE_COLUMNS = {"chromosome", "position_start", "position_end", "region_start", "region_end", "strand", 
+                      "methylation_percentage", "coverage", 
+                      "positive_methylation_count", "negative_methylation_count", "avg_case", "avg_ctr", 
+                      "diff", "p-val", "nbr", "q-value", "gene", "intron", "intron_diff", "exon", "exon_diff", 
+                      "upstream", "upstream_diff", "CCRE", "CCRE_diff", "tag", "nearest_genes"}
+ACCEPTABLE_STYLES = {"BED", "CR", "DiffMethylTools_header"}
+
+# Format pre-selected styles
+BED = {"chromosome":0, "position_start":1, "position_end":2, "strand":5, "coverage":9, "methylation_percentage":10}
+CR = {"chromosome":0, "position_start":1, "strand":2, "positive_methylation_count":3, "negative_methylation_count":4}
+
+DIFFMETHYLTOOLS_HEADER_STYLE = {"chromosome":0, "position_start":1, "position_end":2, "strand":3}
+
+class FormatDefinition():
+    """Example Usage:
+    
+    >>> format = FormatDefinition(style="DiffMethylTools_input", column_mapping={"coverage":8}, sep=",")
+    >>> format.mapping
+    {'chromosome': 0, 'start': 1, 'end': 2, 'strand': 5, 'coverage': 8, 'methylation_percentage': 10}
+    >>> format.separator
+    ','
+    """
+    def __init__(self, style:Optional[str]=None, column_mapping:dict[str, int] = {}, sep:Optional[str]="\t"):
+        assert style is None or style in ACCEPTABLE_STYLES, f"Acceptable format styles are: {str(ACCEPTABLE_STYLES)}."
+
+        final_mapping = {}
+        if style == "BED":
+            final_mapping = BED
+        elif style == "CR":
+            final_mapping = CR
+        elif style == "DiffMethylTools_header":
+            final_mapping = DIFFMETHYLTOOLS_HEADER_STYLE
+        
+        # Merge style and column_mapping. Overwrite any style values with what's in column_mapping.
+        final_mapping.update(column_mapping)
+
+        # force to be list
+        if "methylation_percentage" in final_mapping and not isinstance(final_mapping["methylation_percentage"], list):
+            final_mapping["methylation_percentage"] = [final_mapping["methylation_percentage"]]
+        if "coverage" in final_mapping and not isinstance(final_mapping["coverage"], list):
+            final_mapping["coverage"] = [final_mapping["coverage"]]
+            final_mapping["coverage_KEY"] = final_mapping["coverage"]
+            del final_mapping["coverage"]
+
+        self.final_mapping = final_mapping
+        self.sep = sep
+
+    @property 
+    def mapping(self):
+        return self.final_mapping
+    
+    @property
+    def separator(self):
+        return self.sep
+    
+    def __str__(self):
+        return str(self.final_mapping)
+
+# {"chromosome", "start", "end", "strand", "methylation_percentage", "coverage", "positive_methylation_count", "negative_methylation_count"}
+INPUT_COLUMN_RENAME = {
+    "chromosome":"chrom", "position_start":"chromStart", "position_end":"chromEnd",
+    "region_start":"start", "region_end":"end",
+    "methylation_percentage.*":"blockSizes_{ctr_case}_{name}", "coverage_KEY.*":"coverage_{ctr_case}_{name}", 
+    "positive_methylation_count.*":"positive_{name}", "negative_methylation_count.*":"negative_{name}", "q_value":"q-value", "p_val":"p-val"
+    }
+
+class InputProcessor():
+    """Example Usage:
+
+    >>> obj = input_processor([data_1,data_2,...,data_n], [format_1,format_2,...,format_n])
+    >>> obj.process()
+    >>> obj.data_container
+    [processed_1,processed_2,...,processed_n]
+
+    Format is only required if data is not in the correct format. Otherwise, it can be none.
+    """
+    def __init__(self, data:list[str]|list[pd.DataFrame]|str|pd.DataFrame, format:Optional[list[FormatDefinition]|FormatDefinition] = None, has_header:list[bool]|bool = True, names:Optional[list[str]|str]= None, ctr_case:Optional[list[str]|str]=None, zero_indexed_positions:bool = True):
+        ## assert relationships
+        # assert an n-to-n relationship if both are list.
+        if format is not None:
+            if isinstance(format, list) and isinstance(data, list):
+                assert len(format) == len(data), "Invalid input. data and format should have one of the following relationships, regarding the length of lists: [n:n, n:1, 1:1]."
+            # assert a 1-to-many or 1-1 relationship
+            else:
+                assert isinstance(format, FormatDefinition) and isinstance(data, (list, pd.DataFrame, str)), "Invalid input. data and format should have one of the following relationships, regarding the length of lists: [n:n, n:1, 1:1]."
+
+        self.original_params = locals().copy()
+        self.original_params.pop("self")
+
+        if isinstance(names, str):
+            names = [names]
+        if isinstance(ctr_case, str):
+            ctr_case = [ctr_case]
+
+        coverage_names = names.copy() if names is not None else None
+        methylation_names = names.copy() if names is not None else None
+        positive_names = names.copy() if names is not None else None
+        negative_names = names.copy() if names is not None else None
+        
+        coverage_ctr_case = ctr_case.copy() if ctr_case is not None else None
+        methylation_ctr_case = ctr_case.copy() if ctr_case is not None else None
+
+        if not isinstance(has_header, list):
+            if isinstance(data, list):
+                has_header = [has_header] * len(data)
+            else: 
+                has_header = [has_header]
+
+        if not isinstance(data, list):
+            data = [data]
+        if not isinstance(methylation_names, list) and methylation_names is not None:
+            methylation_names = [methylation_names]
+        if not isinstance(coverage_names, list) and coverage_names is not None:
+            coverage_names = [coverage_names]
+        if not isinstance(positive_names, list) and positive_names is not None:
+            positive_names = [positive_names]
+        if not isinstance(negative_names, list) and negative_names is not None:
+            negative_names = [negative_names]
+        if not isinstance(methylation_ctr_case, list) and methylation_ctr_case is not None:
+            methylation_ctr_case = [methylation_ctr_case]
+        if not isinstance(coverage_ctr_case, list) and coverage_ctr_case is not None:
+            coverage_ctr_case = [coverage_ctr_case]
+        
+
+        self.raw_data = data
+        self.raw_format = format  
+        self.methylation_names = deque(methylation_names) if methylation_names is not None else None
+        self.methylation_names_copy = self.methylation_names.copy() if self.methylation_names is not None else None
+        self.no_methylation_names = 1
+        self.coverage_names = deque(coverage_names) if coverage_names is not None else None
+        self.coverage_names_copy = self.coverage_names.copy() if self.coverage_names is not None else None
+        self.no_coverage_names = 1
+        self.positive_names = deque(positive_names) if positive_names is not None else None
+        self.positive_names_copy = self.positive_names.copy() if self.positive_names is not None else None
+        self.no_positive_names = 1
+        self.negative_names = deque(negative_names) if negative_names is not None else None
+        self.negative_names_copy = self.negative_names.copy () if self.negative_names is not None else None
+        self.no_negative_names = 1
+        self.methylation_ctr_case = deque(methylation_ctr_case) if methylation_ctr_case is not None else None
+        self.methylation_ctr_case_copy = self.methylation_ctr_case.copy() if self.methylation_ctr_case is not None else None
+        self.coverage_ctr_case = deque(coverage_ctr_case) if coverage_ctr_case is not None else None
+        self.coverage_ctr_case_copy = self.coverage_ctr_case.copy() if self.coverage_ctr_case is not None else None
+        self.zero_indexed_positions = zero_indexed_positions
+        self.has_header = deque(has_header) 
+
+    def copy(self):
+        return InputProcessor(**self.original_params)
+
+
+    @property
+    def data_container(self):
+        return self.data
+    
+    def process(self):
+        data = []
+        
+        # Helper function to read data from different sources
+        def read_data(source, sep):
+            if isinstance(source, pd.DataFrame):
+                # print)
+                return pl.from_pandas(source), source.index
+            if isinstance(source, str):
+                has_header = self.has_header.popleft() if len(self.has_header) != 0 else True
+                return pl.read_csv(source, separator=sep, has_header=has_header, infer_schema_length=None), None
+            raise ValueError("Unsupported data source type")
+
+        def rename_columns(df):
+            # rename based on regex patterns in INPUT_COLUMN_RENAME.
+            renamed_columns = {}
+            
+            row_to_attribute_name = {"methylation_percentage":"methylation", "coverage_KEY":"coverage", "positive_methylation_count":"positive", "negative_methylation_count":"negative"}
+            for col in df.columns:
+
+                new_col = col
+                for pattern, replacement in INPUT_COLUMN_RENAME.items():
+                    if re.match(pattern, col):
+                        name = None
+                        for x in ["methylation_percentage", "coverage_KEY", "positive_methylation_count", "negative_methylation_count"]:
+                            if x in col:
+                                names_list = getattr(self, f"{row_to_attribute_name[x]}_names")
+                                if names_list is not None:
+                                    if len(names_list) == 0:
+                                        setattr(self, f"{row_to_attribute_name[x]}_names", getattr(self, f"{row_to_attribute_name[x]}_names_copy").copy())
+                                    name = names_list.popleft()
+                                else:
+                                    name = f"file_{getattr(self, f'no_{row_to_attribute_name[x]}_names')}"
+                                    setattr(self, f"no_{row_to_attribute_name[x]}_names", getattr(self, f"no_{row_to_attribute_name[x]}_names") + 1)
+                                break
+                        if name is None:
+                            name = "N/A"
+
+                        if "methylation_percentage" in col:
+                            if self.methylation_ctr_case is not None:
+                                if len(self.methylation_ctr_case) == 0:
+                                    self.methylation_ctr_case = self.methylation_ctr_case_copy.copy()
+
+                                ctr_case = self.methylation_ctr_case.popleft()
+                            else:
+                                ctr_case = "N/A"
+                        elif "coverage_KEY" in col:
+                            if self.coverage_ctr_case is not None:
+                                if len(self.coverage_ctr_case) == 0:
+                                    self.coverage_ctr_case = self.coverage_ctr_case_copy.copy()
+
+                                ctr_case = self.coverage_ctr_case.popleft()
+                            else:
+                                ctr_case = "N/A"
+                        else:
+                            ctr_case = "N/A"
+
+
+                        new_col = re.sub(f"^{pattern}$", replacement.format(ctr_case=ctr_case, name=name), col)
+
+                        break
+                
+                renamed_columns[col] = new_col
+
+            return df.rename(renamed_columns)
+
+        for i, file in enumerate(self.raw_data):
+            if isinstance(self.raw_format, list):
+                format_def = self.raw_format[i]
+            else:
+                format_def = self.raw_format
+            
+            df, index = read_data(file, format_def.separator if format_def is not None else ",")
+
+            print(index)
+            # map names according to the ones from the FormatDefinition. 
+            if format_def is not None and format_def.mapping != {}:
+                
+                selected_columns = []
+                old_column_names = []
+
+                for col, idx in format_def.mapping.items():
+                    if col in ["methylation_percentage", "coverage_KEY", "positive_methylation_count", "negative_methylation_count"] and isinstance(idx, list):
+                        for sub_idx in idx:
+                            old_column_names.append(df.columns[sub_idx])
+                            selected_columns.append(pl.col(df.columns[sub_idx]).alias(f"{col}_{sub_idx}"))
+                    else:
+                        old_column_names.append(df.columns[idx])
+                        selected_columns.append(pl.col(df.columns[idx]).alias(col))
+
+                # include columns not in the mapping
+                for col in reversed(df.columns):
+                    if col not in old_column_names:
+                        selected_columns.insert(0, pl.col(col))
+                df = df.select(selected_columns)
+                # cols_to_cast = [c for c in df.columns if c.startswith("methylation_percentage")]
+                # df = df.with_columns([pl.col(c).str.strip_chars().cast(pl.Float64) for c in cols_to_cast])
+                cast_patterns = {
+                  r"^methylation_percentage.*$": pl.Float64,
+                  r"^(coverage_KEY|positive_methylation_count|negative_methylation_count).*": pl.Int64,
+                }
+                cast_exprs = []
+                for pattern, dtype in cast_patterns.items():
+                    matching_cols = [c for c in df.columns if re.match(pattern, c)]
+                    for col_name in matching_cols:
+                        if df[col_name].dtype == pl.Utf8:
+                            cast_exprs.append(pl.col(matching_cols).str.strip_chars().cast(dtype, strict=False))
+                        else:
+                            cast_exprs.append(pl.col(col_name).cast(dtype, strict=False))
+                if cast_exprs:
+                    df = df.with_columns(cast_exprs)
+                print(df)
+
+
+            # remap any of those names to the conventions used in the program
+            renamed_df = rename_columns(df)
+
+            if not self.zero_indexed_positions:
+                if "chromStart" in renamed_df.columns:
+                    renamed_df = renamed_df.with_columns(pl.col("chromStart") + 1)
+                if "chromEnd" in renamed_df.columns:
+                    renamed_df = renamed_df.with_columns(pl.col("chromEnd") + 1)
+
+            renamed_df = renamed_df.to_pandas()
+
+            if "gene" in renamed_df.columns:
+                renamed_df.set_index("gene", inplace=True, drop=True)
+
+            data.append(renamed_df)
+
+            if index is not None:
+                data[-1].index = index
+
+        self.data = data if len(data) > 1 else data[0]

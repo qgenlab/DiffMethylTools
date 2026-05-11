@@ -1,8 +1,0 @@
-v0.0.3
-======
-
-.. toctree::
-   :maxdepth: 4
-
-   DiffMethylTools
-   lib

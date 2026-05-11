@@ -1,5 +1,5 @@
 echo "Creating hg19 repository..."
-f="hg19"
+f="modules/hg19"
 mkdir -p $f
 
 

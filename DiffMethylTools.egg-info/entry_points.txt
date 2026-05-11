@@ -1,0 +1,2 @@
+[console_scripts]
+DiffMethylTools = DiffMethylTools.DiffMethylTools:main

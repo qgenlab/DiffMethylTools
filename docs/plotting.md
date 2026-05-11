@@ -32,7 +32,7 @@ Generate a volcano plot.
 | Argument | Default | Description |
 | :--- | :--- | :--- |
 | `--data` | `None` | Input data. Not necessary if the pipeline is in use, defaults to None |
-| `--name` | `volcano_plot.png` | Output file name, defaults to "volcano_plot.png" |
+| `--name` | `plots/volcano_plot.png` | Output file name, defaults to "volcano_plot.png" |
 | `--threshold` | `0.05` | Q-value threshold for horizontal line. Set to None to have no line, defaults to 0.05 |
 | `--line` | `None` | Vertical line threshold for the `abs(line)` vertical line. Set to None to have no lines, defaults to None |
 | `--x_range` | `(-1, 1)` | X-axis range, defaults to (-1, 1) |
@@ -55,7 +55,7 @@ Generate a manhattan plot.
 | Argument | Default | Description |
 | :--- | :--- | :--- |
 | `--data` | `None` | Input data. Not necessary if the pipeline is in use, defaults to None |
-| `--name` | `manhattan_plot.png` | Output file name, defaults to "manhattan_plot.png" |
+| `--name` | `plots/manhattan_plot.png` | Output file name, defaults to "manhattan_plot.png" |
 | `--threshold` | `0.05` | Q-value threshold for horizontal line. Set to None to have no line, defaults to 0.05 |
 | `--title` | `None` | Plot title, defaults to None for a generic title |
 | `--x_label` | `None` | X-axis label, defaults to None for a generic label |
@@ -76,7 +76,7 @@ Generate a coverage plot.
 | :--- | :--- | :--- |
 | `--case_data` | `*Required*` | The case data to plot. |
 | `--ctr_data` | `*Required*` | The control data to plot. |
-| `--name` | `coverage_plot.png` | Output file name, defaults to "coverage_plot.png" |
+| `--name` | `plots/coverage_plot.png` | Output file name, defaults to "coverage_plot.png" |
 | `--cov_min` | `1` | Minimum coverage display, defaults to 1 |
 | `--cov_max` | `-1` | Maximum coverage display, defaults to -1 |
 | `--cov_max_percentile` | `99.5` | Maximum coverage percentile display. Ranges from 0.0-100.0, defaults to 99.5. Overrides ``cov_max`` if set. |
@@ -102,7 +102,7 @@ Generate plots showing methylation curves across specific genomic regions, inclu
 | `--region_data` | `None` | DMR or cluster data. If None and pipelined, uses 'cluster_df' from generate_DMR. |
 | `--ref_folder` | `None` | Path to the reference genome folder containing annotation files. |
 | `--position_data` | `None` | All position-level data. If None and pipelined, uses output from filters. |
-| `--name` | `.` | Directory path or prefix where the resulting plots will be saved, defaults to "." |
+| `--name` | `plots/.` | Directory path or prefix where the resulting plots will be saved, defaults to "." |
 | `--repeat_regions_df` | `rmsk.txt` | Filename for repeat regions annotation (e.g., RepeatMasker), defaults to "rmsk.txt" |
 | `--enhancer_promoter_df` | `encodeCcreCombined.bed` | Filename for enhancer/promoter annotation, defaults to "encodeCcreCombined.bed" |
 | `--repeat_regions_columns` | `[5, 6, 7, 11]` | List of column indices to extract from the repeat regions file, defaults to [5,6,7,11] |
@@ -131,7 +131,7 @@ Generate a graph of gene regions.
 | :--- | :--- | :--- |
 | `--gene_data` | `None` | Gene data. Not necessary if the pipeline is in use, defaults to None |
 | `--ccre_data` | `None` | CCRE data. Not necessary if the pipeline is in use, defaults to None |
-| `--name` | `gene_regions.png` | Output file name, defaults to "gene_regions.png" |
+| `--name` | `plots/gene_regions.png` | Output file name, defaults to "gene_regions.png" |
 | `--gene_regions` | `['intron', 'exon', 'upstream', 'CCRE']` | Gene regions to map to. Options are any combination of ``["intron", "exon", "upstream", "CCRE"]``, defaults to ``["intron", "exon", "upstream", "CCRE"]`` |
 | `--intron_cutoff` | `-1` | Intron count vertical display cutoff, defaults to -1 (for no cutoff) |
 | `--exon_cutoff` | `-1` | Exon count vertical display cutoff, defaults to -1 (for no cutoff) |
@@ -162,7 +162,7 @@ Generate a graph of full gene methylation.
 | `--gene_name` | `*Required*` | The name of the gene to graph. |
 | `--position_data` | `None` | Position data. Not necessary if the pipeline is in use, defaults to None |
 | `--ref_folder` | `None` | --- |
-| `--name` | `gene_methylation_graph.png` | Output PNG file name, defaults to "gene_methylation_graph.png" |
+| `--name` | `plots/gene_methylation_graph.png` | Output PNG file name, defaults to "gene_methylation_graph.png" |
 | `--before_tss` | `0` | Distance before transcription start site, defaults to 0 |
 | `--after_tss` | `None` | Distance after transcription start site, defaults to None |
 | `--bin_size` | `500` | Bin size, defaults to 500 |
@@ -196,7 +196,7 @@ Generate a graph of upstream gene methylation.
 | `--position_data` | `None` | Position data. Not necessary if the pipeline is in use, defaults to None |
 | `--ref_folder` | `None` | --- |
 | `--region_data` | `None` | --- |
-| `--name` | `upstream_methylation.png` | Output PNG file name, defaults to "upstream_methylation.png" |
+| `--name` | `plots/upstream_methylation.png` | Output PNG file name, defaults to "upstream_methylation.png" |
 | `--csv_name` | `upstream_methylation.csv` | Output CSV file name, defaults to "upstream_methylation.csv" |
 | `--csv` | `None` | Input CSV file, defaults to None |
 | `--left_distance` | `1000` | Left distance, defaults to 5000 |

@@ -1,5 +1,5 @@
 echo "Creating hg38 repository..."
-f="hg38"
+f="modules/hg38"
 mkdir -p $f
 
 # for rmsk.txt file
