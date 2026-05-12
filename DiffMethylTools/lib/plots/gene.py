@@ -12,6 +12,82 @@ from matplotlib.ticker import MaxNLocator
 
 from ..input_processor import InputProcessor
 
+#class GeneMixin():
+#    def graph_gene_regions(self, gene_data: InputProcessor.data_container, ccre_data: InputProcessor.data_container, name: str, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], intron_cutoff: int = -1, exon_cutoff: int = -1, upstream_cutoff: int = -1, CCRE_cutoff: int = -1,prom_cutoff:int = -1, title: str = None, x_label: str = None, intron_y_label: str = None, exon_y_label: str = None, upstream_y_label: str = None, CCRE_y_label: str = None, prom_y_label: str = None):
+#        # check if gene_Data and ccre_data are not list
+#        """
+#
+#        Required Columns:
+#
+#        gene_data: ["intron", "intron_diff", "exon", "exon_diff", "upstream", "upstream_diff"] depending on the gene_regions selected.
+#        ccre_data: ["CCRE", "CCRE_diff"] if "CCRE" is in gene_regions.
+#
+#        """
+#        
+#        assert isinstance(gene_data, pd.DataFrame), "List input not acceptable for this function."
+#        assert isinstance(ccre_data, pd.DataFrame), "List input not acceptable for this function."
+#
+#
+#        if "intron" in gene_regions:
+#            self.assert_required_columns(gene_data, ["intron", "intron_diff"])
+#        if "exon" in gene_regions:
+#            self.assert_required_columns(gene_data, ["exon", "exon_diff"])
+#        if "upsteam" in gene_regions:
+#            self.assert_required_columns(gene_data, ["upsteam", "upsteam_diff"])
+#        if "CCRE" in gene_regions:
+#            self.assert_required_columns(ccre_data, ["CCRE", "CCRE_diff"])
+#
+#        n_rows = len(gene_regions) // 2
+#        n_cols = len(gene_regions) - n_rows
+#        possible_gene_regions = ["intron", "exon", "upstream", "CCRE"]
+#        assert all([region in possible_gene_regions for region in gene_regions])
+#
+#
+#        ## code
+#        fig, axes = plt.subplots(n_rows, n_cols, figsize=(4.5*len(gene_regions), 4.5*len(gene_regions)))
+#        for j, type in enumerate(gene_regions):
+#            row, col = divmod(j, n_cols) # #########################
+#            ax = axes[row, col] #######################
+#            type = type.lower() if type != "CCRE" else type
+#            # get the variable {type}_cuttoff
+#            cutoff = eval(f"{type}_cutoff")
+#            data = pl.from_pandas(ccre_data if type == "CCRE" else gene_data)
+#            counts = data[type].to_numpy()
+#            if counts.size ==0: continue 
+#            counts_99_9 = np.percentile(counts, 99.9)
+#            counts = np.minimum(counts, counts_99_9)
+#
+#            avg_diff = data[f"{type}_diff"].to_numpy()*100
+#            mask = (counts != 0)
+#            if cutoff != -1:
+#                mask &= (counts <= cutoff)
+#            counts = counts[mask]
+#            avg_diff = avg_diff[mask] 
+#            ################################ ax = axes[j]
+#            ax.scatter(avg_diff, counts, s=10)
+#            if len(counts) != 0:
+#                ax.set_ylim([0, counts.max()+2])
+#            if len(avg_diff) != 0:
+#                limit = -102
+#                ax.set_xlim([limit, -1 * limit])
+#            if x_label is not None:
+#                ax.set_xlabel(x_label, fontsize=30) # 13
+#            else:
+#                ax.set_xlabel("Average Difference (case - control)", fontsize=30) # 13
+#            y_label = eval(f"{type}_y_label")
+#            if y_label is not None:
+#                ax.set_ylabel(y_label, fontsize=17)
+#            else:
+#                ax.set_ylabel(f"# CpG sites of DMR ∩ {type[0].upper() + type[1:]}", fontsize=25)
+#            ax.tick_params(axis='x', labelsize=30)
+#            ax.tick_params(axis='y', labelsize=30)
+#            ax.yaxis.set_major_locator(MaxNLocator(steps=[1, 10], integer=True))
+#        if title is not None:
+#            fig.suptitle(title, fontsize=30, y=0.98)
+#        else:
+#            fig.suptitle(f"", fontsize=30, y=0.98)
+#        plt.tight_layout(rect=[0, 0, 1, 0.94], pad=3.0, w_pad=4.0, h_pad=4.0)
+#        plt.savefig(name, dpi=600)
 class GeneMixin():
     def graph_gene_regions(self, gene_data: InputProcessor.data_container, ccre_data: InputProcessor.data_container, name: str, gene_regions: list[str]|str = ["intron", "exon", "upstream", "CCRE"], intron_cutoff: int = -1, exon_cutoff: int = -1, upstream_cutoff: int = -1, CCRE_cutoff: int = -1,prom_cutoff:int = -1, title: str = None, x_label: str = None, intron_y_label: str = None, exon_y_label: str = None, upstream_y_label: str = None, CCRE_y_label: str = None, prom_y_label: str = None):
         # check if gene_Data and ccre_data are not list
@@ -23,7 +99,7 @@ class GeneMixin():
         ccre_data: ["CCRE", "CCRE_diff"] if "CCRE" is in gene_regions.
 
         """
-        
+
         assert isinstance(gene_data, pd.DataFrame), "List input not acceptable for this function."
         assert isinstance(ccre_data, pd.DataFrame), "List input not acceptable for this function."
 
@@ -32,8 +108,8 @@ class GeneMixin():
             self.assert_required_columns(gene_data, ["intron", "intron_diff"])
         if "exon" in gene_regions:
             self.assert_required_columns(gene_data, ["exon", "exon_diff"])
-        if "upsteam" in gene_regions:
-            self.assert_required_columns(gene_data, ["upsteam", "upsteam_diff"])
+        if "upstream" in gene_regions:
+            self.assert_required_columns(gene_data, ["upstream", "upstream_diff"])
         if "CCRE" in gene_regions:
             self.assert_required_columns(ccre_data, ["CCRE", "CCRE_diff"])
 
@@ -44,7 +120,9 @@ class GeneMixin():
 
 
         ## code
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(4.5*len(gene_regions), 4.5*len(gene_regions)))
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(5.5*len(gene_regions), 4.5*len(gene_regions)))
+        import numpy as np
+        axes = np.atleast_2d(axes)
         for j, type in enumerate(gene_regions):
             row, col = divmod(j, n_cols) # #########################
             ax = axes[row, col] #######################
@@ -53,7 +131,7 @@ class GeneMixin():
             cutoff = eval(f"{type}_cutoff")
             data = pl.from_pandas(ccre_data if type == "CCRE" else gene_data)
             counts = data[type].to_numpy()
-            if counts.size ==0: continue 
+            if counts.size ==0: continue
             counts_99_9 = np.percentile(counts, 99.9)
             counts = np.minimum(counts, counts_99_9)
 
@@ -62,10 +140,13 @@ class GeneMixin():
             if cutoff != -1:
                 mask &= (counts <= cutoff)
             counts = counts[mask]
-            avg_diff = avg_diff[mask] 
+            avg_diff = avg_diff[mask]
             ################################ ax = axes[j]
-            ax.scatter(avg_diff, counts, s=10)
             if len(counts) != 0:
+                h = ax.hist2d(avg_diff, counts, bins=50, cmap='viridis', cmin=1)
+                cb = fig.colorbar(h[3], ax=ax)
+                cb.set_label("Density", fontsize=15)
+                cb.ax.tick_params(labelsize=12)
                 ax.set_ylim([0, counts.max()+2])
             if len(avg_diff) != 0:
                 limit = -102
