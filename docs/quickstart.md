@@ -43,6 +43,29 @@ DiffMethylTools all_plots \
   --ccre_file data/map_positions_to_genes_CCRE.csv --ccre_has_header \
   --ref_folder hg38
 ```
+
+### Annotation pie chart
+Region-based DMR annotation pie chart:
+
+
+```bash
+python ../DiffMethylTools.py match_region_annotation \
+  --regions_df_file generate_DMR_0.csv \
+  --regions_df_has_header \
+  --ref_folder (hg19 or hg38)
+```
+
+Annotation-based DMR annotation pie chart:
+
+
+```bash
+python ../DiffMethylTools.py match_region_annotation \
+  --regions_df_file generate_DMR_0.csv \
+  --regions_df_has_header \
+  --annotation_or_region annotation \
+  --ref_folder (hg19 or hg38)
+```
+
 ### Plot Specific Methylation Curves
 
 To plot DMR regions on a specific chromosome (e.g., chr1 between positions 3,664,000 and 3,668,000):
@@ -57,4 +80,4 @@ DiffMethylTools plot_methylation_curve \
   --ref_folder hg38
 ```
 
-`(Note: Omitting the --chr_filter, --start_filter, and --end_filter options will generate plots for all DMRs).`
+(Note: Omitting the --chr_filter, --start_filter, and --end_filter options will generate plots for all DMRs).
