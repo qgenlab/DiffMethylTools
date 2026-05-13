@@ -323,6 +323,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Install the Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-install-from-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1 — Install from GitHub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-install-directly-from-pypi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2 — Install directly from PyPI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -333,6 +361,51 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="2. Setup Reference Genome">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-setup-using-custom-reference-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Setup: Using Custom Reference Files
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Setup: Using Custom Reference Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-file-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required File Formats
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -544,6 +617,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Install the Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-install-from-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1 — Install from GitHub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-install-directly-from-pypi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2 — Install directly from PyPI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -554,6 +655,51 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="2. Setup Reference Genome">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-setup-using-custom-reference-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Setup: Using Custom Reference Files
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Setup: Using Custom Reference Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-file-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required File Formats
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -579,15 +725,106 @@
 
 <h1 id="installation">Installation</h1>
 <p>Installing <code>DiffMethylTools</code> and its dependencies is quick and straightforward.</p>
-<h3 id="1-install-the-package">1. Install the Package</h3>
-<p>Ensure you have Python installed, then run the following command from the root directory of the project:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>.
+<h2 id="1-install-the-package">1. Install the Package</h2>
+<h3 id="option-1-install-from-github">Option 1 — Install from GitHub</h3>
+<p>Clone the repository:</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/qgenlab/DiffMethylTools.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>DiffMethylTools
 </span></code></pre></div>
-<h3 id="2-setup-reference-genome">2. Setup Reference Genome</h3>
-<p>Before running any downstream analysis or annotations, you must download the required reference files for your target genome build (e.g., hg19 or hg38).</p>
-<p>Note: This command requires an active internet connection to pull the files from UCSC.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DiffMethylTools<span class="w"> </span>--setup<span class="w"> </span>hg38<span class="w"> </span><span class="c1">#(or hg19)</span>
+Ensure that Python and pip are installed, then install the package from the project root directory:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>.
 </span></code></pre></div>
+<h3 id="option-2-install-directly-from-pypi">Option 2 — Install directly from PyPI</h3>
+<p>Alternativly, you can install the package using pip</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip<span class="w"> </span>install<span class="w"> </span>diffmethyltools
+</span></code></pre></div>
+<h2 id="2-setup-reference-genome">2. Setup Reference Genome</h2>
+<p>Before running any downstream analysis or annotations, you must initialize the reference files for your target genome build.</p>
+<h3 id="default-setup">Default Setup</h3>
+<p>By default, DiffMethylTools comes pre-packaged with the necessary reference files for both hg38 and hg19. To initialize the tool with the default files, simply run:</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>DiffMethylTools<span class="w"> </span>--setup<span class="w"> </span>hg38<span class="w"> </span><span class="c1"># or hg19</span>
+</span></code></pre></div>
+Once this command completes, the tool is ready to use!</p>
+<h3 id="advanced-setup-using-custom-reference-files">Advanced Setup: Using Custom Reference Files</h3>
+<p>If you prefer to use your own custom reference files (e.g., a specific GTF version, custom CpG tracks, or custom array manifests), you can do so by editing the shared configuration file (hg38_min.yml).</p>
+<p>In this YAML file, you must define the path, the column separator (sep), and for array manifests, the specific columns to extract (using 0-based indexing). If an optional file path is left empty or is incorrect, the script will safely generate dummy files to prevent pipeline failure.</p>
+<p>Here is the template for the yml file:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a># Mandatory Information
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>ref_name: &quot;hg38_custom&quot;
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>gtf:
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  path: &quot;../gencode.v42.chr_patch_hapl_scaff.annotation.gtf&quot;
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  sep: &quot;\t&quot;
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>CpG:
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  path: &quot;../CpG.bed&quot;
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  sep: &quot;\t&quot;
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a># Optional Files (Leave path empty &quot;&quot; if not using)
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>ccre:
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>  path: &quot;../encodeCcreCombined.bed&quot;
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>  sep: &quot;\t&quot;
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>rmsk:
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>  path: &quot;../rmsk.txt&quot;
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>  sep: &quot;\t&quot;
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>epic_v2:
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>  path: &quot;../EPIC-8v2-0_A1.csv&quot;
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>  sep: &quot;,&quot;
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>  columns: [1, 15, 16]
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>epic_v1:
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>  path: &quot;../infinium-methylationepic-v-1-0-b5-manifest-file-csv&quot;
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>  sep: &quot;,&quot;
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>  columns: [1, 48, 49, 50]
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>hm450:
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>  path: &quot;../HM450.hg38.manifest.tsv&quot;
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>  sep: &quot;\t&quot;
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>  columns: [0, 1, 2, 8]
+</span></code></pre></div></p>
+<h4 id="required-file-formats">Required File Formats</h4>
+<p>To ensure your custom files are parsed correctly, they must match the following structures:</p>
+<ul>
+<li><strong>Reference Name (<code>ref_name</code>) - <em>Mandatory</em></strong>
+    A unique identifier for your custom reference. The script will generate a directory with this exact name to store all processed files. You must use this name as the input for the <code>ref_folder</code> parameter in all subsequent downstream tasks.</li>
+<li>
+<p><strong>GTF (<code>gtf</code>) - <em>Mandatory</em></strong> <br/>
+    Standard Ensembl/GENCODE GTF format (tab-separated). Must contain standard feature columns (<code>chr</code>, <code>source</code>, <code>feature</code>, <code>start</code>, <code>end</code>, <code>score</code>, <code>strand</code>, <code>frame</code>, <code>attribute</code>).</p>
+</li>
+<li>
+<p><strong>CpG Base (<code>CpG</code>) - <em>Mandatory</em></strong> <br/>
+    A simple 3-column, tab-separated BED-like file. Note: The index must start from 1. <br/>
+    Format: <code>chr</code> | <code>pos</code> | <code>index</code> <br/>
+    Example: <code>chr1 \t 10469 \t 1</code></p>
+</li>
+<li>
+<p><strong>cCRE (<code>ccre</code>) - <em>Optional</em></strong>  <br/>
+    Standard ENCODE candidate cis-Regulatory Elements BED file (tab-separated). <br/>
+    Example: <code>chr1 \t 181251 \t 181601 \t EH38E1310153 ...</code></p>
+</li>
+<li>
+<p><strong>RepeatMasker (<code>rmsk</code>) - <em>Optional</em></strong>  <br/>
+    Tab-separated repeats file. Must contain basic coordinates and repeat categories. <br/>
+    Format: <code>chr</code> | <code>start</code> | <code>end</code> | <code>strand</code> | <code>repeat_cat</code> | <code>repeat_subcat</code> ...</p>
+</li>
+<li>
+<p><strong>Illumina Array Manifests (epic_v2, epic_v1, hm450) - <em>Optional</em></strong>  <br/>
+    When providing Illumina manifest files (CSV or TSV), you must specify the 0-based column indices that   correspond to the Probe ID, Chromosome, and Position.</p>
+<ul>
+<li>
+<p>EPIC v2: columns: <code>[1, 15, 16]</code> extracts Name, CHR, and MAPINFO.</p>
+</li>
+<li>
+<p>HM450: columns: <code>[0, 1, 2, 8]</code> extracts CpG_chrm, CpG_beg, CpG_end, and Probe_ID.</p>
+</li>
+<li>
+<p>EPIC v1: columns: <code>[1, 48, 49, 50]</code> extracts the corresponding Probe ID and coordinate columns based on the v1 manifest structure.</p>
+</li>
+</ul>
+</li>
+</ul>
 
 
 

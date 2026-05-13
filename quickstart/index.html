@@ -404,6 +404,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#annotation-pie-chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annotation pie chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#plot-specific-methylation-curves" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -654,6 +665,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#annotation-pie-chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annotation pie chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#plot-specific-methylation-curves" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -720,17 +742,31 @@
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span>--ccre_file<span class="w"> </span>data/map_positions_to_genes_CCRE.csv<span class="w"> </span>--ccre_has_header<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
 </span></code></pre></div>
+<h3 id="annotation-pie-chart">Annotation pie chart</h3>
+<p>Region-based DMR annotation pie chart:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>../DiffMethylTools.py<span class="w"> </span>match_region_annotation<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--regions_df_file<span class="w"> </span>generate_DMR_0.csv<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--regions_df_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--ref_folder<span class="w"> </span><span class="o">(</span>hg19<span class="w"> </span>or<span class="w"> </span>hg38<span class="o">)</span>
+</span></code></pre></div>
+<p>Annotation-based DMR annotation pie chart:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>../DiffMethylTools.py<span class="w"> </span>match_region_annotation<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>--regions_df_file<span class="w"> </span>generate_DMR_0.csv<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>--regions_df_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--annotation_or_region<span class="w"> </span>annotation<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--ref_folder<span class="w"> </span><span class="o">(</span>hg19<span class="w"> </span>or<span class="w"> </span>hg38<span class="o">)</span>
+</span></code></pre></div>
 <h3 id="plot-specific-methylation-curves">Plot Specific Methylation Curves</h3>
 <p>To plot DMR regions on a specific chromosome (e.g., chr1 between positions 3,664,000 and 3,668,000):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>DiffMethylTools<span class="w"> </span>plot_methylation_curve<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--region_data_file<span class="w"> </span>data/generate_DMR_0.csv<span class="w"> </span>--region_data_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--position_data_file<span class="w"> </span>data/position_based.csv<span class="w"> </span>--position_data_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--chr_filter<span class="w"> </span>chr1<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--start_filter<span class="w"> </span><span class="m">3664000</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--end_filter<span class="w"> </span><span class="m">3668000</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>DiffMethylTools<span class="w"> </span>plot_methylation_curve<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--region_data_file<span class="w"> </span>data/generate_DMR_0.csv<span class="w"> </span>--region_data_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--position_data_file<span class="w"> </span>data/position_based.csv<span class="w"> </span>--position_data_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--chr_filter<span class="w"> </span>chr1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--start_filter<span class="w"> </span><span class="m">3664000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--end_filter<span class="w"> </span><span class="m">3668000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
 </span></code></pre></div>
-<p><code>(Note: Omitting the --chr_filter, --start_filter, and --end_filter options will generate plots for all DMRs).</code></p>
+<p>(Note: Omitting the --chr_filter, --start_filter, and --end_filter options will generate plots for all DMRs).</p>
 
 
 
