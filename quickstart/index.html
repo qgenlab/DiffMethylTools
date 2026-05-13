@@ -354,10 +354,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#option-a-bed-format" class="md-nav__link">
+  <a href="#option-a-bed-format-with-methylation-percentage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option A: BED Format
+        Option A: BED Format with Methylation Percentage
       
     </span>
   </a>
@@ -365,10 +365,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-b-bismark-cpg-report-cr-format" class="md-nav__link">
+  <a href="#option-b-bismark-cpg-report-format-cr" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option B: Bismark CpG Report (CR) Format
+        Option B: Bismark CpG Report Format (CR)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-c-flexible-custom-input-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option C: Flexible / Custom Input Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understanding-the-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding the Output
       
     </span>
   </a>
@@ -388,45 +410,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="2. Visualizing Results">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#generate-all-plots" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generate All Plots
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#annotation-pie-chart" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Annotation pie chart
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#plot-specific-methylation-curves" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Plot Specific Methylation Curves
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -615,10 +598,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#option-a-bed-format" class="md-nav__link">
+  <a href="#option-a-bed-format-with-methylation-percentage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option A: BED Format
+        Option A: BED Format with Methylation Percentage
       
     </span>
   </a>
@@ -626,10 +609,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-b-bismark-cpg-report-cr-format" class="md-nav__link">
+  <a href="#option-b-bismark-cpg-report-format-cr" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option B: Bismark CpG Report (CR) Format
+        Option B: Bismark CpG Report Format (CR)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-c-flexible-custom-input-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option C: Flexible / Custom Input Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understanding-the-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding the Output
       
     </span>
   </a>
@@ -649,45 +654,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="2. Visualizing Results">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#generate-all-plots" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generate All Plots
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#annotation-pie-chart" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Annotation pie chart
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#plot-specific-methylation-curves" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Plot Specific Methylation Curves
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -712,59 +678,146 @@
 
 
 <h1 id="quick-start-tutorial">Quick Start Tutorial</h1>
-<p><code>DiffMethylTools</code> supports both <strong>default methylation input formats</strong> and <strong>fully customizable formats</strong>. This guide covers standard analyses using the default formats.</p>
+<p>DiffMethylTools supports both default methylation input formats and fully customizable formats. Users can either specify a standard format via <code>--input_format</code> or manually define column indices.</p>
 <h2 id="1-core-analysis-generate-dmldmr">1. Core Analysis (Generate DML/DMR)</h2>
-<p>You can run the entire core analysis pipeline using the <code>all_analysis</code> command. </p>
-<h3 id="option-a-bed-format">Option A: BED Format</h3>
-<p>If your data is in BED format (containing chromosome, position, coverage, and methylation percentage):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>DiffMethylTools<span class="w"> </span>all_analysis<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>--case_data_file<span class="w"> </span>case1.bed<span class="w"> </span>case2.bed<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>--ctr_data_file<span class="w"> </span>ctr1.bed<span class="w"> </span>ctr2.bed<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span>--input_format<span class="w"> </span>BED<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
+<p>You can run the entire core analysis pipeline using the <code>all_analysis</code> command.</p>
+<h3 id="option-a-bed-format-with-methylation-percentage">Option A: BED Format with Methylation Percentage</h3>
+<p>Use this if your data is in BED format. DiffMethylTools automatically interprets the chromosome, position, coverage, and methylation percentage columns.</p>
+<p>Supported via: <code>--input_format BED</code></p>
+<p>Expected BED-like format (example):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>chr1    10468   10469   5mC  743   +   10468  10469  0,0,0   52   95.21
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>chr1    10470   10471   5mC  850   +   10470  10471  0,0,0   58   94.26
 </span></code></pre></div>
-<h3 id="option-b-bismark-cpg-report-cr-format">Option B: Bismark CpG Report (CR) Format</h3>
-<p>If your data is from Bismark (containing positive/negative methylation counts):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DiffMethylTools<span class="w"> </span>all_analysis<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--case_data_file<span class="w"> </span>case1.txt<span class="w"> </span>case2.txt<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>--ctr_data_file<span class="w"> </span>ctr1.txt<span class="w"> </span>ctr2.txt<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--input_format<span class="w"> </span>CR<span class="w"> </span><span class="se">\</span>
+<p>Run Analysis:</p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DiffMethylTools<span class="w"> </span>all_analysis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--case_data_file<span class="w"> </span>case1.bed<span class="w"> </span>case2.bed<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>--ctr_data_file<span class="w"> </span>ctr1.bed<span class="w"> </span>ctr2.bed<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--input_format<span class="w"> </span>BED<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
 </span></code></pre></div>
+<h3 id="option-b-bismark-cpg-report-format-cr">Option B: Bismark CpG Report Format (CR)</h3>
+<p>Use this if your data is from Bismark. DiffMethylTools automatically detects chromosome, CpG position, methylated counts, and unmethylated counts.</p>
+<p>Supported via: <code>--input_format CR</code></p>
+<p>Expected Bismark CpG report format:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>chr1    10468   +    12   4   CG   CGC
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>chr1    10470   +     8   4   CG   CGC
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>chr1    10483   +     7   2   CG   CGC
+</span></code></pre></div>
+<p>Run Analysis:</p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>DiffMethylTools<span class="w"> </span>all_analysis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--case_data_file<span class="w"> </span>case1_CpG_report.txt<span class="w"> </span>case2_CpG_report.txt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--ctr_data_file<span class="w"> </span>ctr1_CpG_report.txt<span class="w"> </span>ctr2_CpG_report.txt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--input_format<span class="w"> </span>CR<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
+</span></code></pre></div>
+<h3 id="option-c-flexible-custom-input-format">Option C: Flexible / Custom Input Format</h3>
+<p>If the input files do not conform to standard BED or Bismark CpG report formats, you can manually specify column indices (0-based). For both case and control files, you must define the field separator, chromosome column, start position column, and either methylation percentage + coverage columns or methylated + unmethylated count columns.</p>
+<p><strong>Example 1: Custom format with CpG report counts</strong></p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>DiffMethylTools<span class="w"> </span>all_analysis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>--case_data_file<span class="w"> </span>case1.txt<span class="w"> </span>case2.txt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>--ctr_data_file<span class="w"> </span>ctr1.txt<span class="w"> </span>ctr2.txt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--case_data_chromosome_column_index<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--ctr_data_chromosome_column_index<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--case_data_position_start_column_index<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>--ctr_data_position_start_column_index<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span>--case_data_positive_methylation_count_column_index<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span>--case_data_negative_methylation_count_column_index<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span>--ctr_data_positive_methylation_count_column_index<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span>--ctr_data_negative_methylation_count_column_index<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span>--case_data_separator<span class="w"> </span><span class="s1">&#39;\t&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span>--ctr_data_separator<span class="w"> </span><span class="s1">&#39;\t&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
+</span></code></pre></div>
+<p><strong>Example 2: Custom format with BED-style percentages</strong></p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>DiffMethylTools<span class="w"> </span>all_analysis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--case_data_file<span class="w"> </span>case1.bed<span class="w"> </span>case2.bed<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--ctr_data_file<span class="w"> </span>ctr1.bed<span class="w"> </span>ctr2.bed<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--case_data_separator<span class="w"> </span><span class="s1">&#39;\t&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--ctr_data_separator<span class="w"> </span><span class="s1">&#39;\t&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--case_data_chromosome_column_index<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--ctr_data_chromosome_column_index<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span>--case_data_position_start_column_index<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span>--ctr_data_position_start_column_index<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span>--case_data_methylation_percentage_column_index<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">  </span>--case_data_coverage_column_index<span class="w"> </span><span class="m">9</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">  </span>--ctr_data_methylation_percentage_column_index<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span>--ctr_data_coverage_column_index<span class="w"> </span><span class="m">9</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
+</span></code></pre></div>
+<h3 id="understanding-the-output">Understanding the Output</h3>
+<p>Running all_analysis will generate two folders in your working directory:</p>
+<p><strong><code>plot/</code></strong> <br>
+    This folder is initially empty. It will be populated by output figures and plots generated by DiffMethylTools (e.g., volcano plots, methylation curves, pie charts) when you run the plotting commands.</p>
+<p><strong><code>data/</code></strong> <br>
+    This folder contains the required input and intermediate files used during the analysis. Below is a description of each file:</p>
+<ul>
+<li>
+<p><code>merge_tables.csv</code>: Merged and coverage-filtered methylation data for both case and control samples.</p>
+</li>
+<li>
+<p><code>position_based.csv</code>: Methylation data summarized at the individual CpG or position level, including q-value and difference information.</p>
+</li>
+<li>
+<p><code>filters.csv</code>: Filtered data based on methylation difference and statistical significance (q-value).</p>
+</li>
+<li>
+<p><code>generate_DMR_0.csv</code>: Differentially methylated regions (DMRs), aggregated from position-level data.</p>
+</li>
+<li>
+<p><code>generate_DMR_1.csv</code>: DMLs that do not fall within any DMR (isolated differential sites).</p>
+</li>
+<li>
+<p><code>generate_DMR_2.csv</code>: Differentially methylated loci (DMLs) located within identified DMRs.</p>
+</li>
+<li>
+<p><code>map_positions_to_genes_genes.csv</code>: Mapping of methylation regions to annotated gene features.</p>
+</li>
+<li>
+<p><code>map_positions_to_genes_CCRE.csv</code>: Mapping of methylation regions to candidate cis-regulatory elements (CCREs).</p>
+</li>
+<li>
+<p><code>map_win_2_pos.csv</code>: Maps DMR regions to all underlying CpG positions (includes both DML and non-DML positions).</p>
+</li>
+<li>
+<p><code>state.yaml</code>: YAML configuration file that tracks tool state, parameters, and progress.</p>
+</li>
+</ul>
 <h2 id="2-visualizing-results">2. Visualizing Results</h2>
-<p>Once your data is processed, you can easily generate comprehensive plots.</p>
-<h3 id="generate-all-plots">Generate All Plots</h3>
-<p>To generate Volcano plots, Manhattan plots, and gene region mappings all at once:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>DiffMethylTools<span class="w"> </span>all_plots<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>--data_file<span class="w"> </span>position_based.csv<span class="w"> </span>--data_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>--window_data_file<span class="w"> </span>generate_DMR_0.csv<span class="w"> </span>--window_data_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>--gene_file<span class="w"> </span>data/map_positions_to_genes_genes.csv<span class="w"> </span>--gene_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span>--ccre_file<span class="w"> </span>data/map_positions_to_genes_CCRE.csv<span class="w"> </span>--ccre_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
+<p>Once your data is processed, you can easily generate comprehensive plots using the files in the data/ folder.</p>
+<p>Generate All Standard Plots
+To generate Volcano plots, Manhattan plots, upstream clustering, and gene region mappings all at once:</p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>DiffMethylTools<span class="w"> </span>all_plots<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--data_file<span class="w"> </span>data/position_based.csv<span class="w"> </span>--data_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--window_data_file<span class="w"> </span>data/generate_DMR_0.csv<span class="w"> </span>--window_data_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--data_separator<span class="w"> </span><span class="s1">&#39;,&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--window_data_separator<span class="w"> </span><span class="s1">&#39;,&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--gene_file<span class="w"> </span>data/map_positions_to_genes_genes.csv<span class="w"> </span>--gene_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span>--ccre_file<span class="w"> </span>data/map_positions_to_genes_CCRE.csv<span class="w"> </span>--ccre_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
 </span></code></pre></div>
-<h3 id="annotation-pie-chart">Annotation pie chart</h3>
-<p>Region-based DMR annotation pie chart:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>../DiffMethylTools.py<span class="w"> </span>match_region_annotation<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--regions_df_file<span class="w"> </span>generate_DMR_0.csv<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--regions_df_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--ref_folder<span class="w"> </span><span class="o">(</span>hg19<span class="w"> </span>or<span class="w"> </span>hg38<span class="o">)</span>
+<p>Annotation Pie Charts
+Region-based DMR annotation pie chart:</p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>DiffMethylTools<span class="w"> </span>match_region_annotation<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>--regions_df_file<span class="w"> </span>data/generate_DMR_0.csv<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>--regions_df_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
 </span></code></pre></div>
-<p>Annotation-based DMR annotation pie chart:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>../DiffMethylTools.py<span class="w"> </span>match_region_annotation<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>--regions_df_file<span class="w"> </span>generate_DMR_0.csv<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>--regions_df_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--annotation_or_region<span class="w"> </span>annotation<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--ref_folder<span class="w"> </span><span class="o">(</span>hg19<span class="w"> </span>or<span class="w"> </span>hg38<span class="o">)</span>
+<p>Feature-based DMR annotation pie chart:</p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>DiffMethylTools<span class="w"> </span>match_region_annotation<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>--regions_df_file<span class="w"> </span>data/generate_DMR_0.csv<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>--regions_df_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--annotation_or_region<span class="w"> </span>annotation<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
 </span></code></pre></div>
-<h3 id="plot-specific-methylation-curves">Plot Specific Methylation Curves</h3>
-<p>To plot DMR regions on a specific chromosome (e.g., chr1 between positions 3,664,000 and 3,668,000):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>DiffMethylTools<span class="w"> </span>plot_methylation_curve<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--region_data_file<span class="w"> </span>data/generate_DMR_0.csv<span class="w"> </span>--region_data_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--position_data_file<span class="w"> </span>data/position_based.csv<span class="w"> </span>--position_data_has_header<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--chr_filter<span class="w"> </span>chr1<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--start_filter<span class="w"> </span><span class="m">3664000</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--end_filter<span class="w"> </span><span class="m">3668000</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
+<p>Plot Specific Methylation Curves
+To plot DMR regions on a specific chromosome (e.g., chr1 between positions 3,664,000 and 3,668,000):</p>
+<div class="language-Bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>DiffMethylTools<span class="w"> </span>plot_methylation_curve<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>--region_data_file<span class="w"> </span>data/generate_DMR_0.csv<span class="w"> </span>--region_data_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>--position_data_file<span class="w"> </span>data/position_based.csv<span class="w"> </span>--position_data_has_header<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span>--chr_filter<span class="w"> </span>chr1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span>--start_filter<span class="w"> </span><span class="m">3664000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span>--end_filter<span class="w"> </span><span class="m">3668000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span>--ref_folder<span class="w"> </span>hg38
 </span></code></pre></div>
 <p>(Note: Omitting the --chr_filter, --start_filter, and --end_filter options will generate plots for all DMRs).</p>
 
