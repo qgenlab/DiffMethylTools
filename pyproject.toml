@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "DiffMethylTools"
-version = "1.1.2"
+version = "1.1.3"
 description = "A pipeline for detecting, visualizing and annotating Differentially Methylated Loci and Regions"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -26,6 +26,12 @@ dependencies = [
     "tqdm",
     "joblib"
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/qgenlab/DiffMethylTools"
+"Documentation" = "https://github.com/qgenlab/DiffMethylTools/blob/main/README.md"
+"Bug Tracker" = "https://github.com/qgenlab/DiffMethylTools/issues"
+
 
 [tool.setuptools.packages.find]
 where = ["."]
