@@ -154,8 +154,6 @@ DiffMethylTools match_region_annotation \
 ## Citation
 If you use DiffMethylTools in your research, please cite our paper:
 
-Derbel, Houssemeddine, Evan Kinnear, Justin J-L. Wong, and Qian Liu. "DiffMethylTools: a toolbox of the detection, annotation and visualization of differential DNA methylation." bioRxiv (2025): 2025-07.
-(Manuscript currently under peer review)
-
+Derbel, Houssemeddine, Evan Kinnear, Justin JL Wong, and Qian Liu. "DiffMethylTools: a toolbox for the detection, annotation, and visualization of differential methylation." Life Science Alliance 9, no. 9 (2026): e202603765.
 ## Issues and Support
 If you encounter any bugs or have feature requests, please open an issue on our GitHub Issues page.
