@@ -2,6 +2,7 @@
 
 [![Documentation](https://img.shields.io/badge/docs-live-blue.svg)](https://qgenlab.github.io/DiffMethylTools/)
 [![PyPI version](https://badge.fury.io/py/diffmethyltools.svg)](https://badge.fury.io/py/diffmethyltools)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/diffmethyltools?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/diffmethyltools)
 
 **DiffMethylTools** is a Python-based toolkit for the comprehensive analysis of DNA methylation differences between two groups of samples. Designed for both short-read (e.g., WGBS, RRBS) and long-read (e.g., Nanopore) methylome data, it enables the accurate and streamlined detection of differentially methylated loci (DMLs) and regions (DMRs). 
 
